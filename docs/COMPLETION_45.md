@@ -31,7 +31,7 @@ plus a repeatable test suite and deploy configuration.
 | 15 | Deploy | Vercel frontend config | ✅ Config ready | `docs/DEPLOYMENT.md` |
 | 16 | Deploy | Railway gateway + Spark images (Java/PySpark) | ✅ Config ready | `infra/railway/*.Dockerfile`, `railway*.json` |
 | 17 | Tests | 14 fast tests (10 ingestion + 4 gateway) | ✅ Passing | see command below |
-| 18 | Tests | Opt-in live RDD smoke test | ✅ Passing | `RUN_SPARK_TESTS=1` |
+| 18 | Tests | Opt-in live RDD smoke test | ⚠️ Environment-limited | Full CLI/API Spark run passed; smoke test is skipped by default and needs JVM memory headroom |
 | 19 | Docs | RDD pipeline deep-dive | ✅ Done | `docs/PYSPARK_RDD_PIPELINE.md` |
 | 20 | Docs | Deployment runbook | ✅ Done | `docs/DEPLOYMENT.md` |
 
@@ -52,7 +52,10 @@ Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/api/v1/pipeline/run `
 ```
 
 Expected test totals: `10 passed, 1 skipped` (ingestion) and `4 passed`
-(gateway).
+(gateway). The skipped test is the opt-in live Spark smoke test. The full
+11-stage artifact run above is the authoritative Spark execution evidence; the
+smoke test is redundant and can fail on machines with very low free commit
+memory.
 
 ## Deliberately deferred (remaining 55%)
 
