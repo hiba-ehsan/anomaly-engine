@@ -1,0 +1,42 @@
+#! frontend-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: frontend
+    namespace: anomalyengine
+    labels:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: frontend
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: anomalyengine
+            com.docker.compose.service: frontend
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: anomalyengine
+                com.docker.compose.service: frontend
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: frontend
+                  image: anomalyengine-frontend
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: NEXT_PUBLIC_API_URL
+                      value: "http://localhost:8000/api/v1"
+                  ports:
+                    - name: frontend-3000
+                      containerPort: 3000
+                  volumeMounts:
+                    - name: app-src
+                      mountPath: /app/src
+            volumes:
+                - name: app-src
+                  hostPath:
+                    path: C:\Codes\Anomaly Engine\services\frontend\src

@@ -1,0 +1,62 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# --- Node / MERN additions ---
+node_modules/
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+.next/cache
+
+# --- Env / secrets ---
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# --- Supabase / Redis generated ---
+.supabase/
+supabase/.temp/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Models / data cache ---
+models/
+*.bin
+*.pt
+*.onnx
+
+# --- Logs ---
+logs/
+*.log
+
+# --- Spark / local scratch ---
+.spark-tmp/
+.cache/
+.data/
+hs_err_pid*
+replay_pid*
+data/curated/runs/
+.vercel/
+
+# --- Spark output metadata ---
+*.crc
+_SUCCESS

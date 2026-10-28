@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install JS deps
+        run: npm ci || npm install
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck || true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Python deps
+        run: |
+          pip install --upgrade pip
+          pip install pytest httpx
+          pip install -r services/api-gateway/requirements.txt
+          pip install "pyspark==4.2.0"
+      - name: Run Python tests
+        run: |
+          python -m pytest services/ingestion-us/tests -q
+          python -m pytest services/api-gateway/tests -q
+      - name: Build frontend
+        run: npm run build
+
+  container-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate compose
+        run: docker compose config -q

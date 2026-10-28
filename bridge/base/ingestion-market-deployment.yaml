@@ -1,0 +1,61 @@
+#! ingestion-market-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: ingestion-market
+    namespace: anomalyengine
+    labels:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: ingestion-market
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: anomalyengine
+            com.docker.compose.service: ingestion-market
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: anomalyengine
+                com.docker.compose.service: ingestion-market
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: ingestion-market
+                  image: anomalyengine-ingestion-market
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: EDGAR_USER_AGENT
+                      value: "AnomalyEngine/1.0 (research@anomalyengine.dev)"
+                    - name: FINBERT_MODEL
+                      value: "ProsusAI/finbert"
+                    - name: FINNHUB_API_KEY
+                      value: "***REMOVED***"
+                    - name: MODEL_DEVICE
+                      value: "cpu"
+                    - name: REDIS_URL
+                      value: "***REMOVED***"
+                    - name: SUPABASE_KEY
+                      value: "***REMOVED***"
+                    - name: SUPABASE_SERVICE_KEY
+                      value: "***REMOVED***"
+                    - name: SUPABASE_URL
+                      value: "***REMOVED***"
+                  ports:
+                    - name: ingestion--8002
+                      containerPort: 8002
+                  volumeMounts:
+                    - name: app-packages
+                      mountPath: /app/packages
+                    - name: app-app
+                      mountPath: /app/app
+            volumes:
+                - name: app-packages
+                  hostPath:
+                    path: C:\Codes\Anomaly Engine\packages
+                - name: app-app
+                  hostPath:
+                    path: C:\Codes\Anomaly Engine\services\ingestion-market\app

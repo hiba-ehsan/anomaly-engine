@@ -1,0 +1,9 @@
+#! nlp-engine-model-cache-persistentVolumeClaim.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: nlp-engine-model-cache
+    namespace: anomalyengine
+spec:
+    storageClassName: "hostpath" # see docker/desktop-storage-provisioner

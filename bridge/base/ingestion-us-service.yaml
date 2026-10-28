@@ -1,0 +1,21 @@
+#! ingestion-us-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: ingestion-us-published
+    namespace: anomalyengine
+    labels:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: ingestion-us
+spec:
+    selector:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: ingestion-us
+    ports:
+        - name: ingestion--8001
+          port: 8001
+          protocol: TCP
+          targetPort: ingestion--8001
+
+# check if there is at least one published port

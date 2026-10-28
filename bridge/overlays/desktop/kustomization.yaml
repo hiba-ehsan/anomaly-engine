@@ -1,0 +1,14 @@
+#! kustomization.yaml
+# Generated code, do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+    - ../../base
+patches:
+    - path: api-gateway-service.yaml
+    - path: backtester-service.yaml
+    - path: frontend-service.yaml
+    - path: ingestion-market-service.yaml
+    - path: ingestion-us-service.yaml
+    - path: nlp-engine-model-cache-persistentVolumeClaim.yaml
+    - path: nlp-engine-service.yaml

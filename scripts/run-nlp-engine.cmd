@@ -1,0 +1,17 @@
+@echo off
+set "REDIS_URL=***REMOVED***"
+set "INGESTION_MARKET_URL=http://localhost:8002"
+set "EDGAR_USER_AGENT=AnomalyEngine/1.0 (research@anomalyengine.dev)"
+set "SUPABASE_KEY=***REMOVED***"
+set "INGESTION_US_URL=http://localhost:8001"
+set "MODEL_DEVICE=cpu"
+set "HF_HUB_DISABLE_TELEMETRY=1"
+set "SUPABASE_SERVICE_KEY=***REMOVED***"
+set "SUPABASE_URL=***REMOVED***"
+set "HF_HOME=D:\Anomaly Engine\.cache\huggingface"
+set "FINNHUB_API_KEY=***REMOVED***"
+set "FINBERT_MODEL=ProsusAI/finbert"
+set "BACKTESTER_URL=http://localhost:8004"
+set "NLP_ENGINE_URL=http://localhost:8003"
+
+"D:\Anomaly Engine\services\nlp-engine\venv\Scripts\python.exe" -m uvicorn app.main:app --host 0.0.0.0 --port 8003 1> "D:\Anomaly Engine\logs\nlp-engine.log" 2> "D:\Anomaly Engine\logs\nlp-engine.err.log"

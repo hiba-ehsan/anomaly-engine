@@ -1,0 +1,44 @@
+services:
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      target: development
+    volumes:
+      - ./services/api-gateway/app:/app/app
+      - ./packages:/app/packages
+
+  ingestion-us:
+    build:
+      context: ./services/ingestion-us
+      target: development
+    volumes:
+      - ./services/ingestion-us/app:/app/app
+      - ./packages:/app/packages
+
+  ingestion-market:
+    build:
+      context: ./services/ingestion-market
+      target: development
+    volumes:
+      - ./services/ingestion-market/app:/app/app
+      - ./packages:/app/packages
+
+  nlp-engine:
+    build:
+      context: ./services/nlp-engine
+      target: development
+    volumes:
+      - ./services/nlp-engine/app:/app/app
+      - ./packages:/app/packages
+
+  backtester:
+    build:
+      context: ./services/backtester
+      target: development
+    volumes:
+      - ./services/backtester/app:/app/app
+      - ./packages:/app/packages
+
+  frontend:
+    volumes:
+      - ./services/frontend/src:/app/src

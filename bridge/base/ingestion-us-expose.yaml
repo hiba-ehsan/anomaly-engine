@@ -1,0 +1,18 @@
+#! ingestion-us-expose.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: ingestion-us
+    namespace: anomalyengine
+    labels:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: ingestion-us
+spec:
+    selector:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: ingestion-us
+    ports:
+        - name: ingestion--8001
+          port: 8001
+          targetPort: ingestion--8001

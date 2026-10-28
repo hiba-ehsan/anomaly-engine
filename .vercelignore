@@ -1,0 +1,60 @@
+# Vercel ignore file
+# Exclude backend services and infrastructure from frontend build
+
+# Backend services
+services/api-gateway/
+services/ingestion-us/
+services/ingestion-market/
+services/nlp-engine/
+services/backtester/
+services/task-queue/
+
+# Infrastructure
+infra/
+supabase/
+docs/
+
+# Python files
+*.py
+requirements.txt
+Dockerfile
+docker-compose*.yml
+
+# Data
+*.csv
+*.json
+!package.json
+!tsconfig.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Build
+.next/
+out/
+build/
+dist/
+
+# Cache
+.cache/
+.turbo/

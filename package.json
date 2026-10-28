@@ -1,0 +1,27 @@
+{
+  "name": "anomaly-engine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MERN-integrated financial anomaly detection engine (SEC EDGAR + FinBERT + Next.js)",
+  "workspaces": [
+    "services/frontend",
+    "services/mongo-api"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w services/frontend",
+    "build": "npm run build -w services/frontend",
+    "start": "npm run start -w services/frontend",
+    "seed": "python scripts/seed_mongodb.py",
+    "seed:force": "python scripts/seed_mongodb.py --fallback",
+    "lint": "npm run lint -w services/frontend",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,md}\"",
+    "test": "python -m pytest services/ingestion-us/tests -q && python -m pytest services/api-gateway/tests -q",
+    "typecheck": "npm run typecheck -w services/frontend"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

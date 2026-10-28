@@ -1,0 +1,2002 @@
+[
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_1",
+    "tokens": 1207,
+    "sentences": 89,
+    "characters": 15512,
+    "unique_terms": 40,
+    "entropy": 5.162248,
+    "normalised_entropy": 0.963546,
+    "top_terms": [
+      [
+        "apple",
+        24
+      ],
+      [
+        "services",
+        23
+      ],
+      [
+        "products",
+        21
+      ],
+      [
+        "product",
+        16
+      ],
+      [
+        "includes",
+        14
+      ],
+      [
+        "components",
+        11
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_10",
+    "tokens": 59,
+    "sentences": 4,
+    "characters": 944,
+    "unique_terms": 40,
+    "entropy": 5.147461,
+    "normalised_entropy": 0.960786,
+    "top_terms": [
+      [
+        "insider",
+        4
+      ],
+      [
+        "trading",
+        4
+      ],
+      [
+        "policy",
+        3
+      ],
+      [
+        "directors",
+        2
+      ],
+      [
+        "officers",
+        2
+      ],
+      [
+        "proxy",
+        2
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_15",
+    "tokens": 928,
+    "sentences": 71,
+    "characters": 13847,
+    "unique_terms": 40,
+    "entropy": 4.497814,
+    "normalised_entropy": 0.839528,
+    "top_terms": [
+      [
+        "notes",
+        132
+      ],
+      [
+        "due",
+        107
+      ],
+      [
+        "officer",
+        35
+      ],
+      [
+        "dated",
+        27
+      ],
+      [
+        "september",
+        27
+      ],
+      [
+        "certificate",
+        24
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_1a",
+    "tokens": 4866,
+    "sentences": 310,
+    "characters": 68175,
+    "unique_terms": 40,
+    "entropy": 5.110522,
+    "normalised_entropy": 0.953891,
+    "top_terms": [
+      [
+        "products",
+        104
+      ],
+      [
+        "business",
+        82
+      ],
+      [
+        "services",
+        79
+      ],
+      [
+        "adversely",
+        53
+      ],
+      [
+        "materially",
+        41
+      ],
+      [
+        "subject",
+        39
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_1c",
+    "tokens": 211,
+    "sentences": 11,
+    "characters": 2717,
+    "unique_terms": 40,
+    "entropy": 4.852473,
+    "normalised_entropy": 0.905726,
+    "top_terms": [
+      [
+        "security",
+        15
+      ],
+      [
+        "cybersecurity",
+        9
+      ],
+      [
+        "information",
+        9
+      ],
+      [
+        "audit",
+        7
+      ],
+      [
+        "risks",
+        7
+      ],
+      [
+        "committee",
+        6
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_2",
+    "tokens": 32,
+    "sentences": 3,
+    "characters": 473,
+    "unique_terms": 31,
+    "entropy": 4.9375,
+    "normalised_entropy": 0.9875,
+    "top_terms": [
+      [
+        "facilities",
+        2
+      ],
+      [
+        "believes",
+        1
+      ],
+      [
+        "business",
+        1
+      ],
+      [
+        "california",
+        1
+      ],
+      [
+        "centers",
+        1
+      ],
+      [
+        "condition",
+        1
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_3",
+    "tokens": 302,
+    "sentences": 23,
+    "characters": 4243,
+    "unique_terms": 40,
+    "entropy": 5.137021,
+    "normalised_entropy": 0.958837,
+    "top_terms": [
+      [
+        "district",
+        10
+      ],
+      [
+        "california",
+        8
+      ],
+      [
+        "court",
+        8
+      ],
+      [
+        "app",
+        7
+      ],
+      [
+        "dma",
+        6
+      ],
+      [
+        "injunction",
+        5
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_5",
+    "tokens": 143,
+    "sentences": 11,
+    "characters": 2436,
+    "unique_terms": 40,
+    "entropy": 4.980946,
+    "normalised_entropy": 0.929706,
+    "top_terms": [
+      [
+        "september",
+        11
+      ],
+      [
+        "market",
+        7
+      ],
+      [
+        "purchases",
+        5
+      ],
+      [
+        "index",
+        4
+      ],
+      [
+        "negotiated",
+        4
+      ],
+      [
+        "privately",
+        4
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_7",
+    "tokens": 1040,
+    "sentences": 71,
+    "characters": 14973,
+    "unique_terms": 40,
+    "entropy": 5.158451,
+    "normalised_entropy": 0.962837,
+    "top_terms": [
+      [
+        "sales",
+        33
+      ],
+      [
+        "tax",
+        23
+      ],
+      [
+        "services",
+        18
+      ],
+      [
+        "compared",
+        16
+      ],
+      [
+        "income",
+        16
+      ],
+      [
+        "gross",
+        15
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_7a",
+    "tokens": 224,
+    "sentences": 15,
+    "characters": 2956,
+    "unique_terms": 40,
+    "entropy": 5.093991,
+    "normalised_entropy": 0.950806,
+    "top_terms": [
+      [
+        "interest",
+        11
+      ],
+      [
+        "foreign",
+        9
+      ],
+      [
+        "rates",
+        9
+      ],
+      [
+        "rate",
+        8
+      ],
+      [
+        "risk",
+        7
+      ],
+      [
+        "currency",
+        6
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_8",
+    "tokens": 3374,
+    "sentences": 213,
+    "characters": 53592,
+    "unique_terms": 40,
+    "entropy": 5.15473,
+    "normalised_entropy": 0.962143,
+    "top_terms": [
+      [
+        "september",
+        95
+      ],
+      [
+        "tax",
+        48
+      ],
+      [
+        "income",
+        46
+      ],
+      [
+        "apple",
+        35
+      ],
+      [
+        "inc",
+        35
+      ],
+      [
+        "cash",
+        34
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_9a",
+    "tokens": 280,
+    "sentences": 13,
+    "characters": 4445,
+    "unique_terms": 40,
+    "entropy": 4.944317,
+    "normalised_entropy": 0.922869,
+    "top_terms": [
+      [
+        "control",
+        16
+      ],
+      [
+        "internal",
+        15
+      ],
+      [
+        "reporting",
+        12
+      ],
+      [
+        "controls",
+        9
+      ],
+      [
+        "management",
+        9
+      ],
+      [
+        "assurance",
+        7
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-24-000123",
+    "filing_id": "36c52abd8526e09b2a030f881b058c71",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2024-11-01",
+    "section_type": "item_9b",
+    "tokens": 107,
+    "sentences": 9,
+    "characters": 1408,
+    "unique_terms": 40,
+    "entropy": 5.208183,
+    "normalised_entropy": 0.97212,
+    "top_terms": [
+      [
+        "plan",
+        8
+      ],
+      [
+        "satisfy",
+        4
+      ],
+      [
+        "subject",
+        4
+      ],
+      [
+        "brien",
+        3
+      ],
+      [
+        "trading",
+        3
+      ],
+      [
+        "williams",
+        3
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_1",
+    "tokens": 1220,
+    "sentences": 89,
+    "characters": 15778,
+    "unique_terms": 40,
+    "entropy": 5.128137,
+    "normalised_entropy": 0.957179,
+    "top_terms": [
+      [
+        "services",
+        26
+      ],
+      [
+        "products",
+        24
+      ],
+      [
+        "apple",
+        23
+      ],
+      [
+        "product",
+        16
+      ],
+      [
+        "components",
+        14
+      ],
+      [
+        "includes",
+        14
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_15",
+    "tokens": 881,
+    "sentences": 64,
+    "characters": 13103,
+    "unique_terms": 40,
+    "entropy": 4.348115,
+    "normalised_entropy": 0.811586,
+    "top_terms": [
+      [
+        "notes",
+        137
+      ],
+      [
+        "due",
+        111
+      ],
+      [
+        "officer",
+        36
+      ],
+      [
+        "dated",
+        28
+      ],
+      [
+        "certificate",
+        25
+      ],
+      [
+        "global",
+        24
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_1a",
+    "tokens": 4838,
+    "sentences": 311,
+    "characters": 67487,
+    "unique_terms": 40,
+    "entropy": 5.094141,
+    "normalised_entropy": 0.950834,
+    "top_terms": [
+      [
+        "products",
+        100
+      ],
+      [
+        "business",
+        83
+      ],
+      [
+        "services",
+        77
+      ],
+      [
+        "adversely",
+        60
+      ],
+      [
+        "price",
+        49
+      ],
+      [
+        "materially",
+        45
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_1c",
+    "tokens": 209,
+    "sentences": 11,
+    "characters": 2682,
+    "unique_terms": 40,
+    "entropy": 4.852473,
+    "normalised_entropy": 0.905726,
+    "top_terms": [
+      [
+        "security",
+        15
+      ],
+      [
+        "cybersecurity",
+        9
+      ],
+      [
+        "information",
+        9
+      ],
+      [
+        "audit",
+        7
+      ],
+      [
+        "risks",
+        7
+      ],
+      [
+        "committee",
+        6
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_2",
+    "tokens": 32,
+    "sentences": 3,
+    "characters": 473,
+    "unique_terms": 31,
+    "entropy": 4.9375,
+    "normalised_entropy": 0.9875,
+    "top_terms": [
+      [
+        "facilities",
+        2
+      ],
+      [
+        "believes",
+        1
+      ],
+      [
+        "business",
+        1
+      ],
+      [
+        "california",
+        1
+      ],
+      [
+        "centers",
+        1
+      ],
+      [
+        "condition",
+        1
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_3",
+    "tokens": 378,
+    "sentences": 29,
+    "characters": 5297,
+    "unique_terms": 40,
+    "entropy": 5.038622,
+    "normalised_entropy": 0.940471,
+    "top_terms": [
+      [
+        "district",
+        13
+      ],
+      [
+        "court",
+        12
+      ],
+      [
+        "california",
+        11
+      ],
+      [
+        "app",
+        10
+      ],
+      [
+        "investigation",
+        8
+      ],
+      [
+        "article",
+        7
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_5",
+    "tokens": 139,
+    "sentences": 12,
+    "characters": 2399,
+    "unique_terms": 40,
+    "entropy": 4.985242,
+    "normalised_entropy": 0.930507,
+    "top_terms": [
+      [
+        "september",
+        9
+      ],
+      [
+        "market",
+        8
+      ],
+      [
+        "purchases",
+        5
+      ],
+      [
+        "august",
+        4
+      ],
+      [
+        "index",
+        4
+      ],
+      [
+        "negotiated",
+        4
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_7",
+    "tokens": 1242,
+    "sentences": 81,
+    "characters": 17703,
+    "unique_terms": 40,
+    "entropy": 5.188219,
+    "normalised_entropy": 0.968394,
+    "top_terms": [
+      [
+        "sales",
+        33
+      ],
+      [
+        "income",
+        21
+      ],
+      [
+        "services",
+        21
+      ],
+      [
+        "tax",
+        21
+      ],
+      [
+        "compared",
+        17
+      ],
+      [
+        "primarily",
+        17
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_7a",
+    "tokens": 224,
+    "sentences": 15,
+    "characters": 2956,
+    "unique_terms": 40,
+    "entropy": 5.093991,
+    "normalised_entropy": 0.950806,
+    "top_terms": [
+      [
+        "interest",
+        11
+      ],
+      [
+        "foreign",
+        9
+      ],
+      [
+        "rates",
+        9
+      ],
+      [
+        "rate",
+        8
+      ],
+      [
+        "risk",
+        7
+      ],
+      [
+        "currency",
+        6
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_8",
+    "tokens": 3363,
+    "sentences": 217,
+    "characters": 52439,
+    "unique_terms": 40,
+    "entropy": 5.171631,
+    "normalised_entropy": 0.965297,
+    "top_terms": [
+      [
+        "september",
+        85
+      ],
+      [
+        "tax",
+        45
+      ],
+      [
+        "income",
+        38
+      ],
+      [
+        "apple",
+        34
+      ],
+      [
+        "inc",
+        34
+      ],
+      [
+        "consolidated",
+        32
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_9a",
+    "tokens": 280,
+    "sentences": 13,
+    "characters": 4445,
+    "unique_terms": 40,
+    "entropy": 4.944317,
+    "normalised_entropy": 0.922869,
+    "top_terms": [
+      [
+        "control",
+        16
+      ],
+      [
+        "internal",
+        15
+      ],
+      [
+        "reporting",
+        12
+      ],
+      [
+        "controls",
+        9
+      ],
+      [
+        "management",
+        9
+      ],
+      [
+        "assurance",
+        7
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-25-000079",
+    "filing_id": "a8506e2e557971890a8c925dc36715da",
+    "ticker": "AAPL",
+    "filing_type": "10-K",
+    "filing_date": "2025-10-31",
+    "section_type": "item_9b",
+    "tokens": 44,
+    "sentences": 5,
+    "characters": 559,
+    "unique_terms": 31,
+    "entropy": 4.752172,
+    "normalised_entropy": 0.950434,
+    "top_terms": [
+      [
+        "accounting",
+        5
+      ],
+      [
+        "director",
+        3
+      ],
+      [
+        "officer",
+        3
+      ],
+      [
+        "borders",
+        2
+      ],
+      [
+        "corporate",
+        2
+      ],
+      [
+        "principal",
+        2
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-26-000020",
+    "filing_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "ticker": "AAPL",
+    "filing_type": "10-Q",
+    "filing_date": "2026-07-31",
+    "section_type": "item_1",
+    "tokens": 1107,
+    "sentences": 58,
+    "characters": 18425,
+    "unique_terms": 40,
+    "entropy": 5.067995,
+    "normalised_entropy": 0.945953,
+    "top_terms": [
+      [
+        "june",
+        61
+      ],
+      [
+        "months",
+        20
+      ],
+      [
+        "september",
+        19
+      ],
+      [
+        "apple",
+        17
+      ],
+      [
+        "income",
+        17
+      ],
+      [
+        "instruments",
+        17
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-26-000020",
+    "filing_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "ticker": "AAPL",
+    "filing_type": "10-Q",
+    "filing_date": "2026-07-31",
+    "section_type": "item_1a",
+    "tokens": 1323,
+    "sentences": 83,
+    "characters": 18890,
+    "unique_terms": 40,
+    "entropy": 5.209496,
+    "normalised_entropy": 0.972365,
+    "top_terms": [
+      [
+        "business",
+        26
+      ],
+      [
+        "products",
+        25
+      ],
+      [
+        "adversely",
+        20
+      ],
+      [
+        "subject",
+        19
+      ],
+      [
+        "changes",
+        16
+      ],
+      [
+        "condition",
+        16
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-26-000020",
+    "filing_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "ticker": "AAPL",
+    "filing_type": "10-Q",
+    "filing_date": "2026-07-31",
+    "section_type": "item_2",
+    "tokens": 1493,
+    "sentences": 91,
+    "characters": 21258,
+    "unique_terms": 40,
+    "entropy": 5.123854,
+    "normalised_entropy": 0.95638,
+    "top_terms": [
+      [
+        "sales",
+        41
+      ],
+      [
+        "months",
+        36
+      ],
+      [
+        "june",
+        32
+      ],
+      [
+        "nine",
+        26
+      ],
+      [
+        "third",
+        25
+      ],
+      [
+        "tax",
+        23
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-26-000020",
+    "filing_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "ticker": "AAPL",
+    "filing_type": "10-Q",
+    "filing_date": "2026-07-31",
+    "section_type": "item_4",
+    "tokens": 82,
+    "sentences": 2,
+    "characters": 1337,
+    "unique_terms": 40,
+    "entropy": 5.103215,
+    "normalised_entropy": 0.952527,
+    "top_terms": [
+      [
+        "officer",
+        4
+      ],
+      [
+        "principal",
+        4
+      ],
+      [
+        "act",
+        3
+      ],
+      [
+        "control",
+        3
+      ],
+      [
+        "controls",
+        3
+      ],
+      [
+        "disclosure",
+        3
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-26-000020",
+    "filing_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "ticker": "AAPL",
+    "filing_type": "10-Q",
+    "filing_date": "2026-07-31",
+    "section_type": "item_5",
+    "tokens": 100,
+    "sentences": 8,
+    "characters": 1407,
+    "unique_terms": 40,
+    "entropy": 5.154954,
+    "normalised_entropy": 0.962185,
+    "top_terms": [
+      [
+        "plan",
+        9
+      ],
+      [
+        "satisfy",
+        4
+      ],
+      [
+        "subject",
+        4
+      ],
+      [
+        "cook",
+        3
+      ],
+      [
+        "newstead",
+        3
+      ],
+      [
+        "trading",
+        3
+      ]
+    ]
+  },
+  {
+    "filing_key": "AAPL:0000320193-26-000020",
+    "filing_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "ticker": "AAPL",
+    "filing_type": "10-Q",
+    "filing_date": "2026-07-31",
+    "section_type": "item_6",
+    "tokens": 67,
+    "sentences": 7,
+    "characters": 1056,
+    "unique_terms": 40,
+    "entropy": 5.093954,
+    "normalised_entropy": 0.950799,
+    "top_terms": [
+      [
+        "chief",
+        5
+      ],
+      [
+        "officer",
+        5
+      ],
+      [
+        "exhibit",
+        4
+      ],
+      [
+        "inline",
+        3
+      ],
+      [
+        "xbrl",
+        3
+      ],
+      [
+        "apple",
+        2
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-191507",
+    "filing_id": "83671065ac34ab9e3ed7058262d12872",
+    "ticker": "MSFT",
+    "filing_type": "10-Q",
+    "filing_date": "2026-04-29",
+    "section_type": "item_1",
+    "tokens": 381,
+    "sentences": 34,
+    "characters": 5107,
+    "unique_terms": 40,
+    "entropy": 5.069004,
+    "normalised_entropy": 0.946142,
+    "top_terms": [
+      [
+        "fair",
+        15
+      ],
+      [
+        "income",
+        13
+      ],
+      [
+        "losses",
+        10
+      ],
+      [
+        "equity",
+        9
+      ],
+      [
+        "expense",
+        9
+      ],
+      [
+        "investments",
+        9
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-191507",
+    "filing_id": "83671065ac34ab9e3ed7058262d12872",
+    "ticker": "MSFT",
+    "filing_type": "10-Q",
+    "filing_date": "2026-04-29",
+    "section_type": "item_1a",
+    "tokens": 439,
+    "sentences": 27,
+    "characters": 5352,
+    "unique_terms": 40,
+    "entropy": 5.015981,
+    "normalised_entropy": 0.936245,
+    "top_terms": [
+      [
+        "security",
+        18
+      ],
+      [
+        "data",
+        14
+      ],
+      [
+        "products",
+        14
+      ],
+      [
+        "services",
+        13
+      ],
+      [
+        "customers",
+        10
+      ],
+      [
+        "customer",
+        8
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-191507",
+    "filing_id": "83671065ac34ab9e3ed7058262d12872",
+    "ticker": "MSFT",
+    "filing_type": "10-Q",
+    "filing_date": "2026-04-29",
+    "section_type": "item_2",
+    "tokens": 375,
+    "sentences": 29,
+    "characters": 4937,
+    "unique_terms": 40,
+    "entropy": 5.166987,
+    "normalised_entropy": 0.964431,
+    "top_terms": [
+      [
+        "reporting",
+        12
+      ],
+      [
+        "fair",
+        11
+      ],
+      [
+        "impairment",
+        8
+      ],
+      [
+        "investment",
+        7
+      ],
+      [
+        "goodwill",
+        6
+      ],
+      [
+        "unit",
+        6
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-191507",
+    "filing_id": "83671065ac34ab9e3ed7058262d12872",
+    "ticker": "MSFT",
+    "filing_type": "10-Q",
+    "filing_date": "2026-04-29",
+    "section_type": "item_3",
+    "tokens": 165,
+    "sentences": 11,
+    "characters": 1902,
+    "unique_terms": 40,
+    "entropy": 5.058406,
+    "normalised_entropy": 0.944164,
+    "top_terms": [
+      [
+        "foreign",
+        9
+      ],
+      [
+        "currency",
+        6
+      ],
+      [
+        "rates",
+        6
+      ],
+      [
+        "risk",
+        6
+      ],
+      [
+        "credit",
+        5
+      ],
+      [
+        "equity",
+        5
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-191507",
+    "filing_id": "83671065ac34ab9e3ed7058262d12872",
+    "ticker": "MSFT",
+    "filing_type": "10-Q",
+    "filing_date": "2026-04-29",
+    "section_type": "item_4",
+    "tokens": 45,
+    "sentences": 3,
+    "characters": 723,
+    "unique_terms": 29,
+    "entropy": 4.658303,
+    "normalised_entropy": 0.949339,
+    "top_terms": [
+      [
+        "chief",
+        4
+      ],
+      [
+        "officer",
+        4
+      ],
+      [
+        "controls",
+        3
+      ],
+      [
+        "procedures",
+        3
+      ],
+      [
+        "control",
+        2
+      ],
+      [
+        "disclosure",
+        2
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-191507",
+    "filing_id": "83671065ac34ab9e3ed7058262d12872",
+    "ticker": "MSFT",
+    "filing_type": "10-Q",
+    "filing_date": "2026-04-29",
+    "section_type": "item_5",
+    "tokens": 104,
+    "sentences": 7,
+    "characters": 1498,
+    "unique_terms": 40,
+    "entropy": 5.050166,
+    "normalised_entropy": 0.942626,
+    "top_terms": [
+      [
+        "trading",
+        7
+      ],
+      [
+        "rule",
+        5
+      ],
+      [
+        "act",
+        4
+      ],
+      [
+        "defined",
+        4
+      ],
+      [
+        "directors",
+        4
+      ],
+      [
+        "adopted",
+        3
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-191507",
+    "filing_id": "83671065ac34ab9e3ed7058262d12872",
+    "ticker": "MSFT",
+    "filing_type": "10-Q",
+    "filing_date": "2026-04-29",
+    "section_type": "item_6",
+    "tokens": 126,
+    "sentences": 3,
+    "characters": 1594,
+    "unique_terms": 40,
+    "entropy": 4.992775,
+    "normalised_entropy": 0.931914,
+    "top_terms": [
+      [
+        "officer",
+        6
+      ],
+      [
+        "act",
+        5
+      ],
+      [
+        "chief",
+        5
+      ],
+      [
+        "plan",
+        5
+      ],
+      [
+        "pursuant",
+        5
+      ],
+      [
+        "xbrl",
+        5
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_1",
+    "tokens": 413,
+    "sentences": 30,
+    "characters": 4933,
+    "unique_terms": 40,
+    "entropy": 5.212963,
+    "normalised_entropy": 0.973012,
+    "top_terms": [
+      [
+        "content",
+        10
+      ],
+      [
+        "xbox",
+        8
+      ],
+      [
+        "advertising",
+        7
+      ],
+      [
+        "search",
+        7
+      ],
+      [
+        "services",
+        7
+      ],
+      [
+        "across",
+        6
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_10",
+    "tokens": 112,
+    "sentences": 8,
+    "characters": 1539,
+    "unique_terms": 40,
+    "entropy": 4.979485,
+    "normalised_entropy": 0.929433,
+    "top_terms": [
+      [
+        "chief",
+        6
+      ],
+      [
+        "code",
+        6
+      ],
+      [
+        "officer",
+        6
+      ],
+      [
+        "finance",
+        5
+      ],
+      [
+        "proxy",
+        5
+      ],
+      [
+        "statement",
+        5
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_14",
+    "tokens": 36,
+    "sentences": 1,
+    "characters": 395,
+    "unique_terms": 28,
+    "entropy": 4.683542,
+    "normalised_entropy": 0.964092,
+    "top_terms": [
+      [
+        "fees",
+        3
+      ],
+      [
+        "services",
+        3
+      ],
+      [
+        "audit",
+        2
+      ],
+      [
+        "deloitte",
+        2
+      ],
+      [
+        "principal",
+        2
+      ],
+      [
+        "touche",
+        2
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_1a",
+    "tokens": 459,
+    "sentences": 29,
+    "characters": 5861,
+    "unique_terms": 40,
+    "entropy": 5.197951,
+    "normalised_entropy": 0.97021,
+    "top_terms": [
+      [
+        "systems",
+        14
+      ],
+      [
+        "attacks",
+        8
+      ],
+      [
+        "access",
+        7
+      ],
+      [
+        "data",
+        7
+      ],
+      [
+        "result",
+        7
+      ],
+      [
+        "security",
+        7
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_1c",
+    "tokens": 338,
+    "sentences": 23,
+    "characters": 4124,
+    "unique_terms": 40,
+    "entropy": 5.068878,
+    "normalised_entropy": 0.946118,
+    "top_terms": [
+      [
+        "cybersecurity",
+        16
+      ],
+      [
+        "security",
+        8
+      ],
+      [
+        "products",
+        6
+      ],
+      [
+        "computing",
+        5
+      ],
+      [
+        "risks",
+        5
+      ],
+      [
+        "assess",
+        4
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_2",
+    "tokens": 89,
+    "sentences": 7,
+    "characters": 1151,
+    "unique_terms": 40,
+    "entropy": 5.125765,
+    "normalised_entropy": 0.956736,
+    "top_terms": [
+      [
+        "space",
+        5
+      ],
+      [
+        "square",
+        5
+      ],
+      [
+        "feet",
+        4
+      ],
+      [
+        "owned",
+        4
+      ],
+      [
+        "leased",
+        3
+      ],
+      [
+        "properties",
+        3
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_5",
+    "tokens": 94,
+    "sentences": 7,
+    "characters": 1715,
+    "unique_terms": 40,
+    "entropy": 5.073114,
+    "normalised_entropy": 0.946909,
+    "top_terms": [
+      [
+        "repurchases",
+        6
+      ],
+      [
+        "dividends",
+        4
+      ],
+      [
+        "market",
+        4
+      ],
+      [
+        "equity",
+        3
+      ],
+      [
+        "fourth",
+        3
+      ],
+      [
+        "june",
+        3
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_7",
+    "tokens": 346,
+    "sentences": 26,
+    "characters": 4825,
+    "unique_terms": 40,
+    "entropy": 5.028542,
+    "normalised_entropy": 0.93859,
+    "top_terms": [
+      [
+        "investments",
+        18
+      ],
+      [
+        "cash",
+        16
+      ],
+      [
+        "fair",
+        7
+      ],
+      [
+        "level",
+        7
+      ],
+      [
+        "pricing",
+        7
+      ],
+      [
+        "assets",
+        6
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_7a",
+    "tokens": 166,
+    "sentences": 11,
+    "characters": 1909,
+    "unique_terms": 40,
+    "entropy": 5.058406,
+    "normalised_entropy": 0.944164,
+    "top_terms": [
+      [
+        "foreign",
+        9
+      ],
+      [
+        "currency",
+        6
+      ],
+      [
+        "rates",
+        6
+      ],
+      [
+        "risk",
+        6
+      ],
+      [
+        "credit",
+        5
+      ],
+      [
+        "equity",
+        5
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_8",
+    "tokens": 388,
+    "sentences": 31,
+    "characters": 5149,
+    "unique_terms": 40,
+    "entropy": 5.104229,
+    "normalised_entropy": 0.952717,
+    "top_terms": [
+      [
+        "fair",
+        13
+      ],
+      [
+        "income",
+        10
+      ],
+      [
+        "openai",
+        10
+      ],
+      [
+        "assets",
+        9
+      ],
+      [
+        "level",
+        9
+      ],
+      [
+        "derivative",
+        8
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_9a",
+    "tokens": 258,
+    "sentences": 14,
+    "characters": 4027,
+    "unique_terms": 40,
+    "entropy": 4.9183,
+    "normalised_entropy": 0.918013,
+    "top_terms": [
+      [
+        "control",
+        16
+      ],
+      [
+        "internal",
+        16
+      ],
+      [
+        "reporting",
+        14
+      ],
+      [
+        "opinion",
+        6
+      ],
+      [
+        "reasonable",
+        6
+      ],
+      [
+        "accounting",
+        5
+      ]
+    ]
+  },
+  {
+    "filing_key": "MSFT:0001193125-26-323660",
+    "filing_id": "3e812d54826e2955b013a517dd21656f",
+    "ticker": "MSFT",
+    "filing_type": "10-K",
+    "filing_date": "2026-07-29",
+    "section_type": "item_9b",
+    "tokens": 103,
+    "sentences": 9,
+    "characters": 1571,
+    "unique_terms": 40,
+    "entropy": 5.083984,
+    "normalised_entropy": 0.948938,
+    "top_terms": [
+      [
+        "trading",
+        7
+      ],
+      [
+        "rule",
+        5
+      ],
+      [
+        "act",
+        4
+      ],
+      [
+        "defined",
+        4
+      ],
+      [
+        "adopted",
+        3
+      ],
+      [
+        "directors",
+        3
+      ]
+    ]
+  }
+]

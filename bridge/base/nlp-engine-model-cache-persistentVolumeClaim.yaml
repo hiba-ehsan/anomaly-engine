@@ -1,0 +1,18 @@
+#! nlp-engine-model-cache-persistentVolumeClaim.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: nlp-engine-model-cache
+    namespace: anomalyengine
+    labels:
+        com.docker.compose.service: nlp-engine
+        com.docker.compose.volume: model-cache
+spec:
+    accessModes:
+        # TODO would need to check which services use this volume
+        - ReadWriteOnce
+    volumeMode: Filesystem
+    resources:
+        requests:
+            storage: 100Mi

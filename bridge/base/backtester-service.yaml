@@ -1,0 +1,21 @@
+#! backtester-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: backtester-published
+    namespace: anomalyengine
+    labels:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: backtester
+spec:
+    selector:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: backtester
+    ports:
+        - name: backtester-8004
+          port: 8004
+          protocol: TCP
+          targetPort: backtester-8004
+
+# check if there is at least one published port

@@ -1,0 +1,18 @@
+#! nlp-engine-expose.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: nlp-engine
+    namespace: anomalyengine
+    labels:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: nlp-engine
+spec:
+    selector:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: nlp-engine
+    ports:
+        - name: nlp-engine-8003
+          port: 8003
+          targetPort: nlp-engine-8003

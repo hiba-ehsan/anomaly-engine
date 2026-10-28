@@ -1,0 +1,53 @@
+#! task-queue-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: task-queue
+    namespace: anomalyengine
+    labels:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: task-queue
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: anomalyengine
+            com.docker.compose.service: task-queue
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: anomalyengine
+                com.docker.compose.service: task-queue
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: task-queue
+                  image: anomalyengine-task-queue
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: EDGAR_USER_AGENT
+                      value: "AnomalyEngine/1.0 (research@anomalyengine.dev)"
+                    - name: FINBERT_MODEL
+                      value: "ProsusAI/finbert"
+                    - name: FINNHUB_API_KEY
+                      value: "***REMOVED***"
+                    - name: MODEL_DEVICE
+                      value: "cpu"
+                    - name: REDIS_URL
+                      value: "***REMOVED***"
+                    - name: SUPABASE_KEY
+                      value: "***REMOVED***"
+                    - name: SUPABASE_SERVICE_KEY
+                      value: "***REMOVED***"
+                    - name: SUPABASE_URL
+                      value: "***REMOVED***"
+                  volumeMounts:
+                    - name: app-packages
+                      mountPath: /app/packages
+            volumes:
+                - name: app-packages
+                  hostPath:
+                    path: C:\Codes\Anomaly Engine\packages

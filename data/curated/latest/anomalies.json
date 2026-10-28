@@ -1,0 +1,1912 @@
+[
+  {
+    "ticker": "MSFT",
+    "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "signal_type": "temporal_shift",
+    "score": 0.997698,
+    "filing_a_id": "83671065ac34ab9e3ed7058262d12872",
+    "filing_b_id": "3e812d54826e2955b013a517dd21656f",
+    "section_a": "item_2",
+    "section_b": "item_2",
+    "filing_date": "2026-07-29",
+    "detected_at": "2026-07-29",
+    "details": {
+      "cosine_distance": 0.995814,
+      "js_divergence": 0.990195,
+      "entropy_delta": -1.839513,
+      "terms_added": [
+        [
+          "square",
+          5
+        ],
+        [
+          "space",
+          5
+        ],
+        [
+          "feet",
+          4
+        ],
+        [
+          "owned",
+          4
+        ],
+        [
+          "properties",
+          3
+        ],
+        [
+          "leased",
+          3
+        ]
+      ],
+      "terms_removed": []
+    },
+    "severity": "high",
+    "id": "12abed97371e77cec369400aacd12e37",
+    "rank": 1
+  },
+  {
+    "ticker": "MSFT",
+    "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "signal_type": "temporal_shift",
+    "score": 0.983411,
+    "filing_a_id": "83671065ac34ab9e3ed7058262d12872",
+    "filing_b_id": "3e812d54826e2955b013a517dd21656f",
+    "section_a": "item_1",
+    "section_b": "item_1",
+    "filing_date": "2026-07-29",
+    "detected_at": "2026-07-29",
+    "details": {
+      "cosine_distance": 0.969838,
+      "js_divergence": 0.938332,
+      "entropy_delta": 0.594579,
+      "terms_added": [
+        [
+          "content",
+          10
+        ],
+        [
+          "xbox",
+          8
+        ],
+        [
+          "services",
+          7
+        ],
+        [
+          "advertising",
+          7
+        ],
+        [
+          "search",
+          7
+        ],
+        [
+          "across",
+          6
+        ]
+      ],
+      "terms_removed": [
+        [
+          "equity",
+          8
+        ],
+        [
+          "basis",
+          2
+        ],
+        [
+          "market",
+          2
+        ],
+        [
+          "determined",
+          1
+        ],
+        [
+          "based",
+          1
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "3dd1b4b4996f365f1658dc3f72d2044c",
+    "rank": 2
+  },
+  {
+    "ticker": "MSFT",
+    "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "signal_type": "cross_section",
+    "score": 0.978792,
+    "filing_a_id": "3e812d54826e2955b013a517dd21656f",
+    "filing_b_id": "3e812d54826e2955b013a517dd21656f",
+    "section_a": "item_1a",
+    "section_b": "item_7a",
+    "filing_date": "2026-07-29",
+    "detected_at": "2026-07-29",
+    "details": {
+      "cosine_distance": 0.964653,
+      "js_divergence": 0.958971,
+      "entropy_delta": -1.633743,
+      "terms_added": [
+        [
+          "foreign",
+          9
+        ],
+        [
+          "currency",
+          6
+        ],
+        [
+          "rates",
+          6
+        ],
+        [
+          "risk",
+          6
+        ],
+        [
+          "credit",
+          5
+        ]
+      ],
+      "terms_removed": [
+        [
+          "systems",
+          14
+        ],
+        [
+          "attacks",
+          8
+        ],
+        [
+          "access",
+          7
+        ],
+        [
+          "data",
+          7
+        ],
+        [
+          "result",
+          7
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "ed79eae60442a4eacbda066b759a9363",
+    "rank": 3
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "temporal_shift",
+    "score": 0.9785,
+    "filing_a_id": "a8506e2e557971890a8c925dc36715da",
+    "filing_b_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "section_a": "item_2",
+    "section_b": "item_2",
+    "filing_date": "2026-07-31",
+    "detected_at": "2026-07-31",
+    "details": {
+      "cosine_distance": 0.960909,
+      "js_divergence": 0.952939,
+      "entropy_delta": 3.295179,
+      "terms_added": [
+        [
+          "sales",
+          41
+        ],
+        [
+          "months",
+          36
+        ],
+        [
+          "june",
+          32
+        ],
+        [
+          "nine",
+          26
+        ],
+        [
+          "third",
+          25
+        ],
+        [
+          "tax",
+          23
+        ]
+      ],
+      "terms_removed": []
+    },
+    "severity": "high",
+    "id": "a806d0f030796760d8e5c15e75b13847",
+    "rank": 4
+  },
+  {
+    "ticker": "MSFT",
+    "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "signal_type": "cross_section",
+    "score": 0.977969,
+    "filing_a_id": "3e812d54826e2955b013a517dd21656f",
+    "filing_b_id": "3e812d54826e2955b013a517dd21656f",
+    "section_a": "item_1a",
+    "section_b": "item_8",
+    "filing_date": "2026-07-29",
+    "detected_at": "2026-07-29",
+    "details": {
+      "cosine_distance": 0.963282,
+      "js_divergence": 0.945236,
+      "entropy_delta": -0.573412,
+      "terms_added": [
+        [
+          "fair",
+          13
+        ],
+        [
+          "income",
+          10
+        ],
+        [
+          "openai",
+          10
+        ],
+        [
+          "assets",
+          9
+        ],
+        [
+          "level",
+          9
+        ]
+      ],
+      "terms_removed": [
+        [
+          "systems",
+          14
+        ],
+        [
+          "attacks",
+          8
+        ],
+        [
+          "access",
+          7
+        ],
+        [
+          "data",
+          7
+        ],
+        [
+          "result",
+          7
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "ed79eae60442a4eacbda066b759a9363",
+    "rank": 5
+  },
+  {
+    "ticker": "MSFT",
+    "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "signal_type": "cross_section",
+    "score": 0.974443,
+    "filing_a_id": "3e812d54826e2955b013a517dd21656f",
+    "filing_b_id": "3e812d54826e2955b013a517dd21656f",
+    "section_a": "item_1a",
+    "section_b": "item_7",
+    "filing_date": "2026-07-29",
+    "detected_at": "2026-07-29",
+    "details": {
+      "cosine_distance": 0.957405,
+      "js_divergence": 0.928642,
+      "entropy_delta": -0.765111,
+      "terms_added": [
+        [
+          "investments",
+          18
+        ],
+        [
+          "cash",
+          16
+        ],
+        [
+          "fair",
+          7
+        ],
+        [
+          "level",
+          7
+        ],
+        [
+          "pricing",
+          7
+        ]
+      ],
+      "terms_removed": [
+        [
+          "systems",
+          14
+        ],
+        [
+          "attacks",
+          8
+        ],
+        [
+          "access",
+          7
+        ],
+        [
+          "data",
+          7
+        ],
+        [
+          "result",
+          7
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "ed79eae60442a4eacbda066b759a9363",
+    "rank": 6
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "temporal_shift",
+    "score": 0.970425,
+    "filing_a_id": "a8506e2e557971890a8c925dc36715da",
+    "filing_b_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "section_a": "item_5",
+    "section_b": "item_5",
+    "filing_date": "2026-07-31",
+    "detected_at": "2026-07-31",
+    "details": {
+      "cosine_distance": 0.946227,
+      "js_divergence": 0.918931,
+      "entropy_delta": -0.474191,
+      "terms_added": [
+        [
+          "plan",
+          9
+        ],
+        [
+          "satisfy",
+          4
+        ],
+        [
+          "subject",
+          4
+        ],
+        [
+          "trading",
+          3
+        ],
+        [
+          "newstead",
+          3
+        ],
+        [
+          "cook",
+          3
+        ]
+      ],
+      "terms_removed": [
+        [
+          "price",
+          1
+        ],
+        [
+          "equity",
+          1
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "9dc635ce06e5959532592b86bdbe5183",
+    "rank": 7
+  },
+  {
+    "ticker": "MSFT",
+    "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "signal_type": "temporal_shift",
+    "score": 0.929247,
+    "filing_a_id": "83671065ac34ab9e3ed7058262d12872",
+    "filing_b_id": "3e812d54826e2955b013a517dd21656f",
+    "section_a": "item_5",
+    "section_b": "item_5",
+    "filing_date": "2026-07-29",
+    "detected_at": "2026-07-29",
+    "details": {
+      "cosine_distance": 0.871359,
+      "js_divergence": 0.850452,
+      "entropy_delta": 0.098655,
+      "terms_added": [
+        [
+          "repurchases",
+          6
+        ],
+        [
+          "market",
+          4
+        ],
+        [
+          "dividends",
+          4
+        ],
+        [
+          "equity",
+          3
+        ],
+        [
+          "fourth",
+          3
+        ],
+        [
+          "purchased",
+          3
+        ]
+      ],
+      "terms_removed": [
+        [
+          "trading",
+          6
+        ],
+        [
+          "rule",
+          4
+        ],
+        [
+          "directors",
+          3
+        ],
+        [
+          "plan",
+          2
+        ],
+        [
+          "august",
+          1
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "278da2db1bb5952d491b69fd0b00f2db",
+    "rank": 8
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "temporal_shift",
+    "score": 0.927678,
+    "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
+    "filing_b_id": "a8506e2e557971890a8c925dc36715da",
+    "section_a": "item_9b",
+    "section_b": "item_9b",
+    "filing_date": "2025-10-31",
+    "detected_at": "2025-10-31",
+    "details": {
+      "cosine_distance": 0.868506,
+      "js_divergence": 0.776015,
+      "entropy_delta": -0.884018,
+      "terms_added": [
+        [
+          "accounting",
+          5
+        ],
+        [
+          "director",
+          3
+        ],
+        [
+          "corporate",
+          2
+        ],
+        [
+          "principal",
+          2
+        ],
+        [
+          "officer",
+          2
+        ],
+        [
+          "role",
+          2
+        ]
+      ],
+      "terms_removed": [
+        [
+          "trading",
+          2
+        ],
+        [
+          "october",
+          1
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "d8d07cd291daab25c69eafc1483aa014",
+    "rank": 9
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "temporal_shift",
+    "score": 0.904124,
+    "filing_a_id": "a8506e2e557971890a8c925dc36715da",
+    "filing_b_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "section_a": "item_1",
+    "section_b": "item_1",
+    "filing_date": "2026-07-31",
+    "detected_at": "2026-07-31",
+    "details": {
+      "cosine_distance": 0.82568,
+      "js_divergence": 0.791402,
+      "entropy_delta": -0.940422,
+      "terms_added": [
+        [
+          "june",
+          61
+        ],
+        [
+          "months",
+          20
+        ],
+        [
+          "september",
+          18
+        ],
+        [
+          "income",
+          17
+        ],
+        [
+          "instruments",
+          17
+        ],
+        [
+          "consolidated",
+          14
+        ]
+      ],
+      "terms_removed": [
+        [
+          "services",
+          22
+        ],
+        [
+          "products",
+          18
+        ],
+        [
+          "intellectual",
+          11
+        ],
+        [
+          "components",
+          10
+        ],
+        [
+          "property",
+          8
+        ],
+        [
+          "apple",
+          6
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "33a9bded97f2d5ad0c34a5899aeb9055",
+    "rank": 10
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.886316,
+    "filing_a_id": "a8506e2e557971890a8c925dc36715da",
+    "filing_b_id": "a8506e2e557971890a8c925dc36715da",
+    "section_a": "item_1a",
+    "section_b": "item_7a",
+    "filing_date": "2025-10-31",
+    "detected_at": "2025-10-31",
+    "details": {
+      "cosine_distance": 0.810526,
+      "js_divergence": 0.793282,
+      "entropy_delta": -3.07767,
+      "terms_added": [
+        [
+          "interest",
+          11
+        ],
+        [
+          "foreign",
+          9
+        ],
+        [
+          "rates",
+          9
+        ],
+        [
+          "rate",
+          8
+        ],
+        [
+          "risk",
+          7
+        ]
+      ],
+      "terms_removed": [
+        [
+          "products",
+          100
+        ],
+        [
+          "business",
+          83
+        ],
+        [
+          "services",
+          77
+        ],
+        [
+          "adversely",
+          60
+        ],
+        [
+          "price",
+          49
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "fcc312474ef522d931d63386b77df30e",
+    "rank": 11
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.883413,
+    "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
+    "filing_b_id": "36c52abd8526e09b2a030f881b058c71",
+    "section_a": "item_1a",
+    "section_b": "item_7a",
+    "filing_date": "2024-11-01",
+    "detected_at": "2024-11-01",
+    "details": {
+      "cosine_distance": 0.805688,
+      "js_divergence": 0.79204,
+      "entropy_delta": -3.07934,
+      "terms_added": [
+        [
+          "interest",
+          11
+        ],
+        [
+          "foreign",
+          9
+        ],
+        [
+          "rates",
+          9
+        ],
+        [
+          "rate",
+          8
+        ],
+        [
+          "risk",
+          7
+        ]
+      ],
+      "terms_removed": [
+        [
+          "products",
+          104
+        ],
+        [
+          "business",
+          82
+        ],
+        [
+          "services",
+          79
+        ],
+        [
+          "adversely",
+          53
+        ],
+        [
+          "materially",
+          41
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "7e90f5165d8d576811001e65b5a0892c",
+    "rank": 12
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.879873,
+    "filing_a_id": "a8506e2e557971890a8c925dc36715da",
+    "filing_b_id": "a8506e2e557971890a8c925dc36715da",
+    "section_a": "item_7",
+    "section_b": "item_7a",
+    "filing_date": "2025-10-31",
+    "detected_at": "2025-10-31",
+    "details": {
+      "cosine_distance": 0.799789,
+      "js_divergence": 0.777435,
+      "entropy_delta": -1.895349,
+      "terms_added": [
+        [
+          "interest",
+          11
+        ],
+        [
+          "foreign",
+          9
+        ],
+        [
+          "rates",
+          9
+        ],
+        [
+          "rate",
+          8
+        ],
+        [
+          "risk",
+          7
+        ]
+      ],
+      "terms_removed": [
+        [
+          "sales",
+          33
+        ],
+        [
+          "income",
+          21
+        ],
+        [
+          "services",
+          21
+        ],
+        [
+          "tax",
+          21
+        ],
+        [
+          "compared",
+          17
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "4b41ff3b572898eac381b404a47be775",
+    "rank": 13
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.877407,
+    "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
+    "filing_b_id": "36c52abd8526e09b2a030f881b058c71",
+    "section_a": "item_7",
+    "section_b": "item_7a",
+    "filing_date": "2024-11-01",
+    "detected_at": "2024-11-01",
+    "details": {
+      "cosine_distance": 0.795679,
+      "js_divergence": 0.772664,
+      "entropy_delta": -1.71618,
+      "terms_added": [
+        [
+          "interest",
+          11
+        ],
+        [
+          "foreign",
+          9
+        ],
+        [
+          "rates",
+          9
+        ],
+        [
+          "rate",
+          8
+        ],
+        [
+          "risk",
+          7
+        ]
+      ],
+      "terms_removed": [
+        [
+          "sales",
+          33
+        ],
+        [
+          "tax",
+          23
+        ],
+        [
+          "services",
+          18
+        ],
+        [
+          "compared",
+          16
+        ],
+        [
+          "income",
+          16
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "4330a80a584fd9cee57272e50bccfd6a",
+    "rank": 14
+  },
+  {
+    "ticker": "MSFT",
+    "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "signal_type": "cross_section",
+    "score": 0.860469,
+    "filing_a_id": "3e812d54826e2955b013a517dd21656f",
+    "filing_b_id": "3e812d54826e2955b013a517dd21656f",
+    "section_a": "item_7a",
+    "section_b": "item_8",
+    "filing_date": "2026-07-29",
+    "detected_at": "2026-07-29",
+    "details": {
+      "cosine_distance": 0.767449,
+      "js_divergence": 0.755902,
+      "entropy_delta": 1.060331,
+      "terms_added": [
+        [
+          "fair",
+          13
+        ],
+        [
+          "income",
+          10
+        ],
+        [
+          "openai",
+          10
+        ],
+        [
+          "assets",
+          9
+        ],
+        [
+          "level",
+          9
+        ]
+      ],
+      "terms_removed": [
+        [
+          "foreign",
+          9
+        ],
+        [
+          "currency",
+          6
+        ],
+        [
+          "rates",
+          6
+        ],
+        [
+          "risk",
+          6
+        ],
+        [
+          "credit",
+          5
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "4485c1d2d440fe5402586554f6936ec7",
+    "rank": 15
+  },
+  {
+    "ticker": "MSFT",
+    "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "signal_type": "cross_section",
+    "score": 0.813213,
+    "filing_a_id": "3e812d54826e2955b013a517dd21656f",
+    "filing_b_id": "3e812d54826e2955b013a517dd21656f",
+    "section_a": "item_7",
+    "section_b": "item_7a",
+    "filing_date": "2026-07-29",
+    "detected_at": "2026-07-29",
+    "details": {
+      "cosine_distance": 0.688689,
+      "js_divergence": 0.676658,
+      "entropy_delta": -0.868632,
+      "terms_added": [
+        [
+          "foreign",
+          9
+        ],
+        [
+          "currency",
+          6
+        ],
+        [
+          "rates",
+          6
+        ],
+        [
+          "risk",
+          6
+        ],
+        [
+          "credit",
+          5
+        ]
+      ],
+      "terms_removed": [
+        [
+          "investments",
+          18
+        ],
+        [
+          "cash",
+          16
+        ],
+        [
+          "fair",
+          7
+        ],
+        [
+          "level",
+          7
+        ],
+        [
+          "pricing",
+          7
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "0db557d0ec62520f64c803791c9b01cd",
+    "rank": 16
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.811329,
+    "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
+    "filing_b_id": "36c52abd8526e09b2a030f881b058c71",
+    "section_a": "item_1a",
+    "section_b": "item_8",
+    "filing_date": "2024-11-01",
+    "detected_at": "2024-11-01",
+    "details": {
+      "cosine_distance": 0.685548,
+      "js_divergence": 0.58626,
+      "entropy_delta": -0.409725,
+      "terms_added": [
+        [
+          "september",
+          95
+        ],
+        [
+          "tax",
+          48
+        ],
+        [
+          "income",
+          46
+        ],
+        [
+          "apple",
+          35
+        ],
+        [
+          "inc",
+          35
+        ]
+      ],
+      "terms_removed": [
+        [
+          "products",
+          104
+        ],
+        [
+          "business",
+          82
+        ],
+        [
+          "services",
+          79
+        ],
+        [
+          "adversely",
+          53
+        ],
+        [
+          "materially",
+          41
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "7e90f5165d8d576811001e65b5a0892c",
+    "rank": 17
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.808722,
+    "filing_a_id": "a8506e2e557971890a8c925dc36715da",
+    "filing_b_id": "a8506e2e557971890a8c925dc36715da",
+    "section_a": "item_1a",
+    "section_b": "item_8",
+    "filing_date": "2025-10-31",
+    "detected_at": "2025-10-31",
+    "details": {
+      "cosine_distance": 0.681203,
+      "js_divergence": 0.578399,
+      "entropy_delta": -0.353526,
+      "terms_added": [
+        [
+          "september",
+          85
+        ],
+        [
+          "tax",
+          45
+        ],
+        [
+          "income",
+          38
+        ],
+        [
+          "apple",
+          34
+        ],
+        [
+          "inc",
+          34
+        ]
+      ],
+      "terms_removed": [
+        [
+          "products",
+          100
+        ],
+        [
+          "business",
+          83
+        ],
+        [
+          "services",
+          77
+        ],
+        [
+          "adversely",
+          60
+        ],
+        [
+          "price",
+          49
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "fcc312474ef522d931d63386b77df30e",
+    "rank": 18
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.793661,
+    "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
+    "filing_b_id": "36c52abd8526e09b2a030f881b058c71",
+    "section_a": "item_7a",
+    "section_b": "item_8",
+    "filing_date": "2024-11-01",
+    "detected_at": "2024-11-01",
+    "details": {
+      "cosine_distance": 0.656101,
+      "js_divergence": 0.709302,
+      "entropy_delta": 2.669615,
+      "terms_added": [
+        [
+          "september",
+          95
+        ],
+        [
+          "tax",
+          48
+        ],
+        [
+          "income",
+          46
+        ],
+        [
+          "apple",
+          35
+        ],
+        [
+          "inc",
+          35
+        ]
+      ],
+      "terms_removed": [
+        [
+          "interest",
+          11
+        ],
+        [
+          "foreign",
+          9
+        ],
+        [
+          "rates",
+          9
+        ],
+        [
+          "rate",
+          8
+        ],
+        [
+          "risk",
+          7
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "ab78c31b01cd8599c627c7cd9d099fa1",
+    "rank": 19
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.782868,
+    "filing_a_id": "a8506e2e557971890a8c925dc36715da",
+    "filing_b_id": "a8506e2e557971890a8c925dc36715da",
+    "section_a": "item_7a",
+    "section_b": "item_8",
+    "filing_date": "2025-10-31",
+    "detected_at": "2025-10-31",
+    "details": {
+      "cosine_distance": 0.638114,
+      "js_divergence": 0.699646,
+      "entropy_delta": 2.724143,
+      "terms_added": [
+        [
+          "september",
+          85
+        ],
+        [
+          "tax",
+          45
+        ],
+        [
+          "income",
+          38
+        ],
+        [
+          "apple",
+          34
+        ],
+        [
+          "inc",
+          34
+        ]
+      ],
+      "terms_removed": [
+        [
+          "interest",
+          11
+        ],
+        [
+          "foreign",
+          9
+        ],
+        [
+          "rates",
+          9
+        ],
+        [
+          "rate",
+          8
+        ],
+        [
+          "risk",
+          7
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "b3b41c256453b0019d80bbcae6f3c327",
+    "rank": 20
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.770471,
+    "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
+    "filing_b_id": "36c52abd8526e09b2a030f881b058c71",
+    "section_a": "item_1a",
+    "section_b": "item_7",
+    "filing_date": "2024-11-01",
+    "detected_at": "2024-11-01",
+    "details": {
+      "cosine_distance": 0.617452,
+      "js_divergence": 0.619705,
+      "entropy_delta": -1.36316,
+      "terms_added": [
+        [
+          "sales",
+          33
+        ],
+        [
+          "tax",
+          23
+        ],
+        [
+          "services",
+          18
+        ],
+        [
+          "compared",
+          16
+        ],
+        [
+          "income",
+          16
+        ]
+      ],
+      "terms_removed": [
+        [
+          "products",
+          104
+        ],
+        [
+          "business",
+          82
+        ],
+        [
+          "services",
+          79
+        ],
+        [
+          "adversely",
+          53
+        ],
+        [
+          "materially",
+          41
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "7e90f5165d8d576811001e65b5a0892c",
+    "rank": 21
+  },
+  {
+    "ticker": "MSFT",
+    "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "signal_type": "cross_section",
+    "score": 0.754892,
+    "filing_a_id": "83671065ac34ab9e3ed7058262d12872",
+    "filing_b_id": "83671065ac34ab9e3ed7058262d12872",
+    "section_a": "item_1",
+    "section_b": "item_2",
+    "filing_date": "2026-04-29",
+    "detected_at": "2026-04-29",
+    "details": {
+      "cosine_distance": 0.591486,
+      "js_divergence": 0.558807,
+      "entropy_delta": 0.284368,
+      "terms_added": [
+        [
+          "reporting",
+          12
+        ],
+        [
+          "fair",
+          11
+        ],
+        [
+          "impairment",
+          8
+        ],
+        [
+          "investment",
+          7
+        ],
+        [
+          "goodwill",
+          6
+        ]
+      ],
+      "terms_removed": [
+        [
+          "fair",
+          15
+        ],
+        [
+          "income",
+          13
+        ],
+        [
+          "losses",
+          10
+        ],
+        [
+          "equity",
+          9
+        ],
+        [
+          "expense",
+          9
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "3a1417c1bf1888ebd67052c19720269c",
+    "rank": 22
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.754689,
+    "filing_a_id": "a8506e2e557971890a8c925dc36715da",
+    "filing_b_id": "a8506e2e557971890a8c925dc36715da",
+    "section_a": "item_1a",
+    "section_b": "item_7",
+    "filing_date": "2025-10-31",
+    "detected_at": "2025-10-31",
+    "details": {
+      "cosine_distance": 0.591149,
+      "js_divergence": 0.579268,
+      "entropy_delta": -1.182321,
+      "terms_added": [
+        [
+          "sales",
+          33
+        ],
+        [
+          "income",
+          21
+        ],
+        [
+          "services",
+          21
+        ],
+        [
+          "tax",
+          21
+        ],
+        [
+          "compared",
+          17
+        ]
+      ],
+      "terms_removed": [
+        [
+          "products",
+          100
+        ],
+        [
+          "business",
+          83
+        ],
+        [
+          "services",
+          77
+        ],
+        [
+          "adversely",
+          60
+        ],
+        [
+          "price",
+          49
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "fcc312474ef522d931d63386b77df30e",
+    "rank": 23
+  },
+  {
+    "ticker": "MSFT",
+    "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "signal_type": "temporal_shift",
+    "score": 0.754151,
+    "filing_a_id": "83671065ac34ab9e3ed7058262d12872",
+    "filing_b_id": "3e812d54826e2955b013a517dd21656f",
+    "section_a": "item_1a",
+    "section_b": "item_1a",
+    "filing_date": "2026-07-29",
+    "detected_at": "2026-07-29",
+    "details": {
+      "cosine_distance": 0.553001,
+      "js_divergence": 0.626783,
+      "entropy_delta": 0.345679,
+      "terms_added": [
+        [
+          "systems",
+          8
+        ],
+        [
+          "attacks",
+          7
+        ],
+        [
+          "result",
+          6
+        ],
+        [
+          "access",
+          5
+        ],
+        [
+          "internal",
+          5
+        ],
+        [
+          "compromise",
+          4
+        ]
+      ],
+      "terms_removed": [
+        [
+          "products",
+          13
+        ],
+        [
+          "security",
+          11
+        ],
+        [
+          "services",
+          10
+        ],
+        [
+          "data",
+          7
+        ],
+        [
+          "customer",
+          5
+        ],
+        [
+          "customers",
+          4
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "17f7c6f286968470ff0195c0a8b44d98",
+    "rank": 24
+  },
+  {
+    "ticker": "MSFT",
+    "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "signal_type": "cross_section",
+    "score": 0.752065,
+    "filing_a_id": "3e812d54826e2955b013a517dd21656f",
+    "filing_b_id": "3e812d54826e2955b013a517dd21656f",
+    "section_a": "item_7",
+    "section_b": "item_8",
+    "filing_date": "2026-07-29",
+    "detected_at": "2026-07-29",
+    "details": {
+      "cosine_distance": 0.586775,
+      "js_divergence": 0.607899,
+      "entropy_delta": 0.191699,
+      "terms_added": [
+        [
+          "fair",
+          13
+        ],
+        [
+          "income",
+          10
+        ],
+        [
+          "openai",
+          10
+        ],
+        [
+          "assets",
+          9
+        ],
+        [
+          "level",
+          9
+        ]
+      ],
+      "terms_removed": [
+        [
+          "investments",
+          18
+        ],
+        [
+          "cash",
+          16
+        ],
+        [
+          "fair",
+          7
+        ],
+        [
+          "level",
+          7
+        ],
+        [
+          "pricing",
+          7
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "0db557d0ec62520f64c803791c9b01cd",
+    "rank": 25
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.701134,
+    "filing_a_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "filing_b_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "section_a": "item_1",
+    "section_b": "item_2",
+    "filing_date": "2026-07-31",
+    "detected_at": "2026-07-31",
+    "details": {
+      "cosine_distance": 0.50189,
+      "js_divergence": 0.563999,
+      "entropy_delta": 0.42648,
+      "terms_added": [
+        [
+          "sales",
+          41
+        ],
+        [
+          "months",
+          36
+        ],
+        [
+          "june",
+          32
+        ],
+        [
+          "nine",
+          26
+        ],
+        [
+          "third",
+          25
+        ]
+      ],
+      "terms_removed": [
+        [
+          "june",
+          61
+        ],
+        [
+          "months",
+          20
+        ],
+        [
+          "september",
+          19
+        ],
+        [
+          "apple",
+          17
+        ],
+        [
+          "income",
+          17
+        ]
+      ]
+    },
+    "severity": "high",
+    "id": "8ac5fce38b881973d9b76307b6dce621",
+    "rank": 26
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.687004,
+    "filing_a_id": "a8506e2e557971890a8c925dc36715da",
+    "filing_b_id": "a8506e2e557971890a8c925dc36715da",
+    "section_a": "item_7",
+    "section_b": "item_8",
+    "filing_date": "2025-10-31",
+    "detected_at": "2025-10-31",
+    "details": {
+      "cosine_distance": 0.47834,
+      "js_divergence": 0.485124,
+      "entropy_delta": 0.828794,
+      "terms_added": [
+        [
+          "september",
+          85
+        ],
+        [
+          "tax",
+          45
+        ],
+        [
+          "income",
+          38
+        ],
+        [
+          "apple",
+          34
+        ],
+        [
+          "inc",
+          34
+        ]
+      ],
+      "terms_removed": [
+        [
+          "sales",
+          33
+        ],
+        [
+          "income",
+          21
+        ],
+        [
+          "services",
+          21
+        ],
+        [
+          "tax",
+          21
+        ],
+        [
+          "compared",
+          17
+        ]
+      ]
+    },
+    "severity": "medium",
+    "id": "4b41ff3b572898eac381b404a47be775",
+    "rank": 27
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "cross_section",
+    "score": 0.663558,
+    "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
+    "filing_b_id": "36c52abd8526e09b2a030f881b058c71",
+    "section_a": "item_7",
+    "section_b": "item_8",
+    "filing_date": "2024-11-01",
+    "detected_at": "2024-11-01",
+    "details": {
+      "cosine_distance": 0.439264,
+      "js_divergence": 0.464149,
+      "entropy_delta": 0.953436,
+      "terms_added": [
+        [
+          "september",
+          95
+        ],
+        [
+          "tax",
+          48
+        ],
+        [
+          "income",
+          46
+        ],
+        [
+          "apple",
+          35
+        ],
+        [
+          "inc",
+          35
+        ]
+      ],
+      "terms_removed": [
+        [
+          "sales",
+          33
+        ],
+        [
+          "tax",
+          23
+        ],
+        [
+          "services",
+          18
+        ],
+        [
+          "compared",
+          16
+        ],
+        [
+          "income",
+          16
+        ]
+      ]
+    },
+    "severity": "medium",
+    "id": "4330a80a584fd9cee57272e50bccfd6a",
+    "rank": 28
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "temporal_shift",
+    "score": 0.432607,
+    "filing_a_id": "a8506e2e557971890a8c925dc36715da",
+    "filing_b_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
+    "section_a": "item_1a",
+    "section_b": "item_1a",
+    "filing_date": "2026-07-31",
+    "detected_at": "2026-07-31",
+    "details": {
+      "cosine_distance": 0.167166,
+      "js_divergence": 0.302814,
+      "entropy_delta": -1.032161,
+      "terms_added": [
+        [
+          "margin",
+          4
+        ],
+        [
+          "computing",
+          3
+        ],
+        [
+          "obligations",
+          3
+        ],
+        [
+          "dma",
+          3
+        ],
+        [
+          "revenue",
+          2
+        ],
+        [
+          "capacity",
+          2
+        ]
+      ],
+      "terms_removed": [
+        [
+          "products",
+          75
+        ],
+        [
+          "services",
+          61
+        ],
+        [
+          "business",
+          57
+        ],
+        [
+          "adversely",
+          40
+        ],
+        [
+          "price",
+          35
+        ],
+        [
+          "materially",
+          29
+        ]
+      ]
+    },
+    "severity": "medium",
+    "id": "87905bf1767b9a0440095f276cbad627",
+    "rank": 29
+  },
+  {
+    "ticker": "AAPL",
+    "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "signal_type": "temporal_shift",
+    "score": 0.244231,
+    "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
+    "filing_b_id": "a8506e2e557971890a8c925dc36715da",
+    "section_a": "item_3",
+    "section_b": "item_3",
+    "filing_date": "2025-10-31",
+    "detected_at": "2025-10-31",
+    "details": {
+      "cosine_distance": 0.119804,
+      "js_divergence": 0.158523,
+      "entropy_delta": 0.203578,
+      "terms_added": [
+        [
+          "investigation",
+          6
+        ],
+        [
+          "article",
+          4
+        ],
+        [
+          "court",
+          4
+        ],
+        [
+          "app",
+          3
+        ],
+        [
+          "april",
+          3
+        ],
+        [
+          "outside",
+          3
+        ]
+      ],
+      "terms_removed": [
+        [
+          "dma",
+          3
+        ],
+        [
+          "investigations",
+          2
+        ],
+        [
+          "store",
+          2
+        ],
+        [
+          "announced",
+          1
+        ],
+        [
+          "relates",
+          1
+        ],
+        [
+          "apps",
+          1
+        ]
+      ]
+    },
+    "severity": "low",
+    "id": "f90968a20f0eda334c5cd169f62e908e",
+    "rank": 30
+  }
+]

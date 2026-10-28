@@ -1,0 +1,21 @@
+#! ingestion-market-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: ingestion-market-published
+    namespace: anomalyengine
+    labels:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: ingestion-market
+spec:
+    selector:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: ingestion-market
+    ports:
+        - name: ingestion--8002
+          port: 8002
+          protocol: TCP
+          targetPort: ingestion--8002
+
+# check if there is at least one published port

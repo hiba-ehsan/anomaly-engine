@@ -1,0 +1,23 @@
+# check if there is at least one published port
+
+#! api-gateway-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: api-gateway-published
+    namespace: anomalyengine
+    labels:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: api-gateway
+spec:
+    selector:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: api-gateway
+    ports:
+        - name: api-gatewa-8000
+          port: 8000
+          protocol: TCP
+          targetPort: api-gatewa-8000
+
+# check if there is at least one published port

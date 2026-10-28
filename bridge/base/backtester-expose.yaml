@@ -1,0 +1,18 @@
+#! backtester-expose.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: backtester
+    namespace: anomalyengine
+    labels:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: backtester
+spec:
+    selector:
+        com.docker.compose.project: anomalyengine
+        com.docker.compose.service: backtester
+    ports:
+        - name: backtester-8004
+          port: 8004
+          targetPort: backtester-8004

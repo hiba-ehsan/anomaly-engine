@@ -1,0 +1,22 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@api-url",
+    "SUPABASE_URL": "@supabase-url",
+    "SUPABASE_KEY": "@supabase-key",
+    "SUPABASE_SERVICE_KEY": "@supabase-service-key",
+    "FINNHUB_API_KEY": "@finnhub-api-key",
+    "FINBERT_MODEL": "ProsusAI/finbert",
+    "MODEL_DEVICE": "cpu",
+    "EDGAR_USER_AGENT": "AnomalyEngine/1.0 (research@anomalyengine.dev)"
+  }
+}
