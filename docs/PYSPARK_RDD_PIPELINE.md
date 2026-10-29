@@ -56,10 +56,12 @@ dashboard renders. Measured on the committed snapshot:
 | 9 | Anomaly signals | `union`, `map`, `filter`, `takeOrdered` | → 30 |
 | 10 | Chunk generation | `mapPartitions`, `collect`, `createDataFrame`, `write.parquet` | 51 → 1,159 |
 | 11 | RDD vs DataFrame benchmark | `flatMap`, `map`, `reduceByKey`, `count`, `read.parquet`, `groupBy` | 1,159 → 2,751 terms |
+| 12 | Teacher-style API checks | `textFile`, `first`, `filter`, `map`, `reduceByKey`, `count`, `collect`, `take`, `toDebugString`, `read.csv`, `groupBy`, `agg`, `orderBy`, `explain`, `show`, `sql`, `toDF` | 50 -> 37 low-detail sections |
 
-Also used: a **broadcast** stopword set and **accumulators** for malformed
-records. `mapPartitions` is used where per-partition setup matters (sentence
-splitting, chunk packing) rather than a per-row `map`.
+Also used: a **broadcast** stopword set, **accumulators** for malformed
+records, and the classroom `textFile` / `first` / `take` / `toDebugString`
+sequence in stage 12. `mapPartitions` is used where per-partition setup matters
+(sentence splitting, chunk packing) rather than a per-row `map`.
 
 ### Why each API appears
 
@@ -93,6 +95,8 @@ Written atomically to `data/curated/latest/` (override root with
 | `features.json` | 40 | temporal + cross-section feature panels |
 | `top_terms.json` | 50 | term frequency panel |
 | `section_stats.json` | 50 | section statistics panel |
+| `section_stats.csv` | 50 | classroom `sc.textFile` / `spark.read.csv` input |
+| `teacher_checks.json` | 1 | RDD/DataFrame parity, lineage, SQL result |
 | `run_summary.json` | 1 | stage timeline, counts, benchmark, artifact list |
 
 Each run is also archived as `data/curated/runs/<run_id>.json`.
@@ -116,6 +120,16 @@ $env:SPARK_LOCAL_DIR  = "D:\Anomaly Engine\.spark-tmp"
 .\venv\Scripts\python.exe -u -m app.spark.runner --tickers AAPL MSFT
 ```
 
+### Classroom-command check only
+
+```powershell
+cd services/ingestion-us
+.\venv\Scripts\python.exe -u -m app.spark.teacher_demo
+```
+
+The full run also calls the same function as stage 12. See
+`docs/PYSPARK_TEACHING_ALIGNMENT.md` for the line-by-line command mapping.
+
 ### Through the API
 
 ```powershell
@@ -130,7 +144,7 @@ laptop (the JVM start dominates; the RDD work itself is seconds).
 
 ## Benchmark
 
-The final stage compares two implementations over the same 1,159 chunks:
+The stage 11 benchmark compares two implementations over the same 1,159 chunks:
 
 - RDD path: reuses the cached chunk RDD and runs
   `flatMap → filter → map → reduceByKey → count`.
@@ -138,7 +152,7 @@ The final stage compares two implementations over the same 1,159 chunks:
   groupBy("word").count()`.
 
 Both paths are warmed once before timing so JVM/JIT startup is excluded.
-Measured: **RDD 10,867.9 ms vs DataFrame 531.8 ms (20.4×)** for the same 2,751
+Measured: **RDD 7,009.9 ms vs DataFrame 492.4 ms (14.2×)** for the same 2,751
 distinct terms. Both paths return the identical term set (`match: true`), which
 is the correctness check shown on the dashboard. The DataFrame advantage is
 expected: Catalyst + whole-stage codegen + Parquet columnar reads. The RDD path
@@ -177,7 +191,10 @@ python -c "import json;d=json.load(open('data/curated/latest/run_summary.json'))
 # 2. Benchmark confirms both APIs agree
 python -c "import json;d=json.load(open('data/curated/latest/run_summary.json'));print(d['benchmark'])"
 
-# 3. Optional live RDD test (starts a JVM)
+# 3. Classroom RDD/DataFrame commands agree on the same sections
+python -c "import json;d=json.load(open('data/curated/latest/teacher_checks.json'));print(d['rdd']['low_detail_sections'],d['dataframe']['low_detail_sections'],d['match']);print(d['rdd']['lineage'])"
+
+# 4. Optional live RDD test (starts a JVM)
 $env:RUN_SPARK_TESTS='1'
 services\ingestion-us\venv\Scripts\python.exe -m pytest services\ingestion-us\tests\test_spark_smoke.py -q
 ```

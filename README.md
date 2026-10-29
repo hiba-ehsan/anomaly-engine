@@ -4,7 +4,8 @@
 > gateway → Next.js dashboard. Start here:
 > [docs/COMPLETION_45.md](docs/COMPLETION_45.md) ·
 > [docs/PYSPARK_RDD_PIPELINE.md](docs/PYSPARK_RDD_PIPELINE.md) ·
-> [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+> [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) ·
+> [docs/PYSPARK_TEACHING_ALIGNMENT.md](docs/PYSPARK_TEACHING_ALIGNMENT.md)
 
 A **MERN-integrated financial anomaly detection engine** that ingests real SEC
 EDGAR filings (10-K/10-Q) for AAPL and large-cap US issuers, runs FinBERT

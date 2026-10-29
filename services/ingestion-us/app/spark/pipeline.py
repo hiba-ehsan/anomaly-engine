@@ -7,6 +7,11 @@ actions (the requirement for the mid-term demo):
     -> aggregateByKey -> combineByKey -> groupByKey -> join -> sortBy
     -> takeOrdered -> count -> collect
 
+The final stage intentionally repeats the classroom RDD/DataFrame commands
+(``textFile``, ``first``, ``take``, ``toDebugString``, ``read.csv``,
+``explain``, ``createOrReplaceTempView``, ``spark.sql``) on the section output
+so the professor can see the taught methods inside the real project.
+
 It reads the local JSON snapshot produced by ``scripts/fetch_sec_filings.py``
 and writes curated JSON + Parquet artifacts consumed by the API gateway and
 the Next.js dashboard.
@@ -38,6 +43,8 @@ from pyspark.sql.types import (
 )
 
 from .session import build_session
+from .teacher_demo import run_teacher_checks
+
 
 def _project_root() -> Path:
     """Repo root locally, service root inside a container (/app)."""
@@ -679,6 +686,39 @@ def run_pipeline(
         benchmark = _run_benchmark(spark, chunk_rdd, parquet_path)
         stage["output_rows"] = benchmark["dataframe_terms"]
 
+    # ------------------------------------------- teacher-style API checkpoints
+    # This is the section the professor can compare line-for-line with the
+    # class notes.  It runs the same commands on the project's real section
+    # data and records the RDD/DataFrame results for the dashboard.  It is the
+    # final Spark stage so the dashboard timeline reads like the classroom
+    # notebook: ingest, analyse, then the taught RDD/DataFrame checks.
+    with recorder.record(
+        "teacher-style RDD + DataFrame checks",
+        [
+            "textFile",
+            "first",
+            "filter",
+            "map",
+            "reduceByKey",
+            "count",
+            "collect",
+            "take",
+            "toDebugString",
+            "cache",
+            "read.csv",
+            "groupBy",
+            "agg",
+            "orderBy",
+            "explain",
+            "show",
+            "sql",
+            "toDF",
+        ],
+        len(section_stats),
+    ) as stage:
+        teacher_checks = run_teacher_checks(spark, section_stats, curated_dir)
+        stage["output_rows"] = teacher_checks["rdd"]["low_detail_sections"]
+
     # --------------------------------------------------------------- writers
     companies = {}
     for row in filings:
@@ -746,6 +786,7 @@ def run_pipeline(
     persist("anomalies.json", anomalies_payload)
     persist("top_terms.json", top_terms_payload)
     persist("section_stats.json", section_stats)
+    persist("teacher_checks.json", teacher_checks)
     persist(
         "features.json",
         {
@@ -797,6 +838,7 @@ def run_pipeline(
         "section_stats": section_stats,
         "anomalies": anomalies_payload,
         "benchmark": benchmark,
+        "teacher_checks": teacher_checks,
         "artifacts": artifacts,
     }
 

@@ -1,6 +1,5 @@
-"""PySpark RDD ingestion pipeline for SEC filings."""
+"""PySpark RDD ingestion pipeline for SEC filings.
 
-from .pipeline import run_pipeline
-from .session import build_session
-
-__all__ = ["run_pipeline", "build_session"]
+Import the modules directly so ``python -m app.spark.runner`` and
+``python -m app.spark.teacher_demo`` do not double-import the package.
+"""

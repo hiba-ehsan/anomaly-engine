@@ -20,6 +20,11 @@ from app.spark.pipeline import (
     tokenize,
     top_terms,
 )
+from app.spark.teacher_demo import (
+    CSV_COLUMNS,
+    LOW_DETAIL_TOKEN_THRESHOLD,
+    write_section_stats_csv,
+)
 
 RAW_DIR = Path(__file__).resolve().parents[3] / "data" / "raw" / "filings"
 
@@ -116,3 +121,35 @@ def test_normalise_filing_keeps_parsed_sections():
     assert normalised["section_count"] > 0
     assert normalised["raw_chars"] > 1000
     assert normalised["filing_id"] == stable_id("filing", "AAPL", ten_k["accession_number"])
+
+
+def test_teacher_csv_uses_comma_free_columns(tmp_path):
+    rows = [
+        {
+            "ticker": "AAPL",
+            "section_type": "item_1a",
+            "tokens": 1234,
+            "sentences": 8,
+            "characters": 7000,
+            "unique_terms": 300,
+            "entropy": 6.4,
+            "normalised_entropy": 0.9,
+        },
+        {
+            "ticker": "MSFT",
+            "section_type": "item_7",
+            "tokens": LOW_DETAIL_TOKEN_THRESHOLD - 1,
+            "sentences": 2,
+            "characters": 1800,
+            "unique_terms": 90,
+            "entropy": 5.1,
+            "normalised_entropy": 0.8,
+        },
+    ]
+    path = write_section_stats_csv(tmp_path / "section_stats.csv", rows)
+    lines = path.read_text(encoding="utf-8").strip().splitlines()
+
+    assert lines[0] == ",".join(CSV_COLUMNS)
+    assert all(len(line.split(",")) == len(CSV_COLUMNS) for line in lines)
+    assert lines[1].split(",")[0] == "AAPL"
+    assert int(lines[2].split(",")[2]) == LOW_DETAIL_TOKEN_THRESHOLD - 1

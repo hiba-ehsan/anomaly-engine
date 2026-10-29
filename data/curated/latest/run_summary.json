@@ -1,8 +1,8 @@
 {
-  "run_id": "20261028T184422Z",
-  "started_at": "2026-10-28T18:44:22.706827+00:00",
-  "completed_at": "2026-10-28T18:47:28.303845+00:00",
-  "duration_seconds": 185.6,
+  "run_id": "20261029T164937Z",
+  "started_at": "2026-10-29T16:49:37.488704+00:00",
+  "completed_at": "2026-10-29T16:52:40.246771+00:00",
+  "duration_seconds": 182.75,
   "spark_version": "4.2.0",
   "master": "local[1]",
   "engine": "PySpark RDD",
@@ -43,7 +43,7 @@
       ],
       "input_rows": 5,
       "output_rows": 5,
-      "duration_ms": 18072.6
+      "duration_ms": 26177.0
     },
     {
       "name": "section extraction",
@@ -53,7 +53,7 @@
       ],
       "input_rows": 5,
       "output_rows": 51,
-      "duration_ms": 17234.4
+      "duration_ms": 15349.9
     },
     {
       "name": "sentence tokenisation",
@@ -64,7 +64,7 @@
       ],
       "input_rows": 51,
       "output_rows": 2252,
-      "duration_ms": 17258.6
+      "duration_ms": 15273.4
     },
     {
       "name": "global term frequency",
@@ -77,7 +77,7 @@
       ],
       "input_rows": 2252,
       "output_rows": 50,
-      "duration_ms": 14768.8
+      "duration_ms": 8743.8
     },
     {
       "name": "token document frequency",
@@ -87,7 +87,7 @@
       ],
       "input_rows": 2252,
       "output_rows": 3060,
-      "duration_ms": 10638.7
+      "duration_ms": 7906.1
     },
     {
       "name": "section statistics",
@@ -101,7 +101,7 @@
       ],
       "input_rows": 2252,
       "output_rows": 50,
-      "duration_ms": 26328.2
+      "duration_ms": 17727.6
     },
     {
       "name": "temporal shift",
@@ -114,7 +114,7 @@
       ],
       "input_rows": 51,
       "output_rows": 20,
-      "duration_ms": 9258.9
+      "duration_ms": 5656.8
     },
     {
       "name": "cross-section divergence",
@@ -125,7 +125,7 @@
       ],
       "input_rows": 51,
       "output_rows": 20,
-      "duration_ms": 5282.0
+      "duration_ms": 3283.0
     },
     {
       "name": "anomaly signals",
@@ -137,7 +137,7 @@
       ],
       "input_rows": null,
       "output_rows": 30,
-      "duration_ms": 6968.0
+      "duration_ms": 4046.0
     },
     {
       "name": "chunk generation",
@@ -149,7 +149,7 @@
       ],
       "input_rows": 51,
       "output_rows": 1159,
-      "duration_ms": 14883.7
+      "duration_ms": 9773.9
     },
     {
       "name": "RDD vs DataFrame benchmark",
@@ -164,7 +164,33 @@
       ],
       "input_rows": 1159,
       "output_rows": 2751,
-      "duration_ms": 27300.9
+      "duration_ms": 17422.6
+    },
+    {
+      "name": "teacher-style RDD + DataFrame checks",
+      "operations": [
+        "textFile",
+        "first",
+        "filter",
+        "map",
+        "reduceByKey",
+        "count",
+        "collect",
+        "take",
+        "toDebugString",
+        "cache",
+        "read.csv",
+        "groupBy",
+        "agg",
+        "orderBy",
+        "explain",
+        "show",
+        "sql",
+        "toDF"
+      ],
+      "input_rows": 50,
+      "output_rows": 37,
+      "duration_ms": 33399.3
     }
   ],
   "top_terms": [
@@ -4234,15 +4260,83 @@
     }
   ],
   "benchmark": {
-    "rdd_ms": 10867.9,
-    "dataframe_ms": 531.8,
+    "rdd_ms": 7009.9,
+    "dataframe_ms": 492.4,
     "rdd_terms": 2751,
     "dataframe_terms": 2751,
     "match": true,
-    "speedup_dataframe_vs_rdd": 20.44,
+    "speedup_dataframe_vs_rdd": 14.24,
     "fastest": "DataFrame",
     "note": "Same Parquet rows; RDD uses reduceByKey, DataFrame uses groupBy().count().",
-    "fastest_ms": 531.8
+    "fastest_ms": 492.4
+  },
+  "teacher_checks": {
+    "threshold_tokens": 500,
+    "csv_path": "D:\\Anomaly Engine\\data\\curated\\latest\\section_stats.csv",
+    "rdd": {
+      "input_partitions": 8,
+      "header": "ticker,section_type,tokens,sentences,characters,unique_terms,entropy,normalised_entropy",
+      "low_detail_sections": 37,
+      "by_ticker": [
+        [
+          "AAPL",
+          18
+        ],
+        [
+          "MSFT",
+          19
+        ]
+      ],
+      "sample": [
+        [
+          "AAPL",
+          "item_1",
+          1207
+        ],
+        [
+          "AAPL",
+          "item_10",
+          59
+        ],
+        [
+          "AAPL",
+          "item_15",
+          928
+        ]
+      ],
+      "lineage": "(1) PythonRDD[101] at collect at D:\\Anomaly Engine\\services\\ingestion-us\\app\\spark\\teacher_demo.py:118 []\n |  MapPartitionsRDD[100] at mapPartitions at PythonRDD.scala:197 []\n |  ShuffledRDD[99] at partitionBy at DirectMethodHandleAccessor.java:103 []\n +-(8) PairwiseRDD[98] at reduceByKey at D:\\Anomaly Engine\\services\\ingestion-us\\app\\spark\\teacher_demo.py:117 []\n    |  PythonRDD[97] at reduceByKey at D:\\Anomaly Engine\\services\\ingestion-us\\app\\spark\\teacher_demo.py:117 []\n    |  D:\\Anomaly Engine\\data\\curated\\latest\\section_stats.csv MapPartitionsRDD[93] at textFile at DirectMethodHandleAccessor.java:103 []\n    |      CachedPartitions: 8; MemorySize: 2.2 KiB; DiskSize: 0.0 B\n    |  D:\\Anomaly Engine\\data\\curated\\latest\\section_stats.csv HadoopRDD[92] at textFile at DirectMethodHandleAccessor.java:103 []"
+    },
+    "dataframe": {
+      "input_partitions": 1,
+      "repartitioned_partitions": 4,
+      "low_detail_sections": 37,
+      "by_ticker": [
+        [
+          "AAPL",
+          18
+        ],
+        [
+          "MSFT",
+          19
+        ]
+      ],
+      "sql": [
+        {
+          "ticker": "MSFT",
+          "sections": 19,
+          "avg_tokens": 233.53,
+          "low_detail_sections": 19
+        },
+        {
+          "ticker": "AAPL",
+          "sections": 31,
+          "avg_tokens": 961.13,
+          "low_detail_sections": 18
+        }
+      ],
+      "round_trip_rows": 50
+    },
+    "match": true
   },
   "artifacts": [
     {
@@ -4286,6 +4380,13 @@
       "path": "D:\\Anomaly Engine\\data\\curated\\latest\\section_stats.json",
       "bytes": 35618,
       "rows": 50
+    },
+    {
+      "name": "teacher_checks.json",
+      "format": "json",
+      "path": "D:\\Anomaly Engine\\data\\curated\\latest\\teacher_checks.json",
+      "bytes": 2099,
+      "rows": 5
     },
     {
       "name": "features.json",
