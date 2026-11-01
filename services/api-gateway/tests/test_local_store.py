@@ -7,6 +7,8 @@ dashboard depends on.
 
 from __future__ import annotations
 
+import json
+
 from app.clients.local_store import LocalStore
 
 
@@ -28,7 +30,7 @@ def test_summary_counts():
 def test_companies_and_filings():
     local = store()
     companies = local.list_companies()
-    assert {company["ticker"] for company in companies} == {"AAPL", "MSFT"}
+    assert {"AAPL", "MSFT"} <= {company["ticker"] for company in companies}
 
     aapl = local.get_company_by_ticker("aapl")
     assert aapl and aapl["ticker"] == "AAPL"
@@ -37,6 +39,37 @@ def test_companies_and_filings():
     filings = local.get_filings_by_company(aapl["id"])
     assert len(filings) == 3
     assert {filing["filing_type"] for filing in filings} == {"10-K", "10-Q"}
+
+
+def test_seed_catalog_has_five_shared_companies():
+    companies = LocalStore().list_companies()
+    assert {company["ticker"] for company in companies} >= {
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "NVDA",
+        "GOOGL",
+    }
+
+
+def test_curated_company_overrides_seed_without_duplicate_ticker(tmp_path):
+    root = tmp_path / "curated" / "latest"
+    root.mkdir(parents=True)
+    (tmp_path / "seed" / "companies.json").parent.mkdir(parents=True)
+    (tmp_path / "seed" / "companies.json").write_text(
+        json.dumps([{"ticker": "AMZN", "name": "Amazon.com, Inc."}]),
+        encoding="utf-8",
+    )
+    (tmp_path / "ingestion").mkdir()
+    (tmp_path / "ingestion" / "companies.json").write_text("[]", encoding="utf-8")
+    (root / "companies.json").write_text(
+        json.dumps([{"ticker": "AMZN", "name": "Amazon Incorporated"}]),
+        encoding="utf-8",
+    )
+    local = LocalStore(root)
+    companies = local.list_companies()
+    assert [company["ticker"] for company in companies].count("AMZN") == 1
+    assert local.get_company_by_ticker("amzn")["name"] == "Amazon Incorporated"
 
 
 def test_chunks_anomalies_and_features():

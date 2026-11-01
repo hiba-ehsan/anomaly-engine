@@ -55,6 +55,8 @@ logs/
 hs_err_pid*
 replay_pid*
 data/curated/runs/
+data/ingestion/
+data/raw/filings/
 .vercel/
 
 # --- Spark output metadata ---

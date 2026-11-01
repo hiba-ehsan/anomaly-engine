@@ -1,0 +1,47 @@
+[
+  {
+    "id": "cfaf2e51fb4f9f20269809770c1cb287",
+    "ticker": "AAPL",
+    "name": "Apple Inc.",
+    "cik": "0000320193",
+    "jurisdiction": "US",
+    "sector": "Technology",
+    "created_at": "2026-11-01T00:00:00+00:00"
+  },
+  {
+    "id": "8b8b115798ea6b0d5f3226efbc1dc1bb",
+    "ticker": "AMZN",
+    "name": "Amazon.com, Inc.",
+    "cik": "0001018724",
+    "jurisdiction": "US",
+    "sector": "Consumer Discretionary",
+    "created_at": "2026-11-01T00:00:00+00:00"
+  },
+  {
+    "id": "0bd68b02fc51e379fec70e456fe9c999",
+    "ticker": "GOOGL",
+    "name": "Alphabet Inc.",
+    "cik": "0001652044",
+    "jurisdiction": "US",
+    "sector": "Communication Services",
+    "created_at": "2026-11-01T00:00:00+00:00"
+  },
+  {
+    "id": "7bd1283e8fc7db87ea19650da221f6d5",
+    "ticker": "MSFT",
+    "name": "Microsoft Corporation",
+    "cik": "0000789019",
+    "jurisdiction": "US",
+    "sector": "Technology",
+    "created_at": "2026-11-01T00:00:00+00:00"
+  },
+  {
+    "id": "a2ae4000ebe2b356c9f4bace1fd21287",
+    "ticker": "NVDA",
+    "name": "NVIDIA Corporation",
+    "cik": "0001045810",
+    "jurisdiction": "US",
+    "sector": "Technology",
+    "created_at": "2026-11-01T00:00:00+00:00"
+  }
+]

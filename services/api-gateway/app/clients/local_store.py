@@ -8,6 +8,7 @@ Spark run is visible to the API immediately.
 from __future__ import annotations
 
 import json
+import logging
 import os
 from pathlib import Path
 from typing import Any, Optional
@@ -15,6 +16,7 @@ from typing import Any, Optional
 
 _PARENTS = Path(__file__).resolve().parents
 REPO_ROOT = _PARENTS[4] if len(_PARENTS) > 4 else _PARENTS[2]
+logger = logging.getLogger(__name__)
 
 
 def data_dir() -> Path:
@@ -28,6 +30,7 @@ def curated_dir() -> Path:
 class LocalStore:
     def __init__(self, root: Optional[Path] = None):
         self.root = Path(root) if root else curated_dir()
+        self.data_root = self.root.parents[1] if root else data_dir()
         self._cache: dict[str, tuple[float, Any]] = {}
 
     # ---------------------------------------------------------------- loading
@@ -54,13 +57,46 @@ class LocalStore:
         return self._load("run_summary.json")
 
     # ---------------------------------------------------------------- company
+    def _load_company_source(self, path: Path) -> list[dict]:
+        if not path.exists():
+            return []
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            logger.error("Could not read company catalog %s: %s", path, exc)
+            raise
+        if not isinstance(payload, list) or any(
+            not isinstance(company, dict) or not company.get("ticker")
+            for company in payload
+        ):
+            error = ValueError(f"Company catalog must be a list of companies: {path}")
+            logger.error("%s", error)
+            raise error
+        return payload
+
+    def _companies(self) -> list[dict]:
+        sources = (
+            self._load_company_source(self.data_root / "seed" / "companies.json"),
+            self._load_company_source(
+                self.data_root / "ingestion" / "companies.json"
+            ),
+            self._load("companies.json", []) or [],
+        )
+        merged: dict[str, dict] = {}
+        for companies in sources:
+            for company in companies:
+                ticker = str(company.get("ticker", "")).upper()
+                if ticker:
+                    merged[ticker] = company
+        return sorted(merged.values(), key=lambda company: company["ticker"])
+
     def list_companies(self, limit: int = 100, offset: int = 0) -> list[dict]:
-        companies = self._load("companies.json", []) or []
+        companies = self._companies()
         return companies[offset : offset + limit]
 
     def get_company_by_ticker(self, ticker: str) -> Optional[dict]:
         ticker = ticker.upper()
-        for company in self._load("companies.json", []) or []:
+        for company in self._companies():
             if str(company.get("ticker", "")).upper() == ticker:
                 return company
         return None
