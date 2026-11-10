@@ -1,4 +1,4 @@
-#! task-queue-deployment.yaml
+﻿#! task-queue-deployment.yaml
 # Generated code, do not edit
 apiVersion: apps/v1
 kind: Deployment
@@ -43,4 +43,4 @@ spec:
             volumes:
                 - name: app-packages
                   hostPath:
-                    path: C:\Codes\Anomaly Engine\packages
+                    path: /run/desktop/mnt/host/d/Anomaly Engine\packages

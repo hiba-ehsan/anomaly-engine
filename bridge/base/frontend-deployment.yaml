@@ -1,4 +1,4 @@
-#! frontend-deployment.yaml
+﻿#! frontend-deployment.yaml
 # Generated code, do not edit
 apiVersion: apps/v1
 kind: Deployment
@@ -39,4 +39,4 @@ spec:
             volumes:
                 - name: app-src
                   hostPath:
-                    path: C:\Codes\Anomaly Engine\services\frontend\src
+                    path: /run/desktop/mnt/host/d/Anomaly Engine\services\frontend\src

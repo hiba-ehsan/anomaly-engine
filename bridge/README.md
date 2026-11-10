@@ -149,12 +149,13 @@ Docker is stopped. It currently succeeds on this repo.
   like `anomalyengine-api-gateway`. With Docker Desktop they normally resolve,
   but if a pod reports `ErrImageNeverPull` or `ImagePullBackOff`, build the
   images locally with `docker compose build` first.
-- **The `hostPath` volumes point at Windows paths** (`C:\Codes\Anomaly Engine\...`)
-  that came from an older checkout. They are development bind mounts inherited
-  from compose. On Docker Desktop's Linux node those paths do not exist, so the
-  pods will fail to mount unless you repoint them (typically under
-  `/run/desktop/mnt/host/d/...`) or remove them. They are not needed in
-  production because the Dockerfiles already copy the code into the image.
+- **The `hostPath` volumes use the Docker Desktop host mount.** They read
+  `/run/desktop/mnt/host/d/Anomaly Engine/...`, which is where Docker Desktop's
+  Linux node sees the `D:` drive. If you clone the repo somewhere else, that
+  prefix has to change to match your drive and folder. These mounts exist only
+  because the images are built from each service folder, so `packages/` is not
+  baked into the image. In production you would copy the shared package into the
+  image instead and drop the mounts.
 
 If the goal is just to show that the project can be described as containers,
 `docker compose up` already does that and is the path that runs today.

@@ -1,4 +1,4 @@
-#! ingestion-us-deployment.yaml
+﻿#! ingestion-us-deployment.yaml
 # Generated code, do not edit
 apiVersion: apps/v1
 kind: Deployment
@@ -48,7 +48,7 @@ spec:
             volumes:
                 - name: app-packages
                   hostPath:
-                    path: C:\Codes\Anomaly Engine\packages
+                    path: /run/desktop/mnt/host/d/Anomaly Engine\packages
                 - name: app-app
                   hostPath:
-                    path: C:\Codes\Anomaly Engine\services\ingestion-us\app
+                    path: /run/desktop/mnt/host/d/Anomaly Engine\services\ingestion-us\app
