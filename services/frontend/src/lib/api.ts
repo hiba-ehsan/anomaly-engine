@@ -1,5 +1,6 @@
 import type {
   Company,
+  IngestJob,
   Filing,
   FilingChunk,
   SentimentScore,
@@ -12,7 +13,7 @@ import type {
   CandlestickData,
   AnomalyMarker,
 } from '@/types';
-import { apiUrl } from '@/lib/config';
+import { API_ORIGIN, apiUrl } from '@/lib/config';
 
 class ApiError extends Error {
   constructor(public status: number, message: string) {
@@ -22,10 +23,19 @@ class ApiError extends Error {
 }
 
 async function fetchJson<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(apiUrl(path), {
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    ...options,
-  });
+  let res: Response;
+  try {
+    res = await fetch(apiUrl(path), {
+      headers: { 'Content-Type': 'application/json', ...options?.headers },
+      ...options,
+    });
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new ApiError(
+      0,
+      `Cannot reach the API at ${API_ORIGIN}. Check that the gateway is running and reachable, then retry. (${detail})`
+    );
+  }
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
@@ -44,10 +54,12 @@ export const api = {
       ),
     get: (ticker: string) => fetchJson<Company>(`/companies/${ticker}`),
     ingest: (ticker: string, data: { filing_types?: string[]; max_filings?: number; start_date?: string; end_date?: string }) =>
-      fetchJson<{ job_id?: string; filing_job?: any; price_job?: any }>(`/companies/${ticker}/ingest`, {
+      fetchJson<IngestJob>(`/companies/${encodeURIComponent(ticker)}/ingest`, {
         method: 'POST',
         body: JSON.stringify(data),
       }),
+    ingestStatus: (jobId: string) =>
+      fetchJson<IngestJob>(`/companies/ingest/status/${encodeURIComponent(jobId)}`),
   },
 
   // Filings
@@ -124,6 +136,7 @@ export const api = {
 // Re-export types
 export type {
   Company,
+  IngestJob,
   Filing,
   FilingChunk,
   SentimentScore,

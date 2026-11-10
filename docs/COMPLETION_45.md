@@ -1,8 +1,12 @@
 # Mid-term 45% Completion Matrix
 
+> Historical snapshot from 2026-10-28. The current status and numbers are in
+> `docs/defense.md` (run `20261102T012655Z`: 5 companies, 11 filings, 30 flags,
+> 7.76x benchmark). The percentages below describe the earlier five-filing slice.
+
 **Milestone:** working vertical slice, demonstrable end-to-end.
 **Date:** 2026-10-28
-**Pipeline run:** `20261029T164937Z` (CLI, 12 stages, 5 filings)
+**Pipeline run:** `20261029T175940Z` (CLI, 12 stages, 5 filings, `local[4]`)
 
 ## Definition used for 45%
 
@@ -16,7 +20,7 @@ plus a repeatable test suite and deploy configuration.
 | --- | --- | --- | --- | --- |
 | 1 | Spark core | RDD pipeline with 15+ explicit transformations/actions | ✅ Done | `run_summary.json → stages` (12 stages) |
 | 2 | Spark core | Broadcast stopwords + accumulators | ✅ Done | `pipeline.py` |
-| 3 | Spark core | RDD vs DataFrame benchmark on same data | ✅ Done | `match: true`, 14.2× |
+| 3 | Spark core | RDD vs DataFrame benchmark on same data | ✅ Done | `match: true`, 23.8× |
 | 4 | Data | 5 real SEC filings (AAPL/MSFT 10-K/10-Q) | ✅ Done | `data/raw/filings` |
 | 5 | Data | Section/sentence/chunk curation | ✅ Done | 51 sections, 2,252 sentences, 1,159 chunks |
 | 6 | Data | Anomaly + temporal + cross-section features | ✅ Done | 30 signals, 20 + 20 features |
@@ -34,8 +38,8 @@ plus a repeatable test suite and deploy configuration.
 | 18 | Tests | Opt-in live RDD smoke test | ⚠️ Environment-limited | Full CLI/API Spark run passed; smoke test is skipped by default and needs JVM memory headroom |
 | 19 | Docs | RDD pipeline deep-dive | ✅ Done | `docs/PYSPARK_RDD_PIPELINE.md` |
 | 20 | Docs | Deployment runbook | ✅ Done | `docs/DEPLOYMENT.md` |
-| 21 | Docs | Line-by-line classroom command mapping | ✅ Done | `docs/PYSPARK_TEACHING_ALIGNMENT.md` |
-| 22 | Spark core | Classroom `textFile`/`reduceByKey` + `read.csv`/`spark.sql` commands as stage 12 | ✅ Done | `teacher_checks.json` (`match: true`) |
+| 21 | Docs | PySpark API reference (where each operation runs) | ✅ Done | `docs/PYSPARK_API_REFERENCE.md` |
+| 22 | Spark core | RDD/DataFrame parity analysis as stage 12 | ✅ Done | `section_analysis.json` (`match: true`) |
 
 ## Verified commands
 
@@ -77,9 +81,9 @@ memory.
 1. `Invoke-RestMethod http://127.0.0.1:8000/health` — show `ingestion-us: true`,
    `data_source: local-artifacts`, run id.
 2. Open `http://localhost:3000/pipeline` — show 12 RDD stages, operation badges,
-   counts, 14.2× benchmark with `match: true`.
+   counts, 23.8× benchmark with `match: true`.
 3. Open the dashboard — AAPL/MSFT filings, anomaly cards, price chart.
 4. Run `POST /api/v1/pipeline/run {"wait": true}` — show a fresh run id and new
    artifact sizes without restarting the API.
 5. Show `docs/PYSPARK_RDD_PIPELINE.md` stage/API table,
-   `docs/PYSPARK_TEACHING_ALIGNMENT.md`, and the test output.
+   `docs/PYSPARK_API_REFERENCE.md`, and the test output.

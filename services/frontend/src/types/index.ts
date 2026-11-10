@@ -8,6 +8,19 @@ export interface Company {
   created_at: string;
 }
 
+export interface IngestJob {
+  job_id: string;
+  status: 'queued' | 'running' | 'completed' | 'failed';
+  ticker: string;
+  filings_found: number;
+  filings_ingested: number;
+  error?: string | null;
+  warnings?: string[];
+  queued_at?: string | null;
+  started_at?: string | null;
+  finished_at?: string | null;
+}
+
 export interface Filing {
   id: string;
   company_id: string;
@@ -70,6 +83,8 @@ export interface AnomalySignal {
     key_sentences?: string[];
   };
   detected_at: string;
+  /** Date of the filing this flag refers to, when the backend supplies it. */
+  filing_date?: string;
 }
 
 export interface PriceHistory {

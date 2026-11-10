@@ -1,5 +1,7 @@
+import asyncio
 import importlib.util
 import json
+import logging
 import os
 import shutil
 import subprocess
@@ -7,21 +9,42 @@ import sys
 import threading
 import time
 import uuid
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from .models import IngestRequest, IngestStatus
+from .models import IngestRequest
 from .edgar_client import EdgarClient
+from .ingest_jobs import IngestJobStore
 from .xbrl_parser import extract_sections, clean_html
 from .chunker import chunk_sections
 from .storage import Storage, curated_dir, data_dir
 
-app = FastAPI(title="Ingestion US (SEC EDGAR + PySpark RDD)", version="0.2.0")
+edgar = EdgarClient()
+storage = Storage()
+ingest_jobs = IngestJobStore()
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    # Close the shared SEC HTTP client when the service stops.  Recent FastAPI
+    # releases no longer expose add_event_handler(), so lifespan is the portable
+    # way to run shutdown hooks.
+    yield
+    await edgar.close()
+
+
+app = FastAPI(
+    title="Ingestion US (SEC EDGAR + PySpark RDD)",
+    version="0.2.0",
+    lifespan=lifespan,
+)
+logger = logging.getLogger(__name__)
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,10 +53,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-edgar = EdgarClient()
-storage = Storage()
-jobs: dict[str, IngestStatus] = {}
 
 # Spark jobs are process-local (single-container demo). The lock guarantees one
 # pipeline at a time.  The pipeline itself runs in a child process so the JVM,
@@ -62,9 +81,8 @@ async def health():
     }
 
 
-# --------------------------------------------------------------------------
+
 # PySpark RDD pipeline
-# --------------------------------------------------------------------------
 
 
 def _run_spark_job(job_id: str, tickers: Optional[list[str]]) -> None:
@@ -193,66 +211,162 @@ async def spark_raw():
 
 
 # --------------------------------------------------------------------------
-# Legacy Supabase ingest (kept available when SUPABASE_* is configured)
+# SEC company ingestion
 # --------------------------------------------------------------------------
 
 
-@app.post("/ingest/company")
-async def ingest_company(req: IngestRequest):
-    if not storage.enabled:
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                "Supabase is not configured. Use POST /spark/run for the local "
-                "Spark pipeline, or configure SUPABASE_URL/SUPABASE_SERVICE_KEY."
-            ),
+def _parse_filing_document(html: str) -> tuple[dict, str]:
+    """CPU-bound HTML parsing, executed in a worker thread."""
+    return extract_sections(html), clean_html(html)
+
+
+async def _run_company_ingest(job_id: str, req: IngestRequest) -> None:
+    storage_warnings: list[str] = []
+    ingest_jobs.update(
+        job_id,
+        status="running",
+        started_at=datetime.now(timezone.utc).isoformat(),
+    )
+    try:
+        company = await edgar.resolve_company(req.ticker)
+        if company is None:
+            raise ValueError(f"Unknown SEC ticker: {req.ticker.upper()}")
+        if not company.cik:
+            raise ValueError(f"SEC company {company.ticker} has no CIK")
+
+        # The local snapshot is the source of truth for the demo and the Spark
+        # pipeline.  Supabase is an optional mirror: a missing table, RLS rule,
+        # or network hiccup must not throw away a filing that was fetched.
+        company_id = storage.persist_local_company(company)
+        if storage.enabled:
+            try:
+                company_id = await storage.upsert_company(company)
+            except Exception as exc:
+                logger.warning(
+                    "Supabase company copy failed for %s: %s",
+                    company.ticker,
+                    exc,
+                )
+                storage_warnings.append(
+                    f"Saved company locally, but the Supabase copy failed: {exc}"
+                )
+        filings = await edgar.get_filings(
+            company.cik, req.filing_types, req.max_filings
+        )
+        ingest_jobs.update(job_id, filings_found=len(filings))
+        if not filings:
+            raise ValueError(
+                f"No matching SEC filings found for {company.ticker} "
+                f"({', '.join(req.filing_types)})"
+            )
+
+        errors = []
+        filings_ingested = 0
+        for filing in filings:
+            try:
+                if not filing.source_url:
+                    raise ValueError("SEC filing has no source URL")
+                html = await edgar.fetch_filing_html(filing.source_url)
+                if not html.strip():
+                    raise ValueError("SEC returned an empty filing document")
+
+                # Parsing a 400 kB filing is CPU-heavy.  Run it in a worker
+                # thread so the service keeps answering /health and status polls
+                # while a company is being downloaded (otherwise the dashboard
+                # shows "backend not reachable" during every ingest).
+                sections, clean_text = await asyncio.to_thread(
+                    _parse_filing_document, html
+                )
+                await asyncio.to_thread(
+                    storage.persist_local_filing,
+                    company,
+                    filing,
+                    sections,
+                    clean_text,
+                )
+                if storage.enabled:
+                    try:
+                        filing_id = await storage.upsert_filing(
+                            company_id, filing, sections, clean_text
+                        )
+                        await storage.upsert_chunks(
+                            filing_id,
+                            await asyncio.to_thread(chunk_sections, sections),
+                        )
+                    except Exception as exc:
+                        logger.warning(
+                            "Supabase filing copy failed for %s %s: %s",
+                            company.ticker,
+                            filing.accession_number,
+                            exc,
+                        )
+                        storage_warnings.append(
+                            "Saved filing locally, but the Supabase copy "
+                            f"failed for {filing.filing_type} "
+                            f"{filing.filing_date}: {exc}"
+                        )
+                filings_ingested += 1
+                ingest_jobs.update(
+                    job_id,
+                    filings_ingested=filings_ingested,
+                )
+            except Exception as exc:
+                logger.exception(
+                    "Could not ingest %s %s filing %s",
+                    company.ticker,
+                    filing.filing_type,
+                    filing.accession_number,
+                )
+                errors.append(
+                    f"{filing.filing_type} {filing.filing_date}: "
+                    f"{type(exc).__name__}: {exc}"
+                )
+
+        if errors:
+            raise RuntimeError(
+                f"Failed to ingest {len(errors)} of {len(filings)} filings: "
+                + "; ".join(errors)
+            )
+
+        ingest_jobs.update(
+            job_id,
+            status="completed",
+            warnings=storage_warnings,
+            finished_at=datetime.now(timezone.utc).isoformat(),
+        )
+    except Exception as exc:
+        logger.exception("Company ingestion job %s failed", job_id)
+        ingest_jobs.update(
+            job_id,
+            status="failed",
+            error=f"{type(exc).__name__}: {exc}",
+            warnings=storage_warnings,
+            finished_at=datetime.now(timezone.utc).isoformat(),
         )
 
-    job_id = str(uuid.uuid4())
-    status = IngestStatus(job_id=job_id, status="pending", ticker=req.ticker)
-    jobs[job_id] = status
 
-    company = await edgar.resolve_company(req.ticker)
-    if not company:
-        raise HTTPException(status_code=404, detail=f"Company {req.ticker} not found")
-
-    company_id = await storage.upsert_company(company)
-    status.status = "running"
-
-    filings = await edgar.get_filings(company.cik, req.filing_types, req.max_filings)
-    status.filings_found = len(filings)
-
-    for filing in filings:
-        try:
-            html = await edgar.fetch_filing_html(filing.source_url)
-            if not html:
-                continue
-
-            sections = extract_sections(html)
-            clean = clean_html(html)
-            filing_id = await storage.upsert_filing(company_id, filing, sections, clean)
-
-            all_chunks = chunk_sections(sections)
-            await storage.upsert_chunks(filing_id, all_chunks)
-            status.filings_ingested += 1
-        except Exception as e:
-            status.error = str(e)
-
-    status.status = "completed"
-    return {"job_id": job_id, "status": status.model_dump()}
+@app.post("/ingest/company", status_code=202)
+async def ingest_company(req: IngestRequest, background_tasks: BackgroundTasks):
+    status = ingest_jobs.create(req.ticker)
+    background_tasks.add_task(_run_company_ingest, status.job_id, req)
+    return status.model_dump(mode="json")
 
 
 @app.get("/ingest/status/{job_id}")
 async def ingest_status(job_id: str):
-    if job_id not in jobs:
+    status = ingest_jobs.get(job_id)
+    if status is None:
         raise HTTPException(status_code=404, detail="Job not found")
-    return jobs[job_id].model_dump()
+    return status.model_dump(mode="json")
 
 
 @app.get("/ingest/companies")
 async def list_companies():
-    """Local curated companies first, then Supabase when configured."""
-    local_path = curated_dir() / "companies.json"
-    if local_path.exists():
-        return {"companies": json.loads(local_path.read_text(encoding="utf-8"))}
-    return {"companies": []}
+    """Return the shared seed, fetched, and curated company catalog."""
+    try:
+        return {"companies": storage.list_local_companies()}
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        logger.exception("Could not read the shared company catalog")
+        raise HTTPException(
+            status_code=500, detail=f"Could not read company catalog: {exc}"
+        ) from exc

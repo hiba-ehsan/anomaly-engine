@@ -1,6 +1,7 @@
-"""SparkSession factory tuned for a single-node demo / Railway container."""
+"""Builds one small local Spark session for a job."""
 
 from __future__ import annotations
+from pyspark.sql import SparkSession
 
 import importlib.util
 import os
@@ -9,19 +10,16 @@ from pathlib import Path
 
 
 def _prepare_environment() -> None:
-    # Make the worker use exactly the same interpreter as the driver.  Inherited
-    # PYSPARK_* variables are a common source of "Python worker exited" errors.
     os.environ["PYSPARK_PYTHON"] = sys.executable
     os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
     os.environ.setdefault("SPARK_LOCAL_IP", "127.0.0.1")
 
-    # Avoid pyspark's expensive/incorrect interpreter probing at import time.
+    # point SPARK_HOME straight at the installed pyspark, faster and safer
     spec = importlib.util.find_spec("pyspark")
     if spec and spec.submodule_search_locations:
         os.environ.setdefault("SPARK_HOME", str(list(spec.submodule_search_locations)[0]))
 
-    # Hadoop's local filesystem implementation needs winutils.exe on Windows.
-    # The repo ships a pinned copy under infra/hadoop for reproducible demos.
+    # Hadoop on Windows needs winutils.exe; the repo keeps a copy in infra/hadoop
     parents = Path(__file__).resolve().parents
     repo_root = parents[4] if len(parents) > 4 else parents[2]
     hadoop_home = Path(os.getenv("HADOOP_HOME", repo_root / "infra" / "hadoop"))
@@ -33,22 +31,16 @@ def _prepare_environment() -> None:
 
 _prepare_environment()
 
-from pyspark.sql import SparkSession  # noqa: E402
-
 
 def build_session(app_name: str = "anomaly-engine-sec-rdd") -> SparkSession:
-    """Create (or reuse) a local Spark session.
-
-    Defaults are deliberately small.  The demo corpus is only a few megabytes,
-    so a 1 GiB heap and two slots are plenty; using 3 GiB / local[4] made the
-    JVM exhaust *native* memory on an 8 GB laptop (see hs_err_pid*.log).
-    Override with SPARK_MASTER / SPARK_DRIVER_MEMORY on a larger host.
-    """
+    # create (or reuse) the local session. The defaults are small on purpose:
+    # the corpus is a few MB, and bigger settings ran this laptop out of memory.
+    # Override with SPARK_MASTER / SPARK_DRIVER_MEMORY on a larger machine.
     master = os.getenv("SPARK_MASTER", "local[1]")
     driver_memory = os.getenv("SPARK_DRIVER_MEMORY", "512m")
     parallelism = os.getenv("SPARK_PARALLELISM", "1")
 
-    # Keep JVM native allocations (compiler, metaspace, thread stacks) small.
+    # keep the JVM's own memory small too (metaspace, compiler, threads)
     java_options = os.getenv(
         "SPARK_DRIVER_JAVA_OPTIONS",
         "-XX:MaxMetaspaceSize=160m -XX:ReservedCodeCacheSize=48m "

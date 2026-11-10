@@ -1,6 +1,6 @@
 'use client';
 
-import { createChart, ColorType, IChartApi, ISeriesApi, Time } from 'lightweight-charts';
+import { createChart, ColorType, IChartApi, ISeriesApi } from 'lightweight-charts';
 import { pricesToCandlesticks, anomaliesToMarkers } from '@/lib/hooks';
 import { useEffect, useRef, useState } from 'react';
 
@@ -15,45 +15,40 @@ export function PriceChart({ prices, anomalies = [], height = 400, width }: Pric
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
-  const [chartSize, setChartSize] = useState({ width: 0, height });
+  const [, setChartSize] = useState({ width: 0, height });
 
   useEffect(() => {
     if (!containerRef.current) return;
 
+    // Financial + Kinetic Palette
     const chart = createChart(containerRef.current, {
       width: width || containerRef.current.clientWidth,
       height,
       layout: {
-        background: { type: ColorType.Solid, color: '#030712' },
-        textColor: '#d1d4dc',
+        background: { type: ColorType.Solid, color: '#07090e' },
+        textColor: '#c9ced8',
         fontSize: 11,
       },
       grid: {
-        vertLines: { color: '#1f2937' },
-        horzLines: { color: '#1f2937' },
+        vertLines: { color: '#1a1f2c' },
+        horzLines: { color: '#1a1f2c' },
       },
       crosshair: {
         mode: 1,
       },
       rightPriceScale: {
-        borderColor: '#1f2937',
-        borderVisible: false,
+        borderColor: '#303139',
+        borderVisible: true,
       },
       timeScale: {
-        borderColor: '#1f2937',
-        borderVisible: false,
+        borderColor: '#303139',
+        borderVisible: true,
         timeVisible: true,
         secondsVisible: false,
       },
       handleScale: {
-        axisPressedMouseMove: {
-          time: true,
-          price: true,
-        },
-        axisDoubleClickReset: {
-          time: true,
-          price: true,
-        },
+        axisPressedMouseMove: { time: true, price: true },
+        axisDoubleClickReset: { time: true, price: true },
       },
       handleScroll: {
         mouseWheel: true,
@@ -64,34 +59,42 @@ export function PriceChart({ prices, anomalies = [], height = 400, width }: Pric
     });
 
     const candleSeries = chart.addCandlestickSeries({
-      upColor: '#22c55e',
-      downColor: '#ef4444',
-      borderUpColor: '#22c55e',
-      borderDownColor: '#ef4444',
-      wickUpColor: '#22c55e',
-      wickDownColor: '#ef4444',
+      upColor: '#4ade80',
+      downColor: '#f87171',
+      borderUpColor: '#4ade80',
+      borderDownColor: '#f87171',
+      wickUpColor: '#4ade80',
+      wickDownColor: '#f87171',
     });
 
     chartRef.current = chart;
     seriesRef.current = candleSeries;
     setChartSize({ width: width || containerRef.current.clientWidth, height });
 
-    // Set data
-    const candlesticks = pricesToCandlesticks(prices);
-    candleSeries.setData(candlesticks as any);
+    try {
+      // 1. Process candlesticks: ensure strict ascending time and no duplicates
+      const candlesticks = pricesToCandlesticks(prices);
+      if (candlesticks.length > 0) {
+        candleSeries.setData(candlesticks as any);
+      }
 
-    // Add anomaly markers
-    if (anomalies.length > 0) {
-      const markers = anomaliesToMarkers(anomalies);
-      candleSeries.setMarkers(markers as any);
+      // 2. Process markers: strictly ascending time order (required by Lightweight Charts)
+      if (anomalies && anomalies.length > 0) {
+        const markers = anomaliesToMarkers(anomalies);
+        if (markers.length > 0) {
+          candleSeries.setMarkers(markers as any);
+        }
+      }
+    } catch (chartErr) {
+      console.warn('Lightweight charts data binding error safely handled:', chartErr);
     }
 
     // Handle resize
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        chart.applyOptions({ width, height });
-        setChartSize({ width, height });
+        const { width: currentWidth, height: currentHeight } = entry.contentRect;
+        chart.applyOptions({ width: currentWidth, height: currentHeight });
+        setChartSize({ width: currentWidth, height: currentHeight });
       }
     });
 
@@ -109,7 +112,7 @@ export function PriceChart({ prices, anomalies = [], height = 400, width }: Pric
     <div
       ref={containerRef}
       style={{ width: width || '100%', height }}
-      className="rounded-lg border border-gray-800 bg-gray-950"
+      className="border border-line bg-ground"
     />
   );
 }

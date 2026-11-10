@@ -2,177 +2,250 @@
 
 import { useCompany, useFilings, useAnomalies, useMarketPrices } from '@/lib/hooks';
 import { Sidebar } from '@/components/ui/Sidebar';
+import { KineticTickerRibbon } from '@/components/ui/KineticTickerRibbon';
 import { api } from '@/lib/api';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { PriceChart } from '@/components/charts/PriceChart';
 
+function formatDate(value?: string | null): string {
+  if (!value) return '—';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString();
+}
+
 export default function CompanyDetailPage() {
   const params = useParams();
-  const ticker = params.ticker as string;
+  const ticker = (params.ticker as string).toUpperCase();
 
-  const { data: companyData, isLoading: companyLoading } = useCompany(ticker);
-  const { data: filingsData, isLoading: filingsLoading } = useFilings(ticker);
-  const { data: anomaliesData } = useAnomalies(ticker ? { ticker, minScore: 0.3 } : null);
+  const { data: companyData, isLoading: companyLoading, mutate: mutateCompany } = useCompany(ticker);
+  const { data: filingsData, isLoading: filingsLoading, mutate: mutateFilings } = useFilings(ticker);
+  const { data: anomaliesData, mutate: mutateAnomalies } = useAnomalies(
+    ticker ? { ticker, minScore: 0.3 } : null
+  );
   const { data: pricesData } = useMarketPrices(ticker, 200);
 
-  const [action, setAction] = useState<'idle' | 'ingesting' | 'analyzing'>('idle');
+  const [action, setAction] = useState<'idle' | 'updating' | 'rebuilding'>('idle');
   const [actionMsg, setActionMsg] = useState<string | null>(null);
 
-  async function runAction(kind: 'ingest' | 'analyze') {
-    setAction(kind === 'ingest' ? 'ingesting' : 'analyzing');
-    setActionMsg('Starting...');
-    try {
-      if (kind === 'ingest') {
-        const job = await api.pipeline.run([ticker]);
-        setActionMsg(job?.job_id ? `Spark job ${String(job.job_id).slice(0, 8)} started` : 'Spark pipeline started');
-      } else {
-        const data = await api.anomalies.analyze(ticker);
-        setActionMsg(data?.message || 'Analysis complete');
+  async function refreshAll() {
+    await Promise.all([mutateCompany(), mutateFilings(), mutateAnomalies()]);
+  }
+
+  async function waitForPipeline(jobId: string) {
+    const deadline = Date.now() + 30 * 60 * 1000;
+    let job = await api.pipeline.status(jobId);
+    while (job.status === 'running' || job.status === 'queued') {
+      if (Date.now() > deadline) {
+        throw new Error(
+          'Rebuilding is taking longer than usual. Check the Data pipeline page in a few minutes.'
+        );
       }
-      setTimeout(() => { setAction('idle'); setActionMsg(null); }, 4000);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      job = await api.pipeline.status(jobId);
+    }
+    if (job.status === 'failed') {
+      throw new Error(job.error || 'The rebuild failed. Check the Data pipeline page for details.');
+    }
+    return job;
+  }
+
+  // Downloads the newest 10-K/10-Q filings from SEC EDGAR, then rebuilds every
+  // result so this company appears everywhere in the app (not just on this page).
+  async function updateFromSec() {
+    setAction('updating');
+    setActionMsg('Downloading the latest filings from the SEC…');
+    try {
+      const started = await api.companies.ingest(ticker, {
+        filing_types: ['10-K', '10-Q'],
+        max_filings: 10,
+      });
+      const deadline = Date.now() + 20 * 60 * 1000;
+      let job = started;
+      while (job.status !== 'completed') {
+        if (job.status === 'failed') {
+          throw new Error(job.error || 'The SEC download failed.');
+        }
+        if (Date.now() > deadline) {
+          throw new Error('The SEC download is taking longer than usual. Try again in a few minutes.');
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        job = await api.companies.ingestStatus(started.job_id);
+      }
+
+      setAction('rebuilding');
+      setActionMsg('Filings downloaded. Rebuilding all results…');
+      const pipeline = await api.pipeline.run(undefined, false);
+      await waitForPipeline(pipeline.job_id);
+      await refreshAll();
+      setActionMsg('Done. Filings and results are up to date.');
     } catch (e: any) {
-      setActionMsg(e.message || 'Failed');
-      setTimeout(() => { setAction('idle'); setActionMsg(null); }, 5000);
+      setActionMsg(e?.message || 'Something went wrong.');
+    } finally {
+      setAction('idle');
+      setTimeout(() => setActionMsg(null), 9000);
+    }
+  }
+
+  // Rebuilds results from the files already downloaded (no SEC request).
+  async function rebuildResults() {
+    setAction('rebuilding');
+    setActionMsg('Rebuilding all results…');
+    try {
+      const pipeline = await api.pipeline.run(undefined, false);
+      await waitForPipeline(pipeline.job_id);
+      await refreshAll();
+      setActionMsg('Done. Results rebuilt.');
+    } catch (e: any) {
+      setActionMsg(e?.message || 'The rebuild failed.');
+    } finally {
+      setAction('idle');
+      setTimeout(() => setActionMsg(null), 9000);
     }
   }
 
   if (companyLoading) {
     return (
-      <div className="flex h-screen bg-navy-950">
+      <div className="flex h-screen bg-ground text-ink">
         <Sidebar />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="w-12 h-12 rounded-full border-4 border-yellow-500 border-t-transparent animate-spin"></div>
+        <div className="flex-1 flex items-center justify-center gap-3 text-xs font-mono text-ink-dim">
+          <span className="w-2 h-2 rounded-full bg-accent animate-ping" />
+          <span>Loading {ticker}…</span>
         </div>
       </div>
     );
   }
 
   const company = companyData || null;
-  const filings = filingsData && filingsData.filings ? filingsData.filings.slice(0, 10) : [];
-  const anomalies = anomaliesData && anomaliesData.signals ? anomaliesData.signals.slice(0, 10) : [];
-  const anomalyTotal = anomaliesData && anomaliesData.total ? anomaliesData.total : 0;
-  const prices = pricesData && pricesData.prices ? pricesData.prices : [];
+  const filings = filingsData?.filings ? filingsData.filings.slice(0, 10) : [];
+  const allAnomalies = anomaliesData?.signals ?? [];
+  const anomalies = allAnomalies.slice(0, 10);
+  const anomalyTotal = anomaliesData?.total ?? allAnomalies.length;
+  const prices = pricesData?.prices ?? [];
+  const highRisk = allAnomalies.filter((a) => Number(a.score) > 0.7).length;
+  const latestFiling = filings
+    .map((filing) => filing.filing_date)
+    .filter(Boolean)
+    .sort()
+    .reverse()[0];
 
-  if (!company) {
-    return (
-      <div className="flex h-screen bg-navy-950">
-        <Sidebar />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-white mb-2">Company not found</h1>
-            <p className="text-navy-400 mb-6">Ticker &quot;{ticker}&quot; is not in the database yet.</p>
-            <button onClick={() => runAction('ingest')} disabled={action !== 'idle'} className="btn-primary">
-              {action === 'ingesting' ? 'Ingesting...' : 'Ingest from SEC EDGAR'}
-            </button>
-            {actionMsg && (
-              <p className="mt-4 text-xs font-mono text-navy-300 animate-fade-in">{actionMsg}</p>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const highRisk = anomalies.filter((a) => a.score > 0.7).length;
+  const companyMeta = [company?.sector, company?.jurisdiction].filter(Boolean).join(' · ');
 
   return (
-    <div className="flex h-screen bg-navy-950">
-      <Sidebar />
-      <div className="flex-1 overflow-auto">
-        <header className="sticky top-0 z-10 bg-navy-950/90 backdrop-blur border-b border-navy-800">
+    <div className="flex h-screen bg-ground text-ink overflow-hidden">
+      <div className="hidden lg:block shrink-0">
+        <Sidebar />
+      </div>
+
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        <KineticTickerRibbon />
+
+        <header className="sticky top-0 z-10 bg-ground-tint/95 backdrop-blur border-b border-line">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-4">
-              <Link href="/companies" className="inline-flex items-center gap-1.5 text-navy-300 hover:text-yellow-400 font-medium text-sm transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                </svg>
-                Companies
+              <Link
+                href="/companies"
+                className="text-ink-dim hover:text-accent font-mono text-xs flex items-center gap-1 uppercase transition-colors"
+              >
+                ← Back
               </Link>
               <div>
-                <h1 className="text-2xl font-bold text-white">
-                  {company.name} <span className="font-mono text-yellow-400">({company.ticker})</span>
+                <span className="text-[10px] font-mono text-accent uppercase tracking-widest block">
+                  Company · SEC ID {company?.cik || '—'}
+                </span>
+                <h1 className="text-2xl font-black uppercase tracking-tight text-white leading-none">
+                  {company?.name || ticker} <span className="font-mono text-value">({ticker})</span>
                 </h1>
-                <p className="text-navy-400 text-sm">{company.sector || 'Unknown sector'} · {company.jurisdiction}</p>
+                <p className="text-ink-dim text-xs font-mono mt-0.5">
+                  {companyMeta || 'Company details not loaded'}
+                </p>
               </div>
             </div>
+
             <div className="flex items-center gap-2.5">
               {actionMsg && (
-                <span className="text-xs text-navy-300 font-mono animate-fade-in">{actionMsg}</span>
+                <span className="text-xs text-value font-mono animate-fade-in">{actionMsg}</span>
               )}
               <button
-                onClick={() => runAction('ingest')}
+                onClick={updateFromSec}
                 disabled={action !== 'idle'}
-                className="btn-secondary !px-4 !py-2 !text-xs"
+                className="btn-secondary !px-4 !py-2 text-xs font-mono"
               >
-                {action === 'ingesting' ? 'Ingesting...' : 'Re-ingest'}
+                {action === 'updating' ? 'Downloading…' : 'Update from SEC'}
               </button>
               <button
-                onClick={() => runAction('analyze')}
+                onClick={rebuildResults}
                 disabled={action !== 'idle'}
-                className="btn-primary !px-4 !py-2 !text-xs"
+                className="btn-kinetic !px-4 !py-2 text-xs flex items-center gap-1"
               >
-                {action === 'analyzing' ? 'Analyzing...' : 'Analyze'}
+                <span>{action === 'rebuilding' ? 'Rebuilding…' : 'Rebuild results'}</span>
+                <span className="font-mono">→</span>
               </button>
             </div>
           </div>
         </header>
 
-        <main className="p-6 space-y-6">
+        <main className="flex-1 overflow-auto p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard title="Filings" value={filings.length} />
-            <StatCard title="Anomalies" value={anomalyTotal} variant={anomalyTotal > 0 ? 'danger' : 'default'} />
-            <StatCard title="High Risk" value={highRisk} variant={highRisk > 0 ? 'danger' : 'default'} />
-            <StatCard title="Price Points" value={prices.length} />
+            <StatCard title="Filings" value={filingsData?.filings?.length ?? '—'} accent="white" />
+            <StatCard title="Change flags" value={anomalyTotal} accent="value" />
+            <StatCard title="Big changes" value={highRisk} accent="red" />
+            <StatCard title="Latest filing" value={formatDate(latestFiling)} accent="green" />
           </div>
 
           {prices.length > 0 && (
             <div className="card p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-white">{ticker} Price</h3>
-                <span className="badge badge-yellow">1Y</span>
+              <div className="flex items-center justify-between mb-4 border-b border-line pb-3">
+                <div>
+                  <span className="text-[10px] font-mono text-ink-dim uppercase tracking-wider block">
+                    Stock price
+                  </span>
+                  <h3 className="text-base font-bold text-white uppercase tracking-tight">
+                    {ticker} price and flag dates
+                  </h3>
+                </div>
+                <span className="badge badge-yellow font-mono">{anomalies.length} flags marked</span>
               </div>
               <PriceChart prices={prices} anomalies={anomalies} height={300} />
             </div>
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Panel title="Recent Filings" actionHref={'/companies/' + ticker + '/filings'} actionLabel="View All">
+            <Panel
+              title="Filings"
+              actionHref={'/companies/' + ticker + '/filings'}
+              actionLabel="See all →"
+            >
               {filingsLoading ? (
-                <div className="flex justify-center py-10">
-                  <div className="w-6 h-6 rounded-full border-2 border-yellow-500 border-t-transparent animate-spin"></div>
+                <div className="flex justify-center py-10 text-xs font-mono text-ink-dim">
+                  Loading filings…
                 </div>
               ) : filings.length > 0 ? (
                 <div className="overflow-x-auto">
                   <table className="table">
                     <thead>
                       <tr>
-                        <th>Type</th>
-                        <th>Date</th>
+                        <th>Form</th>
+                        <th>Filed</th>
                         <th>Period</th>
-                        <th>Actions</th>
+                        <th className="text-right">Open</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filings.map((filing) => (
-                        <tr key={filing.id}>
+                        <tr key={filing.id} className="hover:bg-ground-tint transition-colors">
                           <td>
-                            <span className="badge badge-blue">{filing.filing_type}</span>
+                            <span className="badge badge-accent font-mono">{filing.filing_type || '—'}</span>
                           </td>
-                          <td className="text-navy-100">{new Date(filing.filing_date).toLocaleDateString()}</td>
-                          <td className="text-navy-400">
-                            {filing.period_of_report ? new Date(filing.period_of_report).toLocaleDateString() : 'N/A'}
-                          </td>
-                          <td>
+                          <td className="text-ink text-xs font-mono">{formatDate(filing.filing_date)}</td>
+                          <td className="text-ink-dim text-xs font-mono">{formatDate(filing.period_of_report)}</td>
+                          <td className="text-right">
                             <Link
-                              href={'/companies/' + ticker + '/filings/' + filing.id}
-                              className="inline-flex items-center gap-1 text-sm font-medium text-yellow-400 hover:text-yellow-300"
+                              href={`/companies/${ticker}/filings/${filing.id}`}
+                              className="text-xs font-mono font-bold text-accent hover:underline"
                             >
-                              View
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                              </svg>
+                              Open →
                             </Link>
                           </td>
                         </tr>
@@ -181,41 +254,46 @@ export default function CompanyDetailPage() {
                   </table>
                 </div>
               ) : (
-                <p className="text-navy-400 text-center py-10">No filings yet. Run Re-ingest above.</p>
+                <p className="text-ink-dim text-center py-10 font-mono text-xs">
+                  No filings yet. Press “Update from SEC” above.
+                </p>
               )}
             </Panel>
 
-            <Panel title="Recent Anomalies" actionHref={'/anomalies?ticker=' + ticker} actionLabel="View All">
+            <Panel title="Change flags" actionHref={'/anomalies?ticker=' + ticker} actionLabel="See all →">
               {anomalies.length > 0 ? (
                 <div className="overflow-x-auto">
                   <table className="table">
                     <thead>
                       <tr>
-                        <th>Signal</th>
+                        <th>Change type</th>
                         <th>Score</th>
-                        <th>Detected</th>
-                        <th>Actions</th>
+                        <th>Text difference</th>
+                        <th className="text-right">Details</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {anomalies.map((anomaly) => (
-                        <tr key={anomaly.id}>
+                      {anomalies.map((anomaly, idx) => (
+                        <tr key={`${anomaly.id ?? 'anomaly'}-${idx}`} className="hover:bg-ground-tint transition-colors">
                           <td>
-                            <span className={'badge ' + anomalyClass(anomaly.score)}>{anomaly.signal_type}</span>
+                            <span className={'badge ' + anomalyClass(Number(anomaly.score))}>
+                              {String(anomaly.signal_type || 'change').replace(/_/g, ' ')}
+                            </span>
                           </td>
-                          <td className="font-bold text-white tabular-nums">{anomaly.score.toFixed(2)}</td>
-                          <td className="text-navy-400 text-sm">
-                            {new Date(anomaly.detected_at).toLocaleDateString()}
+                          <td className="font-mono font-bold text-value text-sm">
+                            {anomaly.score != null ? Number(anomaly.score).toFixed(3) : '—'}
                           </td>
-                          <td>
+                          <td className="text-ink-dim text-xs font-mono">
+                            {anomaly.details?.cosine_distance != null
+                              ? Number(anomaly.details.cosine_distance).toFixed(3)
+                              : '—'}
+                          </td>
+                          <td className="text-right">
                             <Link
-                              href={'/anomalies/' + anomaly.id}
-                              className="inline-flex items-center gap-1 text-sm font-medium text-yellow-400 hover:text-yellow-300"
+                              href={'/anomalies?ticker=' + ticker}
+                              className="text-xs font-mono font-bold text-accent hover:underline"
                             >
-                              View
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                              </svg>
+                              View →
                             </Link>
                           </td>
                         </tr>
@@ -224,7 +302,10 @@ export default function CompanyDetailPage() {
                   </table>
                 </div>
               ) : (
-                <p className="text-navy-400 text-center py-10">No anomalies detected yet.</p>
+                <div className="text-ink-dim text-center py-10 font-mono text-xs space-y-2">
+                  <p>No change flags for {ticker} yet.</p>
+                  <p className="text-[11px] text-accent">Press “Rebuild results” above to check its filings.</p>
+                </div>
               )}
             </Panel>
           </div>
@@ -247,10 +328,10 @@ function Panel({
 }) {
   return (
     <div className="card p-0 overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-4 border-b border-navy-800">
-        <h3 className="text-lg font-bold text-white">{title}</h3>
+      <div className="flex items-center justify-between px-6 py-4 border-b border-line bg-ground-tint">
+        <h3 className="text-sm font-bold uppercase tracking-tight text-white font-mono">{title}</h3>
         {actionHref && (
-          <Link href={actionHref} className="text-sm font-medium text-yellow-400 hover:text-yellow-300">
+          <Link href={actionHref} className="text-xs font-mono text-accent hover:underline">
             {actionLabel}
           </Link>
         )}
@@ -262,23 +343,30 @@ function Panel({
 
 function anomalyClass(score: number): string {
   if (score > 0.7) return 'badge-red';
-  if (score > 0.4) return 'badge-yellow';
-  return 'badge-blue';
+  if (score > 0.4) return 'badge-orange';
+  return 'badge-yellow';
 }
 
 function StatCard({
   title,
   value,
-  variant = 'default',
+  accent = 'white',
 }: {
   title: string;
   value: number | string;
-  variant?: 'default' | 'danger';
+  accent?: 'white' | 'value' | 'red' | 'green';
 }) {
+  const colorMap = {
+    white: 'text-white',
+    value: 'text-value',
+    red: 'text-red-400',
+    green: 'text-green-400',
+  };
+
   return (
-    <div className={'stat-card ' + (variant === 'danger' ? 'stat-card-negative' : '')}>
-      <p className="text-xs font-semibold text-navy-400 tracking-wide uppercase mb-1">{title}</p>
-      <p className="text-3xl font-bold text-white tabular-nums">{value}</p>
+    <div className="stat-card border-l-4 border-l-accent">
+      <p className="text-[10px] font-mono text-ink-dim uppercase tracking-widest mb-1">{title}</p>
+      <p className={`text-2xl font-black font-mono tabular-nums ${colorMap[accent]}`}>{value}</p>
     </div>
   );
 }

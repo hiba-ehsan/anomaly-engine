@@ -1,36 +1,39 @@
 {
-  "run_id": "20261029T164937Z",
-  "started_at": "2026-10-29T16:49:37.488704+00:00",
-  "completed_at": "2026-10-29T16:52:40.246771+00:00",
-  "duration_seconds": 182.75,
+  "run_id": "20261102T012655Z",
+  "started_at": "2026-11-02T01:26:55.965588+00:00",
+  "completed_at": "2026-11-02T01:36:36.685353+00:00",
+  "duration_seconds": 580.73,
   "spark_version": "4.2.0",
   "master": "local[1]",
   "engine": "PySpark RDD",
   "input": {
-    "raw_files": 5,
-    "filings": 5,
+    "raw_files": 11,
+    "filings": 11,
     "tickers": [
       "AAPL",
-      "MSFT"
+      "AMZN",
+      "GOOGL",
+      "MSFT",
+      "NVDA"
     ],
-    "sections": 51,
-    "sentences": 2252,
-    "tokens": 34232,
-    "chunks": 1159
+    "sections": 102,
+    "sentences": 7015,
+    "tokens": 109848,
+    "chunks": 3759
   },
   "counts": {
-    "filings": 5,
-    "sections": 51,
-    "sentences": 2252,
-    "chunks": 1159,
+    "filings": 11,
+    "sections": 102,
+    "sentences": 7015,
+    "chunks": 3759,
     "anomalies": 30,
-    "temporal_features": 20,
-    "cross_section_features": 20,
-    "vocabulary": 3060
+    "temporal_features": 34,
+    "cross_section_features": 33,
+    "vocabulary": 5838
   },
   "accumulators": {
-    "sentences_seen": 2252,
-    "tokens_seen": 34232
+    "sentences_seen": 7015,
+    "tokens_seen": 109848
   },
   "stages": [
     {
@@ -41,9 +44,9 @@
         "filter",
         "cache"
       ],
-      "input_rows": 5,
-      "output_rows": 5,
-      "duration_ms": 26177.0
+      "input_rows": 11,
+      "output_rows": 11,
+      "duration_ms": 66170.6
     },
     {
       "name": "section extraction",
@@ -51,9 +54,9 @@
         "flatMap",
         "filter"
       ],
-      "input_rows": 5,
-      "output_rows": 51,
-      "duration_ms": 15349.9
+      "input_rows": 11,
+      "output_rows": 102,
+      "duration_ms": 54266.8
     },
     {
       "name": "sentence tokenisation",
@@ -62,9 +65,9 @@
         "filter",
         "count"
       ],
-      "input_rows": 51,
-      "output_rows": 2252,
-      "duration_ms": 15273.4
+      "input_rows": 102,
+      "output_rows": 7015,
+      "duration_ms": 44491.7
     },
     {
       "name": "global term frequency",
@@ -75,9 +78,9 @@
         "reduceByKey",
         "takeOrdered"
       ],
-      "input_rows": 2252,
+      "input_rows": 7015,
       "output_rows": 50,
-      "duration_ms": 8743.8
+      "duration_ms": 27960.5
     },
     {
       "name": "token document frequency",
@@ -85,9 +88,9 @@
         "combineByKey",
         "count"
       ],
-      "input_rows": 2252,
-      "output_rows": 3060,
-      "duration_ms": 7906.1
+      "input_rows": 7015,
+      "output_rows": 5838,
+      "duration_ms": 16093.5
     },
     {
       "name": "section statistics",
@@ -99,9 +102,9 @@
         "join",
         "collect"
       ],
-      "input_rows": 2252,
-      "output_rows": 50,
-      "duration_ms": 17727.6
+      "input_rows": 7015,
+      "output_rows": 101,
+      "duration_ms": 71773.0
     },
     {
       "name": "temporal shift",
@@ -112,9 +115,9 @@
         "flatMap",
         "filter"
       ],
-      "input_rows": 51,
-      "output_rows": 20,
-      "duration_ms": 5656.8
+      "input_rows": 102,
+      "output_rows": 34,
+      "duration_ms": 18597.4
     },
     {
       "name": "cross-section divergence",
@@ -123,9 +126,9 @@
         "flatMap",
         "filter"
       ],
-      "input_rows": 51,
-      "output_rows": 20,
-      "duration_ms": 3283.0
+      "input_rows": 102,
+      "output_rows": 33,
+      "duration_ms": 7655.2
     },
     {
       "name": "anomaly signals",
@@ -137,7 +140,7 @@
       ],
       "input_rows": null,
       "output_rows": 30,
-      "duration_ms": 4046.0
+      "duration_ms": 10021.1
     },
     {
       "name": "chunk generation",
@@ -147,9 +150,9 @@
         "createDataFrame",
         "write.parquet"
       ],
-      "input_rows": 51,
-      "output_rows": 1159,
-      "duration_ms": 9773.9
+      "input_rows": 102,
+      "output_rows": 3759,
+      "duration_ms": 69244.0
     },
     {
       "name": "RDD vs DataFrame benchmark",
@@ -162,12 +165,12 @@
         "groupBy",
         "count"
       ],
-      "input_rows": 1159,
-      "output_rows": 2751,
-      "duration_ms": 17422.6
+      "input_rows": 3759,
+      "output_rows": 4914,
+      "duration_ms": 55163.5
     },
     {
-      "name": "teacher-style RDD + DataFrame checks",
+      "name": "section detail analysis (RDD + DataFrame)",
       "operations": [
         "textFile",
         "first",
@@ -188,161 +191,161 @@
         "sql",
         "toDF"
       ],
-      "input_rows": 50,
-      "output_rows": 37,
-      "duration_ms": 33399.3
+      "input_rows": 101,
+      "output_rows": 69,
+      "duration_ms": 88098.6
     }
   ],
   "top_terms": [
     {
       "term": "products",
-      "count": 396,
-      "share": 0.011568
+      "count": 936,
+      "share": 0.008521
     },
     {
       "term": "services",
-      "count": 362,
-      "share": 0.010575
-    },
-    {
-      "term": "notes",
-      "count": 350,
-      "share": 0.010224
-    },
-    {
-      "term": "september",
-      "count": 315,
-      "share": 0.009202
-    },
-    {
-      "term": "due",
-      "count": 295,
-      "share": 0.008618
-    },
-    {
-      "term": "sales",
-      "count": 264,
-      "share": 0.007712
-    },
-    {
-      "term": "business",
-      "count": 255,
-      "share": 0.007449
-    },
-    {
-      "term": "tax",
-      "count": 204,
-      "share": 0.005959
-    },
-    {
-      "term": "apple",
-      "count": 199,
-      "share": 0.005813
+      "count": 858,
+      "share": 0.007811
     },
     {
       "term": "income",
-      "count": 192,
-      "share": 0.005609
+      "count": 776,
+      "share": 0.007064
     },
     {
-      "term": "foreign",
-      "count": 157,
-      "share": 0.004586
+      "term": "tax",
+      "count": 749,
+      "share": 0.006819
     },
     {
-      "term": "inc",
-      "count": 151,
-      "share": 0.004411
+      "term": "business",
+      "count": 691,
+      "share": 0.006291
     },
     {
-      "term": "subject",
-      "count": 150,
-      "share": 0.004382
+      "term": "september",
+      "count": 685,
+      "share": 0.006236
     },
     {
-      "term": "significant",
-      "count": 146,
-      "share": 0.004265
-    },
-    {
-      "term": "information",
-      "count": 144,
-      "share": 0.004207
-    },
-    {
-      "term": "adversely",
-      "count": 142,
-      "share": 0.004148
+      "term": "sales",
+      "count": 684,
+      "share": 0.006227
     },
     {
       "term": "cash",
-      "count": 139,
-      "share": 0.004061
+      "count": 657,
+      "share": 0.005981
     },
     {
-      "term": "product",
-      "count": 136,
-      "share": 0.003973
-    },
-    {
-      "term": "rate",
-      "count": 134,
-      "share": 0.003914
-    },
-    {
-      "term": "components",
-      "count": 133,
-      "share": 0.003885
-    },
-    {
-      "term": "price",
-      "count": 123,
-      "share": 0.003593
-    },
-    {
-      "term": "changes",
-      "count": 120,
-      "share": 0.003505
-    },
-    {
-      "term": "june",
-      "count": 119,
-      "share": 0.003476
-    },
-    {
-      "term": "condition",
-      "count": 119,
-      "share": 0.003476
-    },
-    {
-      "term": "materially",
-      "count": 118,
-      "share": 0.003447
-    },
-    {
-      "term": "consolidated",
-      "count": 117,
-      "share": 0.003418
-    },
-    {
-      "term": "officer",
-      "count": 117,
-      "share": 0.003418
-    },
-    {
-      "term": "control",
-      "count": 117,
-      "share": 0.003418
+      "term": "notes",
+      "count": 626,
+      "share": 0.005699
     },
     {
       "term": "operating",
-      "count": 116,
-      "share": 0.003389
+      "count": 568,
+      "share": 0.005171
     },
     {
-      "term": "risk",
-      "count": 115,
-      "share": 0.003359
+      "term": "due",
+      "count": 563,
+      "share": 0.005125
+    },
+    {
+      "term": "data",
+      "count": 534,
+      "share": 0.004861
+    },
+    {
+      "term": "consolidated",
+      "count": 506,
+      "share": 0.004606
+    },
+    {
+      "term": "customers",
+      "count": 502,
+      "share": 0.00457
+    },
+    {
+      "term": "foreign",
+      "count": 455,
+      "share": 0.004142
+    },
+    {
+      "term": "costs",
+      "count": 450,
+      "share": 0.004097
+    },
+    {
+      "term": "changes",
+      "count": 447,
+      "share": 0.004069
+    },
+    {
+      "term": "assets",
+      "count": 441,
+      "share": 0.004015
+    },
+    {
+      "term": "subject",
+      "count": 430,
+      "share": 0.003915
+    },
+    {
+      "term": "information",
+      "count": 423,
+      "share": 0.003851
+    },
+    {
+      "term": "primarily",
+      "count": 416,
+      "share": 0.003787
+    },
+    {
+      "term": "future",
+      "count": 414,
+      "share": 0.003769
+    },
+    {
+      "term": "revenue",
+      "count": 411,
+      "share": 0.003742
+    },
+    {
+      "term": "months",
+      "count": 389,
+      "share": 0.003541
+    },
+    {
+      "term": "product",
+      "count": 375,
+      "share": 0.003414
+    },
+    {
+      "term": "significant",
+      "count": 373,
+      "share": 0.003396
+    },
+    {
+      "term": "impact",
+      "count": 373,
+      "share": 0.003396
+    },
+    {
+      "term": "fair",
+      "count": 370,
+      "share": 0.003368
+    },
+    {
+      "term": "equity",
+      "count": 362,
+      "share": 0.003295
+    },
+    {
+      "term": "market",
+      "count": 337,
+      "share": 0.003068
     }
   ],
   "section_stats": [
@@ -1587,6 +1590,1006 @@
       ]
     },
     {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_1",
+      "tokens": 973,
+      "sentences": 77,
+      "characters": 11578,
+      "unique_terms": 40,
+      "entropy": 5.110266,
+      "normalised_entropy": 0.953844,
+      "top_terms": [
+        [
+          "president",
+          27
+        ],
+        [
+          "vice",
+          20
+        ],
+        [
+          "amazon",
+          18
+        ],
+        [
+          "services",
+          15
+        ],
+        [
+          "executive",
+          12
+        ],
+        [
+          "officer",
+          11
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_10",
+      "tokens": 84,
+      "sentences": 3,
+      "characters": 1144,
+      "unique_terms": 40,
+      "entropy": 5.166249,
+      "normalised_entropy": 0.964293,
+      "top_terms": [
+        [
+          "executive",
+          4
+        ],
+        [
+          "information",
+          4
+        ],
+        [
+          "officers",
+          4
+        ],
+        [
+          "business",
+          3
+        ],
+        [
+          "directors",
+          3
+        ],
+        [
+          "relating",
+          3
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_15",
+      "tokens": 548,
+      "sentences": 39,
+      "characters": 8953,
+      "unique_terms": 40,
+      "entropy": 4.786684,
+      "normalised_entropy": 0.893446,
+      "top_terms": [
+        [
+          "due",
+          44
+        ],
+        [
+          "note",
+          44
+        ],
+        [
+          "incorporated",
+          20
+        ],
+        [
+          "reference",
+          20
+        ],
+        [
+          "december",
+          18
+        ],
+        [
+          "amazon",
+          17
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_1a",
+      "tokens": 3966,
+      "sentences": 211,
+      "characters": 51642,
+      "unique_terms": 40,
+      "entropy": 5.212568,
+      "normalised_entropy": 0.972938,
+      "top_terms": [
+        [
+          "services",
+          64
+        ],
+        [
+          "business",
+          50
+        ],
+        [
+          "products",
+          39
+        ],
+        [
+          "data",
+          36
+        ],
+        [
+          "operating",
+          29
+        ],
+        [
+          "result",
+          29
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_1c",
+      "tokens": 311,
+      "sentences": 18,
+      "characters": 4036,
+      "unique_terms": 40,
+      "entropy": 5.012372,
+      "normalised_entropy": 0.935571,
+      "top_terms": [
+        [
+          "security",
+          16
+        ],
+        [
+          "cybersecurity",
+          14
+        ],
+        [
+          "data",
+          8
+        ],
+        [
+          "information",
+          8
+        ],
+        [
+          "risks",
+          8
+        ],
+        [
+          "systems",
+          8
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_2",
+      "tokens": 93,
+      "sentences": 5,
+      "characters": 1240,
+      "unique_terms": 40,
+      "entropy": 5.042398,
+      "normalised_entropy": 0.941176,
+      "top_terms": [
+        [
+          "america",
+          5
+        ],
+        [
+          "international",
+          5
+        ],
+        [
+          "north",
+          5
+        ],
+        [
+          "facilities",
+          4
+        ],
+        [
+          "footage",
+          4
+        ],
+        [
+          "leased",
+          4
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_5",
+      "tokens": 31,
+      "sentences": 3,
+      "characters": 461,
+      "unique_terms": 25,
+      "entropy": 4.542748,
+      "normalised_entropy": 0.966452,
+      "top_terms": [
+        [
+          "market",
+          3
+        ],
+        [
+          "equity",
+          2
+        ],
+        [
+          "issuer",
+          2
+        ],
+        [
+          "none",
+          2
+        ],
+        [
+          "purchases",
+          2
+        ],
+        [
+          "although",
+          1
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_7",
+      "tokens": 3418,
+      "sentences": 209,
+      "characters": 45621,
+      "unique_terms": 40,
+      "entropy": 5.111631,
+      "normalised_entropy": 0.954098,
+      "top_terms": [
+        [
+          "sales",
+          87
+        ],
+        [
+          "cash",
+          65
+        ],
+        [
+          "costs",
+          58
+        ],
+        [
+          "operating",
+          56
+        ],
+        [
+          "income",
+          48
+        ],
+        [
+          "changes",
+          40
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_7a",
+      "tokens": 412,
+      "sentences": 25,
+      "characters": 6044,
+      "unique_terms": 40,
+      "entropy": 5.093643,
+      "normalised_entropy": 0.950741,
+      "top_terms": [
+        [
+          "interest",
+          17
+        ],
+        [
+          "rates",
+          15
+        ],
+        [
+          "foreign",
+          13
+        ],
+        [
+          "debt",
+          12
+        ],
+        [
+          "market",
+          12
+        ],
+        [
+          "rate",
+          10
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_8",
+      "tokens": 7594,
+      "sentences": 516,
+      "characters": 109400,
+      "unique_terms": 40,
+      "entropy": 5.143255,
+      "normalised_entropy": 0.960001,
+      "top_terms": [
+        [
+          "tax",
+          133
+        ],
+        [
+          "december",
+          120
+        ],
+        [
+          "income",
+          108
+        ],
+        [
+          "assets",
+          92
+        ],
+        [
+          "consolidated",
+          83
+        ],
+        [
+          "cash",
+          70
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_9a",
+      "tokens": 479,
+      "sentences": 27,
+      "characters": 7319,
+      "unique_terms": 40,
+      "entropy": 4.920051,
+      "normalised_entropy": 0.918339,
+      "top_terms": [
+        [
+          "control",
+          27
+        ],
+        [
+          "internal",
+          26
+        ],
+        [
+          "reporting",
+          25
+        ],
+        [
+          "reasonable",
+          11
+        ],
+        [
+          "assurance",
+          10
+        ],
+        [
+          "controls",
+          9
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000004",
+      "filing_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "ticker": "AMZN",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "section_type": "item_9b",
+      "tokens": 142,
+      "sentences": 8,
+      "characters": 1808,
+      "unique_terms": 40,
+      "entropy": 4.873531,
+      "normalised_entropy": 0.909656,
+      "top_terms": [
+        [
+          "amazon",
+          8
+        ],
+        [
+          "adopted",
+          7
+        ],
+        [
+          "com",
+          7
+        ],
+        [
+          "ending",
+          7
+        ],
+        [
+          "inc",
+          7
+        ],
+        [
+          "intended",
+          7
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000040",
+      "filing_id": "aa1cb58fc9adc42cfc44f9108fd34039",
+      "ticker": "AMZN",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-30",
+      "section_type": "item_1",
+      "tokens": 4249,
+      "sentences": 271,
+      "characters": 61618,
+      "unique_terms": 40,
+      "entropy": 5.19617,
+      "normalised_entropy": 0.969878,
+      "top_terms": [
+        [
+          "september",
+          72
+        ],
+        [
+          "cash",
+          61
+        ],
+        [
+          "consolidated",
+          48
+        ],
+        [
+          "assets",
+          38
+        ],
+        [
+          "tax",
+          38
+        ],
+        [
+          "income",
+          35
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000040",
+      "filing_id": "aa1cb58fc9adc42cfc44f9108fd34039",
+      "ticker": "AMZN",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-30",
+      "section_type": "item_1a",
+      "tokens": 3952,
+      "sentences": 210,
+      "characters": 51473,
+      "unique_terms": 40,
+      "entropy": 5.21098,
+      "normalised_entropy": 0.972642,
+      "top_terms": [
+        [
+          "services",
+          63
+        ],
+        [
+          "business",
+          50
+        ],
+        [
+          "products",
+          39
+        ],
+        [
+          "data",
+          36
+        ],
+        [
+          "operating",
+          29
+        ],
+        [
+          "result",
+          29
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000040",
+      "filing_id": "aa1cb58fc9adc42cfc44f9108fd34039",
+      "ticker": "AMZN",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-30",
+      "section_type": "item_2",
+      "tokens": 2911,
+      "sentences": 170,
+      "characters": 41362,
+      "unique_terms": 40,
+      "entropy": 5.095479,
+      "normalised_entropy": 0.951084,
+      "top_terms": [
+        [
+          "sales",
+          81
+        ],
+        [
+          "september",
+          62
+        ],
+        [
+          "cash",
+          59
+        ],
+        [
+          "months",
+          59
+        ],
+        [
+          "costs",
+          49
+        ],
+        [
+          "operating",
+          49
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000040",
+      "filing_id": "aa1cb58fc9adc42cfc44f9108fd34039",
+      "ticker": "AMZN",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-30",
+      "section_type": "item_3",
+      "tokens": 371,
+      "sentences": 25,
+      "characters": 5208,
+      "unique_terms": 40,
+      "entropy": 4.998302,
+      "normalised_entropy": 0.932945,
+      "top_terms": [
+        [
+          "foreign",
+          20
+        ],
+        [
+          "rates",
+          17
+        ],
+        [
+          "interest",
+          11
+        ],
+        [
+          "market",
+          11
+        ],
+        [
+          "investments",
+          9
+        ],
+        [
+          "risk",
+          9
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000040",
+      "filing_id": "aa1cb58fc9adc42cfc44f9108fd34039",
+      "ticker": "AMZN",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-30",
+      "section_type": "item_4",
+      "tokens": 135,
+      "sentences": 7,
+      "characters": 1993,
+      "unique_terms": 40,
+      "entropy": 5.033524,
+      "normalised_entropy": 0.939519,
+      "top_terms": [
+        [
+          "controls",
+          6
+        ],
+        [
+          "officer",
+          6
+        ],
+        [
+          "principal",
+          6
+        ],
+        [
+          "assurance",
+          5
+        ],
+        [
+          "disclosure",
+          5
+        ],
+        [
+          "procedures",
+          5
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000040",
+      "filing_id": "aa1cb58fc9adc42cfc44f9108fd34039",
+      "ticker": "AMZN",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-30",
+      "section_type": "item_5",
+      "tokens": 364,
+      "sentences": 21,
+      "characters": 5042,
+      "unique_terms": 40,
+      "entropy": 4.835501,
+      "normalised_entropy": 0.902558,
+      "top_terms": [
+        [
+          "credit",
+          27
+        ],
+        [
+          "agreement",
+          22
+        ],
+        [
+          "revolving",
+          14
+        ],
+        [
+          "term",
+          11
+        ],
+        [
+          "agreements",
+          9
+        ],
+        [
+          "loan",
+          9
+        ]
+      ]
+    },
+    {
+      "filing_key": "AMZN:0001018724-26-000040",
+      "filing_id": "aa1cb58fc9adc42cfc44f9108fd34039",
+      "ticker": "AMZN",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-30",
+      "section_type": "item_6",
+      "tokens": 203,
+      "sentences": 17,
+      "characters": 2791,
+      "unique_terms": 40,
+      "entropy": 5.022505,
+      "normalised_entropy": 0.937463,
+      "top_terms": [
+        [
+          "amazon",
+          11
+        ],
+        [
+          "com",
+          11
+        ],
+        [
+          "due",
+          11
+        ],
+        [
+          "inc",
+          11
+        ],
+        [
+          "note",
+          11
+        ],
+        [
+          "dated",
+          7
+        ]
+      ]
+    },
+    {
+      "filing_key": "GOOGL:0001652044-26-000084",
+      "filing_id": "ebef7302645a2f672aa236026015c72a",
+      "ticker": "GOOGL",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-29",
+      "section_type": "item_1",
+      "tokens": 6337,
+      "sentences": 430,
+      "characters": 89640,
+      "unique_terms": 40,
+      "entropy": 5.1869,
+      "normalised_entropy": 0.968147,
+      "top_terms": [
+        [
+          "google",
+          95
+        ],
+        [
+          "september",
+          86
+        ],
+        [
+          "revenues",
+          55
+        ],
+        [
+          "class",
+          54
+        ],
+        [
+          "services",
+          54
+        ],
+        [
+          "assets",
+          53
+        ]
+      ]
+    },
+    {
+      "filing_key": "GOOGL:0001652044-26-000084",
+      "filing_id": "ebef7302645a2f672aa236026015c72a",
+      "ticker": "GOOGL",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-29",
+      "section_type": "item_1a",
+      "tokens": 2262,
+      "sentences": 120,
+      "characters": 30104,
+      "unique_terms": 40,
+      "entropy": 5.197268,
+      "normalised_entropy": 0.970083,
+      "top_terms": [
+        [
+          "class",
+          33
+        ],
+        [
+          "data",
+          30
+        ],
+        [
+          "services",
+          28
+        ],
+        [
+          "business",
+          27
+        ],
+        [
+          "harm",
+          27
+        ],
+        [
+          "regulatory",
+          20
+        ]
+      ]
+    },
+    {
+      "filing_key": "GOOGL:0001652044-26-000084",
+      "filing_id": "ebef7302645a2f672aa236026015c72a",
+      "ticker": "GOOGL",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-29",
+      "section_type": "item_2",
+      "tokens": 3567,
+      "sentences": 215,
+      "characters": 51086,
+      "unique_terms": 40,
+      "entropy": 5.014941,
+      "normalised_entropy": 0.936051,
+      "top_terms": [
+        [
+          "september",
+          117
+        ],
+        [
+          "months",
+          105
+        ],
+        [
+          "google",
+          100
+        ],
+        [
+          "revenues",
+          82
+        ],
+        [
+          "nine",
+          65
+        ],
+        [
+          "primarily",
+          60
+        ]
+      ]
+    },
+    {
+      "filing_key": "GOOGL:0001652044-26-000084",
+      "filing_id": "ebef7302645a2f672aa236026015c72a",
+      "ticker": "GOOGL",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-29",
+      "section_type": "item_4",
+      "tokens": 133,
+      "sentences": 5,
+      "characters": 1929,
+      "unique_terms": 40,
+      "entropy": 4.931202,
+      "normalised_entropy": 0.920421,
+      "top_terms": [
+        [
+          "controls",
+          9
+        ],
+        [
+          "procedures",
+          9
+        ],
+        [
+          "chief",
+          6
+        ],
+        [
+          "disclosure",
+          6
+        ],
+        [
+          "officer",
+          6
+        ],
+        [
+          "control",
+          4
+        ]
+      ]
+    },
+    {
+      "filing_key": "GOOGL:0001652044-26-000084",
+      "filing_id": "ebef7302645a2f672aa236026015c72a",
+      "ticker": "GOOGL",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-29",
+      "section_type": "item_5",
+      "tokens": 185,
+      "sentences": 8,
+      "characters": 2584,
+      "unique_terms": 40,
+      "entropy": 5.029487,
+      "normalised_entropy": 0.938766,
+      "top_terms": [
+        [
+          "trading",
+          14
+        ],
+        [
+          "plan",
+          13
+        ],
+        [
+          "adopted",
+          5
+        ],
+        [
+          "class",
+          5
+        ],
+        [
+          "capital",
+          4
+        ],
+        [
+          "gross",
+          4
+        ]
+      ]
+    },
+    {
+      "filing_key": "GOOGL:0001652044-26-000084",
+      "filing_id": "ebef7302645a2f672aa236026015c72a",
+      "ticker": "GOOGL",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-29",
+      "section_type": "item_6",
+      "tokens": 263,
+      "sentences": 18,
+      "characters": 3611,
+      "unique_terms": 40,
+      "entropy": 5.00919,
+      "normalised_entropy": 0.934977,
+      "top_terms": [
+        [
+          "file",
+          13
+        ],
+        [
+          "august",
+          10
+        ],
+        [
+          "current",
+          10
+        ],
+        [
+          "due",
+          10
+        ],
+        [
+          "global",
+          10
+        ],
+        [
+          "note",
+          10
+        ]
+      ]
+    },
+    {
       "filing_key": "MSFT:0001193125-26-191507",
       "filing_id": "83671065ac34ab9e3ed7058262d12872",
       "ticker": "MSFT",
@@ -2345,9 +3348,1096 @@
           3
         ]
       ]
+    },
+    {
+      "filing_key": "MSFT:0001193125-26-436133",
+      "filing_id": "624184acadf5a1aaafaaa62b1e5465f4",
+      "ticker": "MSFT",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-28",
+      "section_type": "item_1",
+      "tokens": 394,
+      "sentences": 34,
+      "characters": 5432,
+      "unique_terms": 40,
+      "entropy": 5.090721,
+      "normalised_entropy": 0.950195,
+      "top_terms": [
+        [
+          "fair",
+          14
+        ],
+        [
+          "equity",
+          10
+        ],
+        [
+          "income",
+          10
+        ],
+        [
+          "method",
+          10
+        ],
+        [
+          "investments",
+          9
+        ],
+        [
+          "losses",
+          9
+        ]
+      ]
+    },
+    {
+      "filing_key": "MSFT:0001193125-26-436133",
+      "filing_id": "624184acadf5a1aaafaaa62b1e5465f4",
+      "ticker": "MSFT",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-28",
+      "section_type": "item_1a",
+      "tokens": 500,
+      "sentences": 33,
+      "characters": 6371,
+      "unique_terms": 40,
+      "entropy": 5.188087,
+      "normalised_entropy": 0.968369,
+      "top_terms": [
+        [
+          "attacks",
+          10
+        ],
+        [
+          "data",
+          10
+        ],
+        [
+          "agents",
+          9
+        ],
+        [
+          "systems",
+          9
+        ],
+        [
+          "customers",
+          8
+        ],
+        [
+          "access",
+          7
+        ]
+      ]
+    },
+    {
+      "filing_key": "MSFT:0001193125-26-436133",
+      "filing_id": "624184acadf5a1aaafaaa62b1e5465f4",
+      "ticker": "MSFT",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-28",
+      "section_type": "item_2",
+      "tokens": 349,
+      "sentences": 25,
+      "characters": 4615,
+      "unique_terms": 40,
+      "entropy": 5.082915,
+      "normalised_entropy": 0.948738,
+      "top_terms": [
+        [
+          "fair",
+          15
+        ],
+        [
+          "reporting",
+          13
+        ],
+        [
+          "investments",
+          10
+        ],
+        [
+          "impairment",
+          9
+        ],
+        [
+          "unit",
+          8
+        ],
+        [
+          "equity",
+          7
+        ]
+      ]
+    },
+    {
+      "filing_key": "MSFT:0001193125-26-436133",
+      "filing_id": "624184acadf5a1aaafaaa62b1e5465f4",
+      "ticker": "MSFT",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-28",
+      "section_type": "item_3",
+      "tokens": 165,
+      "sentences": 11,
+      "characters": 1906,
+      "unique_terms": 40,
+      "entropy": 5.058406,
+      "normalised_entropy": 0.944164,
+      "top_terms": [
+        [
+          "foreign",
+          9
+        ],
+        [
+          "currency",
+          6
+        ],
+        [
+          "rates",
+          6
+        ],
+        [
+          "risk",
+          6
+        ],
+        [
+          "credit",
+          5
+        ],
+        [
+          "equity",
+          5
+        ]
+      ]
+    },
+    {
+      "filing_key": "MSFT:0001193125-26-436133",
+      "filing_id": "624184acadf5a1aaafaaa62b1e5465f4",
+      "ticker": "MSFT",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-28",
+      "section_type": "item_4",
+      "tokens": 45,
+      "sentences": 3,
+      "characters": 727,
+      "unique_terms": 29,
+      "entropy": 4.658303,
+      "normalised_entropy": 0.949339,
+      "top_terms": [
+        [
+          "chief",
+          4
+        ],
+        [
+          "officer",
+          4
+        ],
+        [
+          "controls",
+          3
+        ],
+        [
+          "procedures",
+          3
+        ],
+        [
+          "control",
+          2
+        ],
+        [
+          "disclosure",
+          2
+        ]
+      ]
+    },
+    {
+      "filing_key": "MSFT:0001193125-26-436133",
+      "filing_id": "624184acadf5a1aaafaaa62b1e5465f4",
+      "ticker": "MSFT",
+      "filing_type": "10-Q",
+      "filing_date": "2026-10-28",
+      "section_type": "item_6",
+      "tokens": 112,
+      "sentences": 3,
+      "characters": 1423,
+      "unique_terms": 40,
+      "entropy": 4.980472,
+      "normalised_entropy": 0.929617,
+      "top_terms": [
+        [
+          "officer",
+          6
+        ],
+        [
+          "act",
+          5
+        ],
+        [
+          "chief",
+          5
+        ],
+        [
+          "pursuant",
+          5
+        ],
+        [
+          "xbrl",
+          5
+        ],
+        [
+          "certification",
+          4
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_1",
+      "tokens": 3804,
+      "sentences": 247,
+      "characters": 47350,
+      "unique_terms": 40,
+      "entropy": 5.167931,
+      "normalised_entropy": 0.964607,
+      "top_terms": [
+        [
+          "software",
+          53
+        ],
+        [
+          "nvidia",
+          47
+        ],
+        [
+          "data",
+          43
+        ],
+        [
+          "products",
+          43
+        ],
+        [
+          "computing",
+          41
+        ],
+        [
+          "gpus",
+          31
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_10",
+      "tokens": 171,
+      "sentences": 9,
+      "characters": 2468,
+      "unique_terms": 40,
+      "entropy": 4.915971,
+      "normalised_entropy": 0.917578,
+      "top_terms": [
+        [
+          "information",
+          14
+        ],
+        [
+          "directors",
+          11
+        ],
+        [
+          "reference",
+          8
+        ],
+        [
+          "code",
+          7
+        ],
+        [
+          "incorporated",
+          7
+        ],
+        [
+          "contained",
+          6
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_12",
+      "tokens": 45,
+      "sentences": 2,
+      "characters": 626,
+      "unique_terms": 21,
+      "entropy": 4.302747,
+      "normalised_entropy": 0.964864,
+      "top_terms": [
+        [
+          "information",
+          4
+        ],
+        [
+          "ownership",
+          4
+        ],
+        [
+          "compensation",
+          3
+        ],
+        [
+          "equity",
+          3
+        ],
+        [
+          "beneficial",
+          2
+        ],
+        [
+          "caption",
+          2
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_13",
+      "tokens": 28,
+      "sentences": 1,
+      "characters": 445,
+      "unique_terms": 20,
+      "entropy": 4.182006,
+      "normalised_entropy": 0.952118,
+      "top_terms": [
+        [
+          "independence",
+          3
+        ],
+        [
+          "transactions",
+          3
+        ],
+        [
+          "board",
+          2
+        ],
+        [
+          "director",
+          2
+        ],
+        [
+          "directors",
+          2
+        ],
+        [
+          "information",
+          2
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_15",
+      "tokens": 6486,
+      "sentences": 415,
+      "characters": 93284,
+      "unique_terms": 40,
+      "entropy": 5.178996,
+      "normalised_entropy": 0.966672,
+      "top_terms": [
+        [
+          "income",
+          99
+        ],
+        [
+          "january",
+          91
+        ],
+        [
+          "tax",
+          83
+        ],
+        [
+          "assets",
+          80
+        ],
+        [
+          "consolidated",
+          77
+        ],
+        [
+          "jan",
+          72
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_1a",
+      "tokens": 7934,
+      "sentences": 479,
+      "characters": 104613,
+      "unique_terms": 40,
+      "entropy": 5.111108,
+      "normalised_entropy": 0.954001,
+      "top_terms": [
+        [
+          "products",
+          163
+        ],
+        [
+          "business",
+          139
+        ],
+        [
+          "impact",
+          99
+        ],
+        [
+          "data",
+          91
+        ],
+        [
+          "customers",
+          87
+        ],
+        [
+          "ability",
+          69
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_1c",
+      "tokens": 310,
+      "sentences": 19,
+      "characters": 3903,
+      "unique_terms": 40,
+      "entropy": 4.958897,
+      "normalised_entropy": 0.92559,
+      "top_terms": [
+        [
+          "security",
+          19
+        ],
+        [
+          "cybersecurity",
+          17
+        ],
+        [
+          "information",
+          11
+        ],
+        [
+          "management",
+          8
+        ],
+        [
+          "risks",
+          8
+        ],
+        [
+          "risk",
+          7
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_2",
+      "tokens": 67,
+      "sentences": 7,
+      "characters": 891,
+      "unique_terms": 40,
+      "entropy": 5.226251,
+      "normalised_entropy": 0.975492,
+      "top_terms": [
+        [
+          "lease",
+          3
+        ],
+        [
+          "california",
+          2
+        ],
+        [
+          "clara",
+          2
+        ],
+        [
+          "data",
+          2
+        ],
+        [
+          "facilities",
+          2
+        ],
+        [
+          "headquarters",
+          2
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_5",
+      "tokens": 272,
+      "sentences": 24,
+      "characters": 4608,
+      "unique_terms": 40,
+      "entropy": 5.217825,
+      "normalised_entropy": 0.97392,
+      "top_terms": [
+        [
+          "equity",
+          6
+        ],
+        [
+          "january",
+          6
+        ],
+        [
+          "market",
+          6
+        ],
+        [
+          "dividends",
+          5
+        ],
+        [
+          "repurchase",
+          5
+        ],
+        [
+          "index",
+          4
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_7",
+      "tokens": 2392,
+      "sentences": 179,
+      "characters": 33687,
+      "unique_terms": 40,
+      "entropy": 5.15692,
+      "normalised_entropy": 0.962552,
+      "top_terms": [
+        [
+          "revenue",
+          52
+        ],
+        [
+          "income",
+          47
+        ],
+        [
+          "tax",
+          42
+        ],
+        [
+          "cash",
+          24
+        ],
+        [
+          "customers",
+          23
+        ],
+        [
+          "inventory",
+          21
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_7a",
+      "tokens": 281,
+      "sentences": 22,
+      "characters": 4136,
+      "unique_terms": 40,
+      "entropy": 5.15487,
+      "normalised_entropy": 0.962169,
+      "top_terms": [
+        [
+          "foreign",
+          12
+        ],
+        [
+          "currency",
+          7
+        ],
+        [
+          "rate",
+          7
+        ],
+        [
+          "equity",
+          6
+        ],
+        [
+          "income",
+          6
+        ],
+        [
+          "january",
+          6
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_9a",
+      "tokens": 235,
+      "sentences": 13,
+      "characters": 3403,
+      "unique_terms": 40,
+      "entropy": 4.973878,
+      "normalised_entropy": 0.928386,
+      "top_terms": [
+        [
+          "control",
+          16
+        ],
+        [
+          "internal",
+          12
+        ],
+        [
+          "controls",
+          9
+        ],
+        [
+          "reporting",
+          9
+        ],
+        [
+          "chief",
+          8
+        ],
+        [
+          "officer",
+          8
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000021",
+      "filing_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "ticker": "NVDA",
+      "filing_type": "10-K",
+      "filing_date": "2026-02-25",
+      "section_type": "item_9b",
+      "tokens": 73,
+      "sentences": 6,
+      "characters": 1129,
+      "unique_terms": 40,
+      "entropy": 5.224384,
+      "normalised_entropy": 0.975144,
+      "top_terms": [
+        [
+          "information",
+          3
+        ],
+        [
+          "adoption",
+          2
+        ],
+        [
+          "arrangement",
+          2
+        ],
+        [
+          "director",
+          2
+        ],
+        [
+          "iii",
+          2
+        ],
+        [
+          "officer",
+          2
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000075",
+      "filing_id": "079b1526051ed6a2c838bdcad88057de",
+      "ticker": "NVDA",
+      "filing_type": "10-Q",
+      "filing_date": "2026-08-26",
+      "section_type": "item_1",
+      "tokens": 3378,
+      "sentences": 208,
+      "characters": 50507,
+      "unique_terms": 40,
+      "entropy": 5.20648,
+      "normalised_entropy": 0.971802,
+      "top_terms": [
+        [
+          "income",
+          60
+        ],
+        [
+          "jul",
+          56
+        ],
+        [
+          "notes",
+          45
+        ],
+        [
+          "nvidia",
+          45
+        ],
+        [
+          "revenue",
+          42
+        ],
+        [
+          "consolidated",
+          40
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000075",
+      "filing_id": "079b1526051ed6a2c838bdcad88057de",
+      "ticker": "NVDA",
+      "filing_type": "10-Q",
+      "filing_date": "2026-08-26",
+      "section_type": "item_1a",
+      "tokens": 2600,
+      "sentences": 154,
+      "characters": 34405,
+      "unique_terms": 40,
+      "entropy": 5.042615,
+      "normalised_entropy": 0.941216,
+      "top_terms": [
+        [
+          "products",
+          68
+        ],
+        [
+          "export",
+          51
+        ],
+        [
+          "business",
+          46
+        ],
+        [
+          "controls",
+          45
+        ],
+        [
+          "impact",
+          45
+        ],
+        [
+          "customers",
+          40
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000075",
+      "filing_id": "079b1526051ed6a2c838bdcad88057de",
+      "ticker": "NVDA",
+      "filing_type": "10-Q",
+      "filing_date": "2026-08-26",
+      "section_type": "item_2",
+      "tokens": 2400,
+      "sentences": 178,
+      "characters": 35496,
+      "unique_terms": 40,
+      "entropy": 5.203881,
+      "normalised_entropy": 0.971317,
+      "top_terms": [
+        [
+          "revenue",
+          47
+        ],
+        [
+          "customers",
+          37
+        ],
+        [
+          "half",
+          35
+        ],
+        [
+          "second",
+          29
+        ],
+        [
+          "income",
+          26
+        ],
+        [
+          "data",
+          24
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000075",
+      "filing_id": "079b1526051ed6a2c838bdcad88057de",
+      "ticker": "NVDA",
+      "filing_type": "10-Q",
+      "filing_date": "2026-08-26",
+      "section_type": "item_3",
+      "tokens": 115,
+      "sentences": 9,
+      "characters": 1802,
+      "unique_terms": 40,
+      "entropy": 5.021824,
+      "normalised_entropy": 0.937335,
+      "top_terms": [
+        [
+          "equity",
+          8
+        ],
+        [
+          "risk",
+          7
+        ],
+        [
+          "market",
+          6
+        ],
+        [
+          "rate",
+          5
+        ],
+        [
+          "foreign",
+          4
+        ],
+        [
+          "non-marketable",
+          4
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000075",
+      "filing_id": "079b1526051ed6a2c838bdcad88057de",
+      "ticker": "NVDA",
+      "filing_type": "10-Q",
+      "filing_date": "2026-08-26",
+      "section_type": "item_4",
+      "tokens": 159,
+      "sentences": 9,
+      "characters": 2257,
+      "unique_terms": 40,
+      "entropy": 5.010445,
+      "normalised_entropy": 0.935212,
+      "top_terms": [
+        [
+          "control",
+          9
+        ],
+        [
+          "controls",
+          8
+        ],
+        [
+          "chief",
+          6
+        ],
+        [
+          "officer",
+          6
+        ],
+        [
+          "internal",
+          5
+        ],
+        [
+          "system",
+          5
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000075",
+      "filing_id": "079b1526051ed6a2c838bdcad88057de",
+      "ticker": "NVDA",
+      "filing_type": "10-Q",
+      "filing_date": "2026-08-26",
+      "section_type": "item_5",
+      "tokens": 93,
+      "sentences": 5,
+      "characters": 1320,
+      "unique_terms": 40,
+      "entropy": 5.124453,
+      "normalised_entropy": 0.956491,
+      "top_terms": [
+        [
+          "equity",
+          6
+        ],
+        [
+          "awards",
+          5
+        ],
+        [
+          "future",
+          4
+        ],
+        [
+          "adoption",
+          3
+        ],
+        [
+          "sold",
+          3
+        ],
+        [
+          "vests",
+          3
+        ]
+      ]
+    },
+    {
+      "filing_key": "NVDA:0001045810-26-000075",
+      "filing_id": "079b1526051ed6a2c838bdcad88057de",
+      "ticker": "NVDA",
+      "filing_type": "10-Q",
+      "filing_date": "2026-08-26",
+      "section_type": "item_6",
+      "tokens": 225,
+      "sentences": 10,
+      "characters": 3216,
+      "unique_terms": 40,
+      "entropy": 5.039325,
+      "normalised_entropy": 0.940602,
+      "top_terms": [
+        [
+          "exhibit",
+          10
+        ],
+        [
+          "xbrl",
+          10
+        ],
+        [
+          "act",
+          9
+        ],
+        [
+          "document",
+          9
+        ],
+        [
+          "inline",
+          8
+        ],
+        [
+          "annex",
+          7
+        ]
+      ]
     }
   ],
   "anomalies": [
+    {
+      "ticker": "MSFT",
+      "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+      "signal_type": "temporal_shift",
+      "score": 0.997903,
+      "filing_a_id": "3e812d54826e2955b013a517dd21656f",
+      "filing_b_id": "624184acadf5a1aaafaaa62b1e5465f4",
+      "section_a": "item_2",
+      "section_b": "item_2",
+      "filing_date": "2026-10-28",
+      "detected_at": "2026-10-28",
+      "details": {
+        "cosine_distance": 0.996188,
+        "js_divergence": 0.98973,
+        "entropy_delta": 1.486951,
+        "terms_added": [
+          [
+            "fair",
+            15
+          ],
+          [
+            "reporting",
+            13
+          ],
+          [
+            "investments",
+            10
+          ],
+          [
+            "impairment",
+            9
+          ],
+          [
+            "unit",
+            8
+          ],
+          [
+            "investment",
+            7
+          ]
+        ],
+        "terms_removed": []
+      },
+      "severity": "high",
+      "id": "fc7b542acdddd15ce29c0cd772dc9ae0",
+      "rank": 1
+    },
     {
       "ticker": "MSFT",
       "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
@@ -2392,8 +4482,60 @@
         "terms_removed": []
       },
       "severity": "high",
-      "id": "12abed97371e77cec369400aacd12e37",
-      "rank": 1
+      "id": "fbe1556c66e79f64a39a6540c21c2909",
+      "rank": 2
+    },
+    {
+      "ticker": "AMZN",
+      "company_id": "8b8b115798ea6b0d5f3226efbc1dc1bb",
+      "signal_type": "temporal_shift",
+      "score": 0.989921,
+      "filing_a_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "filing_b_id": "aa1cb58fc9adc42cfc44f9108fd34039",
+      "section_a": "item_5",
+      "section_b": "item_5",
+      "filing_date": "2026-10-30",
+      "detected_at": "2026-10-30",
+      "details": {
+        "cosine_distance": 0.981674,
+        "js_divergence": 0.972688,
+        "entropy_delta": 2.195216,
+        "terms_added": [
+          [
+            "credit",
+            27
+          ],
+          [
+            "agreement",
+            22
+          ],
+          [
+            "revolving",
+            14
+          ],
+          [
+            "term",
+            11
+          ],
+          [
+            "agreements",
+            9
+          ],
+          [
+            "loan",
+            9
+          ]
+        ],
+        "terms_removed": [
+          [
+            "market",
+            2
+          ]
+        ]
+      },
+      "severity": "high",
+      "id": "5588afcd433daadc9b0b7bc21582277f",
+      "rank": 3
     },
     {
       "ticker": "MSFT",
@@ -2460,8 +4602,64 @@
         ]
       },
       "severity": "high",
-      "id": "3dd1b4b4996f365f1658dc3f72d2044c",
-      "rank": 2
+      "id": "6364526c661ea079062d20f0284112c4",
+      "rank": 4
+    },
+    {
+      "ticker": "MSFT",
+      "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
+      "signal_type": "temporal_shift",
+      "score": 0.980071,
+      "filing_a_id": "3e812d54826e2955b013a517dd21656f",
+      "filing_b_id": "624184acadf5a1aaafaaa62b1e5465f4",
+      "section_a": "item_1",
+      "section_b": "item_1",
+      "filing_date": "2026-10-28",
+      "detected_at": "2026-10-28",
+      "details": {
+        "cosine_distance": 0.963766,
+        "js_divergence": 0.931383,
+        "entropy_delta": -0.427429,
+        "terms_added": [
+          [
+            "fair",
+            14
+          ],
+          [
+            "method",
+            10
+          ],
+          [
+            "income",
+            10
+          ],
+          [
+            "investments",
+            9
+          ],
+          [
+            "losses",
+            9
+          ],
+          [
+            "recorded",
+            9
+          ]
+        ],
+        "terms_removed": [
+          [
+            "business",
+            3
+          ],
+          [
+            "relevant",
+            1
+          ]
+        ]
+      },
+      "severity": "high",
+      "id": "9587cb163d1dae95b5c587e73b7c33b1",
+      "rank": 5
     },
     {
       "ticker": "MSFT",
@@ -2524,8 +4722,8 @@
         ]
       },
       "severity": "high",
-      "id": "ed79eae60442a4eacbda066b759a9363",
-      "rank": 3
+      "id": "9acb76b94cc3c0763a1450c720a903c7",
+      "rank": 6
     },
     {
       "ticker": "AAPL",
@@ -2571,8 +4769,8 @@
         "terms_removed": []
       },
       "severity": "high",
-      "id": "a806d0f030796760d8e5c15e75b13847",
-      "rank": 4
+      "id": "aea724799880568804a6e3be0bb7a64f",
+      "rank": 7
     },
     {
       "ticker": "MSFT",
@@ -2635,8 +4833,8 @@
         ]
       },
       "severity": "high",
-      "id": "ed79eae60442a4eacbda066b759a9363",
-      "rank": 5
+      "id": "40a6f25d74ea581e5733bb9979f37a8f",
+      "rank": 8
     },
     {
       "ticker": "MSFT",
@@ -2699,8 +4897,8 @@
         ]
       },
       "severity": "high",
-      "id": "ed79eae60442a4eacbda066b759a9363",
-      "rank": 6
+      "id": "a49639562d63cb9b0102583744d3d416",
+      "rank": 9
     },
     {
       "ticker": "AAPL",
@@ -2755,8 +4953,192 @@
         ]
       },
       "severity": "high",
-      "id": "9dc635ce06e5959532592b86bdbe5183",
-      "rank": 7
+      "id": "711ef128fc7bd4b86e30ef7c89f5bb25",
+      "rank": 10
+    },
+    {
+      "ticker": "NVDA",
+      "company_id": "a2ae4000ebe2b356c9f4bace1fd21287",
+      "signal_type": "cross_section",
+      "score": 0.953196,
+      "filing_a_id": "079b1526051ed6a2c838bdcad88057de",
+      "filing_b_id": "079b1526051ed6a2c838bdcad88057de",
+      "section_a": "item_1",
+      "section_b": "item_6",
+      "filing_date": "2026-08-26",
+      "detected_at": "2026-08-26",
+      "details": {
+        "cosine_distance": 0.921994,
+        "js_divergence": 0.913972,
+        "entropy_delta": -2.687613,
+        "terms_added": [
+          [
+            "exhibit",
+            10
+          ],
+          [
+            "xbrl",
+            10
+          ],
+          [
+            "act",
+            9
+          ],
+          [
+            "document",
+            9
+          ],
+          [
+            "inline",
+            8
+          ]
+        ],
+        "terms_removed": [
+          [
+            "income",
+            60
+          ],
+          [
+            "jul",
+            56
+          ],
+          [
+            "notes",
+            45
+          ],
+          [
+            "nvidia",
+            45
+          ],
+          [
+            "revenue",
+            42
+          ]
+        ]
+      },
+      "severity": "high",
+      "id": "4ea5950f62f85a0f4d0baeb2ffa735ea",
+      "rank": 11
+    },
+    {
+      "ticker": "GOOGL",
+      "company_id": "0bd68b02fc51e379fec70e456fe9c999",
+      "signal_type": "cross_section",
+      "score": 0.942266,
+      "filing_a_id": "ebef7302645a2f672aa236026015c72a",
+      "filing_b_id": "ebef7302645a2f672aa236026015c72a",
+      "section_a": "item_1",
+      "section_b": "item_6",
+      "filing_date": "2026-10-29",
+      "detected_at": "2026-10-29",
+      "details": {
+        "cosine_distance": 0.903777,
+        "js_divergence": 0.9037,
+        "entropy_delta": -3.501954,
+        "terms_added": [
+          [
+            "file",
+            13
+          ],
+          [
+            "august",
+            10
+          ],
+          [
+            "current",
+            10
+          ],
+          [
+            "due",
+            10
+          ],
+          [
+            "global",
+            10
+          ]
+        ],
+        "terms_removed": [
+          [
+            "google",
+            95
+          ],
+          [
+            "september",
+            86
+          ],
+          [
+            "revenues",
+            55
+          ],
+          [
+            "class",
+            54
+          ],
+          [
+            "services",
+            54
+          ]
+        ]
+      },
+      "severity": "high",
+      "id": "8fc6e83658c6a4db1b5aae863f0ca51f",
+      "rank": 12
+    },
+    {
+      "ticker": "AMZN",
+      "company_id": "8b8b115798ea6b0d5f3226efbc1dc1bb",
+      "signal_type": "temporal_shift",
+      "score": 0.931543,
+      "filing_a_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "filing_b_id": "aa1cb58fc9adc42cfc44f9108fd34039",
+      "section_a": "item_2",
+      "section_b": "item_2",
+      "filing_date": "2026-10-30",
+      "detected_at": "2026-10-30",
+      "details": {
+        "cosine_distance": 0.875532,
+        "js_divergence": 0.85809,
+        "entropy_delta": 3.188424,
+        "terms_added": [
+          [
+            "sales",
+            81
+          ],
+          [
+            "september",
+            62
+          ],
+          [
+            "cash",
+            59
+          ],
+          [
+            "months",
+            59
+          ],
+          [
+            "operating",
+            49
+          ],
+          [
+            "costs",
+            49
+          ]
+        ],
+        "terms_removed": [
+          [
+            "facilities",
+            2
+          ],
+          [
+            "corporate",
+            1
+          ]
+        ]
+      },
+      "severity": "high",
+      "id": "70820bbc032d85ca409fa67eb15d19c9",
+      "rank": 13
     },
     {
       "ticker": "MSFT",
@@ -2823,8 +5205,8 @@
         ]
       },
       "severity": "high",
-      "id": "278da2db1bb5952d491b69fd0b00f2db",
-      "rank": 8
+      "id": "585ad98dc0b1e46ed3e959d6edb39a58",
+      "rank": 14
     },
     {
       "ticker": "AAPL",
@@ -2879,8 +5261,8 @@
         ]
       },
       "severity": "high",
-      "id": "d8d07cd291daab25c69eafc1483aa014",
-      "rank": 9
+      "id": "9c07a2c9e3578792ee5228b1baa409cd",
+      "rank": 15
     },
     {
       "ticker": "AAPL",
@@ -2951,8 +5333,8 @@
         ]
       },
       "severity": "high",
-      "id": "33a9bded97f2d5ad0c34a5899aeb9055",
-      "rank": 10
+      "id": "c4ab36ab6fafe91a7490ac2338cf523e",
+      "rank": 16
     },
     {
       "ticker": "AAPL",
@@ -3015,8 +5397,8 @@
         ]
       },
       "severity": "high",
-      "id": "fcc312474ef522d931d63386b77df30e",
-      "rank": 11
+      "id": "ef9463dc73635275cd99a37eef46f2f0",
+      "rank": 17
     },
     {
       "ticker": "AAPL",
@@ -3079,8 +5461,8 @@
         ]
       },
       "severity": "high",
-      "id": "7e90f5165d8d576811001e65b5a0892c",
-      "rank": 12
+      "id": "1f5d01aca74905eb6f36ca3c55878801",
+      "rank": 18
     },
     {
       "ticker": "AAPL",
@@ -3143,8 +5525,128 @@
         ]
       },
       "severity": "high",
-      "id": "4b41ff3b572898eac381b404a47be775",
-      "rank": 13
+      "id": "1f897f2b5687ce85f65a29977967c2a3",
+      "rank": 19
+    },
+    {
+      "ticker": "NVDA",
+      "company_id": "a2ae4000ebe2b356c9f4bace1fd21287",
+      "signal_type": "temporal_shift",
+      "score": 0.879398,
+      "filing_a_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "filing_b_id": "079b1526051ed6a2c838bdcad88057de",
+      "section_a": "item_5",
+      "section_b": "item_5",
+      "filing_date": "2026-08-26",
+      "detected_at": "2026-08-26",
+      "details": {
+        "cosine_distance": 0.780724,
+        "js_divergence": 0.831483,
+        "entropy_delta": -1.63714,
+        "terms_added": [
+          [
+            "awards",
+            4
+          ],
+          [
+            "sold",
+            3
+          ],
+          [
+            "adoption",
+            3
+          ],
+          [
+            "vests",
+            3
+          ],
+          [
+            "arrangement",
+            2
+          ],
+          [
+            "director",
+            2
+          ]
+        ],
+        "terms_removed": [
+          [
+            "following",
+            1
+          ],
+          [
+            "board",
+            1
+          ],
+          [
+            "trading",
+            1
+          ],
+          [
+            "plan",
+            1
+          ]
+        ]
+      },
+      "severity": "high",
+      "id": "3d56d1d86b3ec0a9c4c7ad0fe311f651",
+      "rank": 20
+    },
+    {
+      "ticker": "NVDA",
+      "company_id": "a2ae4000ebe2b356c9f4bace1fd21287",
+      "signal_type": "temporal_shift",
+      "score": 0.8775,
+      "filing_a_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "filing_b_id": "079b1526051ed6a2c838bdcad88057de",
+      "section_a": "item_2",
+      "section_b": "item_2",
+      "filing_date": "2026-08-26",
+      "detected_at": "2026-08-26",
+      "details": {
+        "cosine_distance": 0.777273,
+        "js_divergence": 0.810542,
+        "entropy_delta": 3.209802,
+        "terms_added": [
+          [
+            "revenue",
+            47
+          ],
+          [
+            "customers",
+            37
+          ],
+          [
+            "half",
+            35
+          ],
+          [
+            "second",
+            29
+          ],
+          [
+            "income",
+            26
+          ],
+          [
+            "data",
+            22
+          ]
+        ],
+        "terms_removed": [
+          [
+            "santa",
+            1
+          ],
+          [
+            "clara",
+            1
+          ]
+        ]
+      },
+      "severity": "high",
+      "id": "d2f74b868b4c2200a83f74a860a508cf",
+      "rank": 21
     },
     {
       "ticker": "AAPL",
@@ -3207,8 +5709,208 @@
         ]
       },
       "severity": "high",
-      "id": "4330a80a584fd9cee57272e50bccfd6a",
-      "rank": 14
+      "id": "4f9d8358d361a400c9a5fa2bbfe063a9",
+      "rank": 22
+    },
+    {
+      "ticker": "AMZN",
+      "company_id": "8b8b115798ea6b0d5f3226efbc1dc1bb",
+      "signal_type": "cross_section",
+      "score": 0.875446,
+      "filing_a_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "filing_b_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "section_a": "item_1a",
+      "section_b": "item_7a",
+      "filing_date": "2026-02-06",
+      "detected_at": "2026-02-06",
+      "details": {
+        "cosine_distance": 0.79241,
+        "js_divergence": 0.75007,
+        "entropy_delta": -2.471955,
+        "terms_added": [
+          [
+            "interest",
+            17
+          ],
+          [
+            "rates",
+            15
+          ],
+          [
+            "foreign",
+            13
+          ],
+          [
+            "debt",
+            12
+          ],
+          [
+            "market",
+            12
+          ]
+        ],
+        "terms_removed": [
+          [
+            "services",
+            64
+          ],
+          [
+            "business",
+            50
+          ],
+          [
+            "products",
+            39
+          ],
+          [
+            "data",
+            36
+          ],
+          [
+            "operating",
+            29
+          ]
+        ]
+      },
+      "severity": "high",
+      "id": "94f10f102c3a4e8ec9689a06dca270df",
+      "rank": 23
+    },
+    {
+      "ticker": "NVDA",
+      "company_id": "a2ae4000ebe2b356c9f4bace1fd21287",
+      "signal_type": "cross_section",
+      "score": 0.874001,
+      "filing_a_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "filing_b_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "section_a": "item_1a",
+      "section_b": "item_7a",
+      "filing_date": "2026-02-25",
+      "detected_at": "2026-02-25",
+      "details": {
+        "cosine_distance": 0.790002,
+        "js_divergence": 0.781828,
+        "entropy_delta": -2.820878,
+        "terms_added": [
+          [
+            "foreign",
+            12
+          ],
+          [
+            "currency",
+            7
+          ],
+          [
+            "rate",
+            7
+          ],
+          [
+            "equity",
+            6
+          ],
+          [
+            "income",
+            6
+          ]
+        ],
+        "terms_removed": [
+          [
+            "products",
+            163
+          ],
+          [
+            "business",
+            139
+          ],
+          [
+            "impact",
+            99
+          ],
+          [
+            "data",
+            91
+          ],
+          [
+            "customers",
+            87
+          ]
+        ]
+      },
+      "severity": "high",
+      "id": "86dc273f3b1946578f7d992692dc02ef",
+      "rank": 24
+    },
+    {
+      "ticker": "AMZN",
+      "company_id": "8b8b115798ea6b0d5f3226efbc1dc1bb",
+      "signal_type": "temporal_shift",
+      "score": 0.870267,
+      "filing_a_id": "b16a1ffadea015c9a065d1af9d8873e5",
+      "filing_b_id": "aa1cb58fc9adc42cfc44f9108fd34039",
+      "section_a": "item_1",
+      "section_b": "item_1",
+      "filing_date": "2026-10-30",
+      "detected_at": "2026-10-30",
+      "details": {
+        "cosine_distance": 0.764122,
+        "js_divergence": 0.728646,
+        "entropy_delta": 0.832827,
+        "terms_added": [
+          [
+            "september",
+            67
+          ],
+          [
+            "cash",
+            61
+          ],
+          [
+            "consolidated",
+            48
+          ],
+          [
+            "tax",
+            38
+          ],
+          [
+            "assets",
+            38
+          ],
+          [
+            "income",
+            35
+          ]
+        ],
+        "terms_removed": [
+          [
+            "president",
+            26
+          ],
+          [
+            "executive",
+            11
+          ],
+          [
+            "officer",
+            10
+          ],
+          [
+            "senior",
+            9
+          ],
+          [
+            "employees",
+            7
+          ],
+          [
+            "chief",
+            7
+          ]
+        ]
+      },
+      "severity": "high",
+      "id": "6c7635a6676196375372c7807e22bbbd",
+      "rank": 25
     },
     {
       "ticker": "MSFT",
@@ -3271,8 +5973,80 @@
         ]
       },
       "severity": "high",
-      "id": "4485c1d2d440fe5402586554f6936ec7",
-      "rank": 15
+      "id": "cfbfc1eb40c204175378286cca11ac27",
+      "rank": 26
+    },
+    {
+      "ticker": "NVDA",
+      "company_id": "a2ae4000ebe2b356c9f4bace1fd21287",
+      "signal_type": "temporal_shift",
+      "score": 0.853558,
+      "filing_a_id": "7306b60e6f89dc7e13540835a1d5bfb3",
+      "filing_b_id": "079b1526051ed6a2c838bdcad88057de",
+      "section_a": "item_1",
+      "section_b": "item_1",
+      "filing_date": "2026-08-26",
+      "detected_at": "2026-08-26",
+      "details": {
+        "cosine_distance": 0.733741,
+        "js_divergence": 0.689249,
+        "entropy_delta": -0.796487,
+        "terms_added": [
+          [
+            "income",
+            60
+          ],
+          [
+            "jul",
+            56
+          ],
+          [
+            "notes",
+            45
+          ],
+          [
+            "consolidated",
+            40
+          ],
+          [
+            "revenue",
+            37
+          ],
+          [
+            "equity",
+            31
+          ]
+        ],
+        "terms_removed": [
+          [
+            "software",
+            48
+          ],
+          [
+            "computing",
+            38
+          ],
+          [
+            "products",
+            36
+          ],
+          [
+            "gpus",
+            29
+          ],
+          [
+            "platform",
+            29
+          ],
+          [
+            "technology",
+            27
+          ]
+        ]
+      },
+      "severity": "high",
+      "id": "e3f54b27093c389178093e99476dbfbf",
+      "rank": 27
     },
     {
       "ticker": "MSFT",
@@ -3335,8 +6109,8 @@
         ]
       },
       "severity": "high",
-      "id": "0db557d0ec62520f64c803791c9b01cd",
-      "rank": 16
+      "id": "b522d97ce8f85652ed016b2caa93e090",
+      "rank": 28
     },
     {
       "ticker": "AAPL",
@@ -3399,8 +6173,8 @@
         ]
       },
       "severity": "high",
-      "id": "7e90f5165d8d576811001e65b5a0892c",
-      "rank": 17
+      "id": "2d4d5f8d153b8efa708ee05d43c4e3b2",
+      "rank": 29
     },
     {
       "ticker": "AAPL",
@@ -3463,828 +6237,48 @@
         ]
       },
       "severity": "high",
-      "id": "fcc312474ef522d931d63386b77df30e",
-      "rank": 18
-    },
-    {
-      "ticker": "AAPL",
-      "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
-      "signal_type": "cross_section",
-      "score": 0.793661,
-      "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
-      "filing_b_id": "36c52abd8526e09b2a030f881b058c71",
-      "section_a": "item_7a",
-      "section_b": "item_8",
-      "filing_date": "2024-11-01",
-      "detected_at": "2024-11-01",
-      "details": {
-        "cosine_distance": 0.656101,
-        "js_divergence": 0.709302,
-        "entropy_delta": 2.669615,
-        "terms_added": [
-          [
-            "september",
-            95
-          ],
-          [
-            "tax",
-            48
-          ],
-          [
-            "income",
-            46
-          ],
-          [
-            "apple",
-            35
-          ],
-          [
-            "inc",
-            35
-          ]
-        ],
-        "terms_removed": [
-          [
-            "interest",
-            11
-          ],
-          [
-            "foreign",
-            9
-          ],
-          [
-            "rates",
-            9
-          ],
-          [
-            "rate",
-            8
-          ],
-          [
-            "risk",
-            7
-          ]
-        ]
-      },
-      "severity": "high",
-      "id": "ab78c31b01cd8599c627c7cd9d099fa1",
-      "rank": 19
-    },
-    {
-      "ticker": "AAPL",
-      "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
-      "signal_type": "cross_section",
-      "score": 0.782868,
-      "filing_a_id": "a8506e2e557971890a8c925dc36715da",
-      "filing_b_id": "a8506e2e557971890a8c925dc36715da",
-      "section_a": "item_7a",
-      "section_b": "item_8",
-      "filing_date": "2025-10-31",
-      "detected_at": "2025-10-31",
-      "details": {
-        "cosine_distance": 0.638114,
-        "js_divergence": 0.699646,
-        "entropy_delta": 2.724143,
-        "terms_added": [
-          [
-            "september",
-            85
-          ],
-          [
-            "tax",
-            45
-          ],
-          [
-            "income",
-            38
-          ],
-          [
-            "apple",
-            34
-          ],
-          [
-            "inc",
-            34
-          ]
-        ],
-        "terms_removed": [
-          [
-            "interest",
-            11
-          ],
-          [
-            "foreign",
-            9
-          ],
-          [
-            "rates",
-            9
-          ],
-          [
-            "rate",
-            8
-          ],
-          [
-            "risk",
-            7
-          ]
-        ]
-      },
-      "severity": "high",
-      "id": "b3b41c256453b0019d80bbcae6f3c327",
-      "rank": 20
-    },
-    {
-      "ticker": "AAPL",
-      "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
-      "signal_type": "cross_section",
-      "score": 0.770471,
-      "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
-      "filing_b_id": "36c52abd8526e09b2a030f881b058c71",
-      "section_a": "item_1a",
-      "section_b": "item_7",
-      "filing_date": "2024-11-01",
-      "detected_at": "2024-11-01",
-      "details": {
-        "cosine_distance": 0.617452,
-        "js_divergence": 0.619705,
-        "entropy_delta": -1.36316,
-        "terms_added": [
-          [
-            "sales",
-            33
-          ],
-          [
-            "tax",
-            23
-          ],
-          [
-            "services",
-            18
-          ],
-          [
-            "compared",
-            16
-          ],
-          [
-            "income",
-            16
-          ]
-        ],
-        "terms_removed": [
-          [
-            "products",
-            104
-          ],
-          [
-            "business",
-            82
-          ],
-          [
-            "services",
-            79
-          ],
-          [
-            "adversely",
-            53
-          ],
-          [
-            "materially",
-            41
-          ]
-        ]
-      },
-      "severity": "high",
-      "id": "7e90f5165d8d576811001e65b5a0892c",
-      "rank": 21
-    },
-    {
-      "ticker": "MSFT",
-      "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
-      "signal_type": "cross_section",
-      "score": 0.754892,
-      "filing_a_id": "83671065ac34ab9e3ed7058262d12872",
-      "filing_b_id": "83671065ac34ab9e3ed7058262d12872",
-      "section_a": "item_1",
-      "section_b": "item_2",
-      "filing_date": "2026-04-29",
-      "detected_at": "2026-04-29",
-      "details": {
-        "cosine_distance": 0.591486,
-        "js_divergence": 0.558807,
-        "entropy_delta": 0.284368,
-        "terms_added": [
-          [
-            "reporting",
-            12
-          ],
-          [
-            "fair",
-            11
-          ],
-          [
-            "impairment",
-            8
-          ],
-          [
-            "investment",
-            7
-          ],
-          [
-            "goodwill",
-            6
-          ]
-        ],
-        "terms_removed": [
-          [
-            "fair",
-            15
-          ],
-          [
-            "income",
-            13
-          ],
-          [
-            "losses",
-            10
-          ],
-          [
-            "equity",
-            9
-          ],
-          [
-            "expense",
-            9
-          ]
-        ]
-      },
-      "severity": "high",
-      "id": "3a1417c1bf1888ebd67052c19720269c",
-      "rank": 22
-    },
-    {
-      "ticker": "AAPL",
-      "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
-      "signal_type": "cross_section",
-      "score": 0.754689,
-      "filing_a_id": "a8506e2e557971890a8c925dc36715da",
-      "filing_b_id": "a8506e2e557971890a8c925dc36715da",
-      "section_a": "item_1a",
-      "section_b": "item_7",
-      "filing_date": "2025-10-31",
-      "detected_at": "2025-10-31",
-      "details": {
-        "cosine_distance": 0.591149,
-        "js_divergence": 0.579268,
-        "entropy_delta": -1.182321,
-        "terms_added": [
-          [
-            "sales",
-            33
-          ],
-          [
-            "income",
-            21
-          ],
-          [
-            "services",
-            21
-          ],
-          [
-            "tax",
-            21
-          ],
-          [
-            "compared",
-            17
-          ]
-        ],
-        "terms_removed": [
-          [
-            "products",
-            100
-          ],
-          [
-            "business",
-            83
-          ],
-          [
-            "services",
-            77
-          ],
-          [
-            "adversely",
-            60
-          ],
-          [
-            "price",
-            49
-          ]
-        ]
-      },
-      "severity": "high",
-      "id": "fcc312474ef522d931d63386b77df30e",
-      "rank": 23
-    },
-    {
-      "ticker": "MSFT",
-      "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
-      "signal_type": "temporal_shift",
-      "score": 0.754151,
-      "filing_a_id": "83671065ac34ab9e3ed7058262d12872",
-      "filing_b_id": "3e812d54826e2955b013a517dd21656f",
-      "section_a": "item_1a",
-      "section_b": "item_1a",
-      "filing_date": "2026-07-29",
-      "detected_at": "2026-07-29",
-      "details": {
-        "cosine_distance": 0.553001,
-        "js_divergence": 0.626783,
-        "entropy_delta": 0.345679,
-        "terms_added": [
-          [
-            "systems",
-            8
-          ],
-          [
-            "attacks",
-            7
-          ],
-          [
-            "result",
-            6
-          ],
-          [
-            "access",
-            5
-          ],
-          [
-            "internal",
-            5
-          ],
-          [
-            "compromise",
-            4
-          ]
-        ],
-        "terms_removed": [
-          [
-            "products",
-            13
-          ],
-          [
-            "security",
-            11
-          ],
-          [
-            "services",
-            10
-          ],
-          [
-            "data",
-            7
-          ],
-          [
-            "customer",
-            5
-          ],
-          [
-            "customers",
-            4
-          ]
-        ]
-      },
-      "severity": "high",
-      "id": "17f7c6f286968470ff0195c0a8b44d98",
-      "rank": 24
-    },
-    {
-      "ticker": "MSFT",
-      "company_id": "7bd1283e8fc7db87ea19650da221f6d5",
-      "signal_type": "cross_section",
-      "score": 0.752065,
-      "filing_a_id": "3e812d54826e2955b013a517dd21656f",
-      "filing_b_id": "3e812d54826e2955b013a517dd21656f",
-      "section_a": "item_7",
-      "section_b": "item_8",
-      "filing_date": "2026-07-29",
-      "detected_at": "2026-07-29",
-      "details": {
-        "cosine_distance": 0.586775,
-        "js_divergence": 0.607899,
-        "entropy_delta": 0.191699,
-        "terms_added": [
-          [
-            "fair",
-            13
-          ],
-          [
-            "income",
-            10
-          ],
-          [
-            "openai",
-            10
-          ],
-          [
-            "assets",
-            9
-          ],
-          [
-            "level",
-            9
-          ]
-        ],
-        "terms_removed": [
-          [
-            "investments",
-            18
-          ],
-          [
-            "cash",
-            16
-          ],
-          [
-            "fair",
-            7
-          ],
-          [
-            "level",
-            7
-          ],
-          [
-            "pricing",
-            7
-          ]
-        ]
-      },
-      "severity": "high",
-      "id": "0db557d0ec62520f64c803791c9b01cd",
-      "rank": 25
-    },
-    {
-      "ticker": "AAPL",
-      "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
-      "signal_type": "cross_section",
-      "score": 0.701134,
-      "filing_a_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
-      "filing_b_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
-      "section_a": "item_1",
-      "section_b": "item_2",
-      "filing_date": "2026-07-31",
-      "detected_at": "2026-07-31",
-      "details": {
-        "cosine_distance": 0.50189,
-        "js_divergence": 0.563999,
-        "entropy_delta": 0.42648,
-        "terms_added": [
-          [
-            "sales",
-            41
-          ],
-          [
-            "months",
-            36
-          ],
-          [
-            "june",
-            32
-          ],
-          [
-            "nine",
-            26
-          ],
-          [
-            "third",
-            25
-          ]
-        ],
-        "terms_removed": [
-          [
-            "june",
-            61
-          ],
-          [
-            "months",
-            20
-          ],
-          [
-            "september",
-            19
-          ],
-          [
-            "apple",
-            17
-          ],
-          [
-            "income",
-            17
-          ]
-        ]
-      },
-      "severity": "high",
-      "id": "8ac5fce38b881973d9b76307b6dce621",
-      "rank": 26
-    },
-    {
-      "ticker": "AAPL",
-      "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
-      "signal_type": "cross_section",
-      "score": 0.687004,
-      "filing_a_id": "a8506e2e557971890a8c925dc36715da",
-      "filing_b_id": "a8506e2e557971890a8c925dc36715da",
-      "section_a": "item_7",
-      "section_b": "item_8",
-      "filing_date": "2025-10-31",
-      "detected_at": "2025-10-31",
-      "details": {
-        "cosine_distance": 0.47834,
-        "js_divergence": 0.485124,
-        "entropy_delta": 0.828794,
-        "terms_added": [
-          [
-            "september",
-            85
-          ],
-          [
-            "tax",
-            45
-          ],
-          [
-            "income",
-            38
-          ],
-          [
-            "apple",
-            34
-          ],
-          [
-            "inc",
-            34
-          ]
-        ],
-        "terms_removed": [
-          [
-            "sales",
-            33
-          ],
-          [
-            "income",
-            21
-          ],
-          [
-            "services",
-            21
-          ],
-          [
-            "tax",
-            21
-          ],
-          [
-            "compared",
-            17
-          ]
-        ]
-      },
-      "severity": "medium",
-      "id": "4b41ff3b572898eac381b404a47be775",
-      "rank": 27
-    },
-    {
-      "ticker": "AAPL",
-      "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
-      "signal_type": "cross_section",
-      "score": 0.663558,
-      "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
-      "filing_b_id": "36c52abd8526e09b2a030f881b058c71",
-      "section_a": "item_7",
-      "section_b": "item_8",
-      "filing_date": "2024-11-01",
-      "detected_at": "2024-11-01",
-      "details": {
-        "cosine_distance": 0.439264,
-        "js_divergence": 0.464149,
-        "entropy_delta": 0.953436,
-        "terms_added": [
-          [
-            "september",
-            95
-          ],
-          [
-            "tax",
-            48
-          ],
-          [
-            "income",
-            46
-          ],
-          [
-            "apple",
-            35
-          ],
-          [
-            "inc",
-            35
-          ]
-        ],
-        "terms_removed": [
-          [
-            "sales",
-            33
-          ],
-          [
-            "tax",
-            23
-          ],
-          [
-            "services",
-            18
-          ],
-          [
-            "compared",
-            16
-          ],
-          [
-            "income",
-            16
-          ]
-        ]
-      },
-      "severity": "medium",
-      "id": "4330a80a584fd9cee57272e50bccfd6a",
-      "rank": 28
-    },
-    {
-      "ticker": "AAPL",
-      "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
-      "signal_type": "temporal_shift",
-      "score": 0.432607,
-      "filing_a_id": "a8506e2e557971890a8c925dc36715da",
-      "filing_b_id": "5e904a4cfcc2e3500c202b4fdfa5e010",
-      "section_a": "item_1a",
-      "section_b": "item_1a",
-      "filing_date": "2026-07-31",
-      "detected_at": "2026-07-31",
-      "details": {
-        "cosine_distance": 0.167166,
-        "js_divergence": 0.302814,
-        "entropy_delta": -1.032161,
-        "terms_added": [
-          [
-            "margin",
-            4
-          ],
-          [
-            "computing",
-            3
-          ],
-          [
-            "obligations",
-            3
-          ],
-          [
-            "dma",
-            3
-          ],
-          [
-            "revenue",
-            2
-          ],
-          [
-            "capacity",
-            2
-          ]
-        ],
-        "terms_removed": [
-          [
-            "products",
-            75
-          ],
-          [
-            "services",
-            61
-          ],
-          [
-            "business",
-            57
-          ],
-          [
-            "adversely",
-            40
-          ],
-          [
-            "price",
-            35
-          ],
-          [
-            "materially",
-            29
-          ]
-        ]
-      },
-      "severity": "medium",
-      "id": "87905bf1767b9a0440095f276cbad627",
-      "rank": 29
-    },
-    {
-      "ticker": "AAPL",
-      "company_id": "cfaf2e51fb4f9f20269809770c1cb287",
-      "signal_type": "temporal_shift",
-      "score": 0.244231,
-      "filing_a_id": "36c52abd8526e09b2a030f881b058c71",
-      "filing_b_id": "a8506e2e557971890a8c925dc36715da",
-      "section_a": "item_3",
-      "section_b": "item_3",
-      "filing_date": "2025-10-31",
-      "detected_at": "2025-10-31",
-      "details": {
-        "cosine_distance": 0.119804,
-        "js_divergence": 0.158523,
-        "entropy_delta": 0.203578,
-        "terms_added": [
-          [
-            "investigation",
-            6
-          ],
-          [
-            "article",
-            4
-          ],
-          [
-            "court",
-            4
-          ],
-          [
-            "app",
-            3
-          ],
-          [
-            "april",
-            3
-          ],
-          [
-            "outside",
-            3
-          ]
-        ],
-        "terms_removed": [
-          [
-            "dma",
-            3
-          ],
-          [
-            "investigations",
-            2
-          ],
-          [
-            "store",
-            2
-          ],
-          [
-            "announced",
-            1
-          ],
-          [
-            "relates",
-            1
-          ],
-          [
-            "apps",
-            1
-          ]
-        ]
-      },
-      "severity": "low",
-      "id": "f90968a20f0eda334c5cd169f62e908e",
+      "id": "e90ecdd06291afed5fbe87a6eaa936a0",
       "rank": 30
     }
   ],
   "benchmark": {
-    "rdd_ms": 7009.9,
-    "dataframe_ms": 492.4,
-    "rdd_terms": 2751,
-    "dataframe_terms": 2751,
+    "rdd_ms": 23955.3,
+    "dataframe_ms": 3088.7,
+    "rdd_terms": 4914,
+    "dataframe_terms": 4914,
     "match": true,
-    "speedup_dataframe_vs_rdd": 14.24,
+    "speedup_dataframe_vs_rdd": 7.76,
     "fastest": "DataFrame",
     "note": "Same Parquet rows; RDD uses reduceByKey, DataFrame uses groupBy().count().",
-    "fastest_ms": 492.4
+    "fastest_ms": 3088.7
   },
-  "teacher_checks": {
+  "section_analysis": {
     "threshold_tokens": 500,
     "csv_path": "D:\\Anomaly Engine\\data\\curated\\latest\\section_stats.csv",
     "rdd": {
       "input_partitions": 8,
       "header": "ticker,section_type,tokens,sentences,characters,unique_terms,entropy,normalised_entropy",
-      "low_detail_sections": 37,
+      "low_detail_sections": 69,
       "by_ticker": [
         [
           "AAPL",
           18
         ],
         [
+          "AMZN",
+          11
+        ],
+        [
+          "GOOGL",
+          3
+        ],
+        [
           "MSFT",
-          19
+          24
+        ],
+        [
+          "NVDA",
+          13
         ]
       ],
       "sample": [
@@ -4304,37 +6298,67 @@
           928
         ]
       ],
-      "lineage": "(1) PythonRDD[101] at collect at D:\\Anomaly Engine\\services\\ingestion-us\\app\\spark\\teacher_demo.py:118 []\n |  MapPartitionsRDD[100] at mapPartitions at PythonRDD.scala:197 []\n |  ShuffledRDD[99] at partitionBy at DirectMethodHandleAccessor.java:103 []\n +-(8) PairwiseRDD[98] at reduceByKey at D:\\Anomaly Engine\\services\\ingestion-us\\app\\spark\\teacher_demo.py:117 []\n    |  PythonRDD[97] at reduceByKey at D:\\Anomaly Engine\\services\\ingestion-us\\app\\spark\\teacher_demo.py:117 []\n    |  D:\\Anomaly Engine\\data\\curated\\latest\\section_stats.csv MapPartitionsRDD[93] at textFile at DirectMethodHandleAccessor.java:103 []\n    |      CachedPartitions: 8; MemorySize: 2.2 KiB; DiskSize: 0.0 B\n    |  D:\\Anomaly Engine\\data\\curated\\latest\\section_stats.csv HadoopRDD[92] at textFile at DirectMethodHandleAccessor.java:103 []"
+      "lineage": "(1) PythonRDD[101] at collect at D:\\Anomaly Engine\\services\\ingestion-us\\app\\spark\\section_analysis.py:127 []\n |  MapPartitionsRDD[100] at mapPartitions at PythonRDD.scala:197 []\n |  ShuffledRDD[99] at partitionBy at DirectMethodHandleAccessor.java:103 []\n +-(8) PairwiseRDD[98] at reduceByKey at D:\\Anomaly Engine\\services\\ingestion-us\\app\\spark\\section_analysis.py:126 []\n    |  PythonRDD[97] at reduceByKey at D:\\Anomaly Engine\\services\\ingestion-us\\app\\spark\\section_analysis.py:126 []\n    |  D:\\Anomaly Engine\\data\\curated\\latest\\section_stats.csv MapPartitionsRDD[93] at textFile at DirectMethodHandleAccessor.java:103 []\n    |      CachedPartitions: 8; MemorySize: 3.7 KiB; DiskSize: 0.0 B\n    |  D:\\Anomaly Engine\\data\\curated\\latest\\section_stats.csv HadoopRDD[92] at textFile at DirectMethodHandleAccessor.java:103 []"
     },
     "dataframe": {
       "input_partitions": 1,
       "repartitioned_partitions": 4,
-      "low_detail_sections": 37,
+      "low_detail_sections": 69,
       "by_ticker": [
         [
           "AAPL",
           18
         ],
         [
+          "AMZN",
+          11
+        ],
+        [
+          "GOOGL",
+          3
+        ],
+        [
           "MSFT",
-          19
+          24
+        ],
+        [
+          "NVDA",
+          13
         ]
       ],
       "sql": [
         {
           "ticker": "MSFT",
-          "sections": 19,
-          "avg_tokens": 233.53,
-          "low_detail_sections": 19
+          "sections": 25,
+          "avg_tokens": 240.08,
+          "low_detail_sections": 24
         },
         {
           "ticker": "AAPL",
           "sections": 31,
           "avg_tokens": 961.13,
           "low_detail_sections": 18
+        },
+        {
+          "ticker": "NVDA",
+          "sections": 20,
+          "avg_tokens": 1553.4,
+          "low_detail_sections": 13
+        },
+        {
+          "ticker": "AMZN",
+          "sections": 19,
+          "avg_tokens": 1591.37,
+          "low_detail_sections": 11
+        },
+        {
+          "ticker": "GOOGL",
+          "sections": 6,
+          "avg_tokens": 2124.5,
+          "low_detail_sections": 3
         }
       ],
-      "round_trip_rows": 50
+      "round_trip_rows": 101
     },
     "match": true
   },
@@ -4343,57 +6367,57 @@
       "name": "companies.json",
       "format": "json",
       "path": "D:\\Anomaly Engine\\data\\curated\\latest\\companies.json",
-      "bytes": 495,
-      "rows": 2
+      "bytes": 1264,
+      "rows": 5
     },
     {
       "name": "filings.json",
       "format": "json",
       "path": "D:\\Anomaly Engine\\data\\curated\\latest\\filings.json",
-      "bytes": 404284,
-      "rows": 5
+      "bytes": 1028860,
+      "rows": 11
     },
     {
       "name": "chunks.json",
       "format": "json",
       "path": "D:\\Anomaly Engine\\data\\curated\\latest\\chunks.json",
-      "bytes": 1572421,
-      "rows": 1159
+      "bytes": 5025997,
+      "rows": 3759
     },
     {
       "name": "anomalies.json",
       "format": "json",
       "path": "D:\\Anomaly Engine\\data\\curated\\latest\\anomalies.json",
-      "bytes": 37423,
+      "bytes": 36580,
       "rows": 30
     },
     {
       "name": "top_terms.json",
       "format": "json",
       "path": "D:\\Anomaly Engine\\data\\curated\\latest\\top_terms.json",
-      "bytes": 3840,
+      "bytes": 3836,
       "rows": 50
     },
     {
       "name": "section_stats.json",
       "format": "json",
       "path": "D:\\Anomaly Engine\\data\\curated\\latest\\section_stats.json",
-      "bytes": 35618,
-      "rows": 50
+      "bytes": 72029,
+      "rows": 101
     },
     {
-      "name": "teacher_checks.json",
+      "name": "section_analysis.json",
       "format": "json",
-      "path": "D:\\Anomaly Engine\\data\\curated\\latest\\teacher_checks.json",
-      "bytes": 2099,
+      "path": "D:\\Anomaly Engine\\data\\curated\\latest\\section_analysis.json",
+      "bytes": 2811,
       "rows": 5
     },
     {
       "name": "features.json",
       "format": "json",
       "path": "D:\\Anomaly Engine\\data\\curated\\latest\\features.json",
-      "bytes": 50509,
-      "rows": 40
+      "bytes": 84660,
+      "rows": 67
     }
   ]
 }

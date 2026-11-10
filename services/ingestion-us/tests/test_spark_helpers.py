@@ -20,7 +20,7 @@ from app.spark.pipeline import (
     tokenize,
     top_terms,
 )
-from app.spark.teacher_demo import (
+from app.spark.section_analysis import (
     CSV_COLUMNS,
     LOW_DETAIL_TOKEN_THRESHOLD,
     write_section_stats_csv,
@@ -102,13 +102,13 @@ def test_build_chunks_overlaps_sentences():
     assert all(chunk["text"] for chunk in chunks)
 
 
-def test_raw_snapshot_has_five_filings():
+def test_raw_snapshot_has_filings_for_the_original_companies():
     records = load_raw_filings(RAW_DIR)
-    assert len(records) == 5
-    assert {record["ticker"] for record in records} == {"AAPL", "MSFT"}
+    assert len(records) >= 5
+    assert {"AAPL", "MSFT"} <= {record["ticker"] for record in records}
 
     aapl = load_raw_filings(RAW_DIR, tickers=["aapl"])
-    assert len(aapl) == 3
+    assert len(aapl) >= 3
     assert all(record["ticker"] == "AAPL" for record in aapl)
 
 
@@ -123,7 +123,7 @@ def test_normalise_filing_keeps_parsed_sections():
     assert normalised["filing_id"] == stable_id("filing", "AAPL", ten_k["accession_number"])
 
 
-def test_teacher_csv_uses_comma_free_columns(tmp_path):
+def test_section_csv_uses_comma_free_columns(tmp_path):
     rows = [
         {
             "ticker": "AAPL",

@@ -1,20 +1,8 @@
-"""Teacher-style PySpark checks on the SEC section corpus.
+"""Step 12: answer one question with RDDs, then with DataFrames.
 
-This module deliberately mirrors the commands from the class notes:
-
-RDD path
-    SparkSession.builder -> sc.textFile -> first -> filter -> map
-    -> reduceByKey -> count -> collect -> take -> toDebugString
-
-DataFrame path
-    spark.read.csv(header=True, schema=...) -> filter -> groupBy -> agg
-    -> orderBy -> explain(True) -> show -> createOrReplaceTempView
-    -> spark.sql -> DataFrame.rdd -> RDD.toDF
-
-The classroom example counts low-oxygen readings per ward.  The project
-adaptation counts short ("low-detail") SEC sections per ticker.  A section with
-fewer than ``LOW_DETAIL_TOKEN_THRESHOLD`` tokens is the analogue of an SpO2
-reading below 92.
+Question: which sections are short (under 500 tokens), and how many does each
+company have? Both sides read the same section_stats.csv, so the answers must
+match. The `match` field in the output says whether they did.
 """
 
 from __future__ import annotations
@@ -37,8 +25,7 @@ from pyspark.sql.types import (
 
 LOW_DETAIL_TOKEN_THRESHOLD = 500
 
-# Keep this CSV deliberately comma-free.  The RDD half of the lecture parses
-# each line with line.split(","), exactly as in the classroom example.
+    # no commas in the values, because the RDD side splits each line on ","
 CSV_COLUMNS = (
     "ticker",
     "section_type",
@@ -70,7 +57,7 @@ def _project_root() -> Path:
 
 
 def write_section_stats_csv(path: Path, rows: list[dict[str, Any]]) -> Path:
-    """Write the small project dataset used by the lecture commands."""
+    # one CSV that both the RDD and the DataFrame side read
     lines = [",".join(CSV_COLUMNS)]
     for row in rows:
         values = []
@@ -85,46 +72,46 @@ def write_section_stats_csv(path: Path, rows: list[dict[str, Any]]) -> Path:
     return path
 
 
-def run_teacher_checks(
+def run_section_analysis(
     spark: SparkSession,
     section_stats: list[dict[str, Any]],
     curated_dir: Path,
 ) -> dict[str, Any]:
-    """Run the exact RDD -> DataFrame sequence taught in class.
-
-    ``section_stats`` is the 50-row RDD result already produced by the main
-    pipeline.  It is exported to CSV once so both APIs can read the same file.
-    """
+    # runs both paths on the same CSV and says whether the counts agree
+    # section_stats is the table the main pipeline already produced
     csv_path = write_section_stats_csv(
         Path(curated_dir) / "section_stats.csv", section_stats
     )
     sc = spark.sparkContext
 
-    # ---------------------------------------------------------------- RDD path
+    # RDD side
     lines = sc.textFile(str(csv_path), minPartitions=8)
-    header = lines.first()  # action: reads the first partition only
+    header = lines.first()  # action: only reads the first partition
     lines.cache()
-    lines.count()  # materialise the cache
+    lines.count()  # action: fills the cache
 
-    rows = lines.filter(lambda line: line != header)
-    sections = (
-        rows.map(lambda line: line.split(","))
-        .map(lambda p: (p[0], p[1], int(p[2])))
+    rows = lines.filter(lambda line: line != header)  # narrow: no work yet
+    sections = rows.map(lambda line: line.split(",")).map(  # narrow
+        lambda p: (p[0], p[1], int(p[2]))
     )
-    low_detail = sections.filter(lambda r: r[2] < LOW_DETAIL_TOKEN_THRESHOLD)
-    low_detail_count = low_detail.count()
+    low_detail = sections.filter(  # narrow
+        lambda r: r[2] < LOW_DETAIL_TOKEN_THRESHOLD
+    )
+    low_detail_count = low_detail.count()  # action
 
+    # (ticker, 1) pairs, shuffled and added up per ticker
     by_ticker = low_detail.map(lambda r: (r[0], 1)).reduceByKey(lambda a, b: a + b)
-    rdd_by_ticker = sorted(by_ticker.collect())
-    sample = sections.take(3)
+    rdd_by_ticker = sorted(by_ticker.collect())  # action
+    sample = sections.take(3)  # action
     lineage = by_ticker.toDebugString().decode("utf-8")
     input_partitions = lines.getNumPartitions()
     lines.unpersist()
 
-    # ---------------------------------------------------------- DataFrame path
+    # DataFrame side
     section_df = spark.read.csv(
         str(csv_path), header=True, schema=SECTION_SCHEMA
-    )
+    )  # lazy: nothing is read yet
+    print("Input partitions:", section_df.rdd.getNumPartitions())  # no job runs
     section_df.printSchema()
     print("Rows:", section_df.count())
     print("Columns:", len(section_df.columns))
@@ -154,7 +141,7 @@ def run_teacher_checks(
     print("Rows after dropDuplicates/dropna/fillna:", clean_df.count())
 
     section_df.cache()
-    section_df.count()  # materialise the cache, as in the class example
+    section_df.count()  # action: fills the cache
 
     dataframe_partitions = section_df.rdd.getNumPartitions()
     repartitioned = section_df.repartition(4, "ticker")
@@ -162,16 +149,17 @@ def run_teacher_checks(
     print("After repartition:", repartitioned_partitions)
 
     low = (
-        section_df.filter(F.col("tokens") < LOW_DETAIL_TOKEN_THRESHOLD)
-        .groupBy("ticker")
-        .agg(F.count("*").alias("low_detail_sections"))
-        .orderBy(F.desc("low_detail_sections"))
+        section_df.filter(F.col("tokens") < LOW_DETAIL_TOKEN_THRESHOLD)  # narrow
+        .groupBy("ticker")  # wide: this one shuffles
+        .agg(F.count("*").alias("low_detail_sections"))  # narrow
+        .orderBy(F.desc("low_detail_sections"))  # wide
     )
-    low.explain(True)  # parsed, analyzed, optimized and physical plans
+
+    low.explain(True)  # shows the plans, still does not run the query
     low.show()  # action: the job runs now
+
     dataframe_by_ticker = sorted(
-        (row["ticker"], row["low_detail_sections"])
-        for row in low.collect()
+        (row["ticker"], row["low_detail_sections"]) for row in low.collect()
     )
 
     section_df.createOrReplaceTempView("section_stats")
@@ -190,7 +178,7 @@ def run_teacher_checks(
     sql_result.show()
     sql_rows = [row.asDict() for row in sql_result.collect()]
 
-    # DataFrame -> RDD -> DataFrame, the round trip from the lecture.
+    # DataFrame -> RDD -> DataFrame, to show the two can be mixed
     back = (
         section_df.select("ticker", "section_type", "tokens")
         .rdd.map(lambda r: (r.ticker, r.section_type, r.tokens))
@@ -242,18 +230,17 @@ def main() -> int:
         "section_stats", []
     )
 
-    # The production runner uses the low-memory session factory.  Override
-    # SPARK_MASTER=local[*] on a roomy machine to match the classroom setting.
+    # same small session as the CLI runner; SPARK_MASTER=local[4] on a bigger machine
     from .session import build_session
 
-    spark = build_session("anomaly-engine-teacher-checks")
+    spark = build_session("anomaly-engine-section-analysis")
     try:
-        checks = run_teacher_checks(spark, section_stats, curated_dir)
+        analysis = run_section_analysis(spark, section_stats, curated_dir)
     finally:
         spark.stop()
 
-    print(json.dumps(checks, indent=2, default=str))
-    return 0 if checks["match"] else 1
+    print(json.dumps(analysis, indent=2, default=str))
+    return 0 if analysis["match"] else 1
 
 
 if __name__ == "__main__":

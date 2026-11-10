@@ -5,7 +5,7 @@
 > [docs/COMPLETION_45.md](docs/COMPLETION_45.md) ·
 > [docs/PYSPARK_RDD_PIPELINE.md](docs/PYSPARK_RDD_PIPELINE.md) ·
 > [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) ·
-> [docs/PYSPARK_TEACHING_ALIGNMENT.md](docs/PYSPARK_TEACHING_ALIGNMENT.md)
+> [docs/PYSPARK_API_REFERENCE.md](docs/PYSPARK_API_REFERENCE.md)
 
 A **MERN-integrated financial anomaly detection engine** that ingests real SEC
 EDGAR filings (10-K/10-Q) for AAPL and large-cap US issuers, runs FinBERT
@@ -68,7 +68,7 @@ Copy-Item .env.example .env   # fill Supabase/Redis/Finnhub/SEC keys + MONGODB_U
 #    - Supabase: project tables (filings, companies, anomalies, ...)
 
 # 3. Start all 6 services detached (WMI, CurrentDirectory-aware)
-.\start-dev.ps1
+.\start-dev.ps1 -IncludeFrontend
 
 # 4. Check health + docs
 Invoke-RestMethod http://127.0.0.1:8000/health     # gateway
@@ -83,6 +83,43 @@ Invoke-RestMethod -Method Post http://127.0.0.1:8000/api/v1/ingest/AAPL
 Invoke-RestMethod -Method Post http://127.0.0.1:8000/api/v1/anomalies/analyze/AAPL
 Get-Anomalies = Invoke-RestMethod http://127.0.0.1:8000/api/v1/anomalies?ticker=AAPL
 ```
+
+## Shared SEC Company Ingestion
+
+The local dashboard starts with a shared catalog of AAPL, MSFT, AMZN, NVDA, and
+GOOGL. The catalog is shared across browser profiles; profiles are local UI
+preferences, not separate server accounts. Fetching a company downloads SEC
+filings into `data\raw\filings\<TICKER>` and records a durable job status. The
+five catalog entries are available immediately; fetch filings for each ticker
+before running the RDD pipeline to generate their analysis.
+
+Start the services with `.\start-dev.ps1 -IncludeFrontend`, then fetch filings
+through the dashboard or the gateway API:
+
+```powershell
+$job = Invoke-RestMethod -Method Post `
+  -Uri http://127.0.0.1:8000/api/v1/companies/AMZN/ingest `
+  -ContentType application/json `
+  -Body (@{ filing_types = @("10-K", "10-Q"); max_filings = 5 } | ConvertTo-Json)
+
+do {
+  Start-Sleep -Seconds 2
+  $status = Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8000/api/v1/companies/ingest/status/$($job.job_id)"
+} while ($status.status -in @("queued", "running"))
+
+$status
+```
+
+The same five-company snapshot can be populated from the command line:
+
+```powershell
+services\ingestion-us\venv\Scripts\python.exe scripts\fetch_sec_filings.py
+```
+
+SEC ingestion and the PySpark RDD pipeline are separate operations. Run
+`POST /api/v1/pipeline/run` only after raw filings have been fetched; it
+processes the local snapshot and does not download filings itself.
 
 ## Scripts (root-level, MERN baseline)
 

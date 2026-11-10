@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 export interface AnomalyCardProps {
   id?: string;
   signalType: string;
@@ -11,73 +13,87 @@ export interface AnomalyCardProps {
   rank?: number;
 }
 
-const GRADIENT = {
-  high: 'from-cyan-400 via-violet-500 to-fuchsia-500',
-  mid: 'from-cyan-400/70 via-violet-500/60 to-fuchsia-500/50',
-  low: 'from-cyan-400/30 via-violet-500/25 to-fuchsia-500/20',
-};
-
-export function AnomalyCard({ signalType, score, detectedAt, sentence, cosineDistance, klDivergence, rank }: AnomalyCardProps) {
-  const severity = score > 0.7 ? 'high' : score > 0.4 ? 'mid' : 'low';
-  const pct = Math.round(score * 100);
-  const severityLabel = severity === 'high' ? 'Critical' : severity === 'mid' ? 'Elevated' : 'Watch';
+export function AnomalyCard({
+  signalType,
+  score,
+  detectedAt,
+  sentence,
+  cosineDistance,
+  klDivergence,
+  rank,
+}: AnomalyCardProps) {
+  const isHigh = score > 0.7;
+  const isMid = score > 0.4 && score <= 0.7;
+  const severityLabel = isHigh ? 'Big change' : isMid ? 'Notable change' : 'Small change';
 
   return (
-    <article className="group relative overflow-hidden rounded-xl bg-navy-950/60 p-px">
-      <div className={'absolute inset-0 rounded-xl bg-gradient-to-br ' + GRADIENT[severity] + ' opacity-90'} />
-      <div className="absolute inset-px rounded-[11px] bg-navy-950/90" />
-      <div className="relative z-10 p-5 flex flex-col gap-3">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-navy-900 border border-white/10 font-mono text-[11px] text-cyan-300 tabular-nums">
-              {rank != null ? rank : '#'}
+    <article className="card p-5 flex flex-col justify-between transition-all duration-200 hover:border-line-strong hover:bg-ground-tint group">
+      {/* Top Meta Bar */}
+      <div>
+        <div className="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-line">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-xs font-bold px-1.5 py-0.5 bg-ground border border-line text-accent">
+              {rank != null ? `#${rank}` : 'Flag'}
             </span>
-            <span className="font-mono text-sm font-semibold text-cyan-300 uppercase tracking-wide">{signalType.replace(/_/g, ' ')}</span>
+            <span className="font-mono text-xs font-bold text-white uppercase tracking-wider">
+              {signalType.replace(/_/g, ' ')}
+            </span>
           </div>
           <span
             className={
-              'inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-medium tabular-nums ' +
-              (severity === 'high'
-                ? 'border-fuchsia-500/40 bg-fuchsia-500/10 text-fuchsia-300'
-                : severity === 'mid'
-                  ? 'border-violet-500/40 bg-violet-500/10 text-violet-300'
-                  : 'border-cyan-500/40 bg-cyan-500/10 text-cyan-300')
+              'badge ' +
+              (isHigh
+                ? 'badge-red'
+                : isMid
+                ? 'badge-orange'
+                : 'badge-yellow')
             }
           >
             {severityLabel}
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-1.5 rounded-full bg-navy-800 overflow-hidden">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 transition-[width] duration-700 ease-out"
-              style={{ width: pct + '%' }}
-            />
-          </div>
-          <span className="font-mono text-lg font-bold text-white tabular-nums leading-none">
-            {score.toFixed(2)}
+        {/* Primary Value Number */}
+        <div className="flex items-baseline justify-between my-2">
+          <span className="text-[10px] font-mono text-ink-dim uppercase tracking-widest">
+            Change score
+          </span>
+          <span className="text-3xl font-mono font-bold text-value tabular-nums">
+            {score.toFixed(3)}
           </span>
         </div>
 
-        {sentence && (
-          <p className="text-sm text-navy-300 line-clamp-3 border-l-2 border-cyan-500/30 pl-3">{sentence}</p>
-        )}
+        {/* Progress Bar with Kinetic Accent */}
+        <div className="h-1 bg-ground border border-line overflow-hidden mb-3">
+          <div
+            className={`h-full transition-all duration-500 ${
+              isHigh ? 'bg-red-500' : isMid ? 'bg-accent' : 'bg-value'
+            }`}
+            style={{ width: `${Math.min(100, Math.max(5, score * 100))}%` }}
+          />
+        </div>
 
-        <div className="flex items-center gap-4 text-navy-400 font-mono text-[11px]">
-          {cosineDistance != null && (
-            <span className="flex items-center gap-1">
-              <span className="text-navy-500">Δcos</span>
-              <span className="text-navy-200 tabular-nums">{cosineDistance.toFixed(3)}</span>
-            </span>
-          )}
-          {klDivergence != null && (
-            <span className="flex items-center gap-1">
-              <span className="text-navy-500">KL</span>
-              <span className="text-navy-200 tabular-nums">{klDivergence.toFixed(2)}</span>
-            </span>
-          )}
-          <span className="ml-auto text-navy-500">{new Date(detectedAt).toLocaleDateString()}</span>
+        {/* Sentence Text / Description */}
+        {sentence && (
+          <p className="text-xs text-ink-muted line-clamp-3 leading-relaxed mb-4 font-sans bg-ground/60 p-2.5 border-l-2 border-line">
+            "{sentence}"
+          </p>
+        )}
+      </div>
+
+      {/* Numerical Metrics Footer */}
+      <div className="pt-3 border-t border-line grid grid-cols-2 gap-2 text-xs font-mono">
+        <div>
+          <span className="text-[10px] text-ink-dim block uppercase">Text difference</span>
+          <span className="text-ink font-semibold">
+            {cosineDistance != null ? cosineDistance.toFixed(3) : '—'}
+          </span>
+        </div>
+        <div className="text-right">
+          <span className="text-[10px] text-ink-dim block uppercase">Word difference</span>
+          <span className="text-ink font-semibold">
+            {klDivergence != null ? klDivergence.toFixed(3) : '—'}
+          </span>
         </div>
       </div>
     </article>

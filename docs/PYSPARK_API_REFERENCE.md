@@ -1,120 +1,136 @@
-# PySpark Teaching Alignment
+# PySpark API Reference
 
-This note maps the commands from the class material directly to the project.
-The runnable implementation is
-`services/ingestion-us/app/spark/teacher_demo.py`; the main pipeline calls the
-same function as stage 12.
+This document describes the Spark APIs used in the project, where each one
+runs, and what the pipeline proves with them. The implementation is
+`services/ingestion-us/app/spark/section_analysis.py`; the main pipeline calls
+it as the final stage, so the same code runs in the CLI, the API subprocess and
+the dashboard.
 
-## Install and load
-
-The classroom install command:
-
-```powershell
-python -m pip install pyspark
-```
-
-This project pins the version used by the demo:
+## Install and session setup
 
 ```powershell
 services\ingestion-us\venv\Scripts\python.exe -m pip install pyspark==4.2.0
-```
-
-Spark also needs a compatible JDK. Check it with:
-
-```powershell
 java -version
 ```
 
-The classroom session pattern:
+The project builds one session per job in `app/spark/session.py`:
 
 ```python
-from pyspark.sql import SparkSession
-
 spark = (
     SparkSession.builder
-    .appName("AnomalyEngineSEC")
-    .master("local[*]")
+    .appName("anomaly-engine-sec-rdd")
+    .master(os.getenv("SPARK_MASTER", "local[1]"))
+    .config("spark.driver.memory", os.getenv("SPARK_DRIVER_MEMORY", "512m"))
     .getOrCreate()
 )
 ```
 
-The project uses the same builder pattern in
-`app/spark/session.py`, with one deployment adaptation: `master` comes from
-`SPARK_MASTER` and defaults to `local[1]` on this 8 GB laptop. On a lab machine
-with more RAM:
+`master` and heap size come from the environment. `local[1]` / `512m` is the
+default because the development laptop has limited free commit memory; a
+machine or container with headroom can run `SPARK_MASTER=local[4]` with
+`SPARK_DRIVER_MEMORY=1g`. The code is identical either way.
 
-```powershell
-$env:SPARK_MASTER = "local[*]"
-$env:SPARK_DRIVER_MEMORY = "1g"
+## The question the final stage answers
+
+The stage classifies SEC sections by length and counts them per ticker:
+
+| Vital-signs example | This project | Meaning |
+| --- | --- | --- |
+| `ward` | `ticker` | group key |
+| `spo2 < 92` | `tokens < 500` | alert threshold |
+| `vitals.csv` | `section_stats.csv` | input file |
+| "low SpO2 readings per ward" | "low-detail sections per ticker" | result |
+
+`section_stats.csv` is written from the section-statistics RDD, so the input is
+produced by the pipeline rather than checked in by hand.
+
+## RDD path
+
+```python
+sc = spark.sparkContext
+lines = sc.textFile("section_stats.csv", minPartitions=8)
+header = lines.first()                       # action: first partition only
+lines.cache()
+lines.count()                                # materialise the cache
+
+rows = lines.filter(lambda line: line != header)
+sections = rows.map(lambda line: line.split(",")).map(
+    lambda p: (p[0], p[1], int(p[2]))        # ticker, section type, tokens
+)
+low_detail = sections.filter(lambda r: r[2] < 500)
+low_detail_count = low_detail.count()        # action
+
+by_ticker = low_detail.map(lambda r: (r[0], 1)).reduceByKey(lambda a, b: a + b)
+rdd_by_ticker = sorted(by_ticker.collect())  # action
+sample = sections.take(3)                    # action
+lineage = by_ticker.toDebugString().decode("utf-8")
 ```
 
-The default stays small so the JVM does not exhaust Windows commit memory.
-
-## RDD commands: class example -> project
-
-| Class example | Project adaptation | Where |
-| --- | --- | --- |
-| `sc.textFile("vitals.csv", minPartitions=8)` | `sc.textFile(section_stats.csv, minPartitions=8)` | `teacher_demo.py` |
-| `header = lines.first()` | same: read the CSV header | `teacher_demo.py` |
-| `lines.filter(lambda line: line != header)` | same: drop the header | `teacher_demo.py` |
-| `line.split(",")` | same: parse ticker, section type, tokens | `teacher_demo.py` |
-| `readings.filter(lambda r: r[2] < 92)` | `sections.filter(lambda r: r[2] < 500)` | `teacher_demo.py` |
-| `(ward, 1)` + `reduceByKey` | `(ticker, 1)` + `reduceByKey` | `teacher_demo.py` |
-| `count()` | count of low-detail sections | `teacher_demo.py` |
-| `collect()` | `(ticker, count)` pairs | `teacher_demo.py` |
-| `take(3)` | first three parsed sections | `teacher_demo.py` |
-| `toDebugString().decode()` | lineage stored in `teacher_checks.json` | `teacher_demo.py` |
-| `getNumPartitions()` | input partition count | `teacher_demo.py` |
-| `cache()` + `count()` | cache and materialise the CSV lines | `teacher_demo.py` |
-
-The project meaning is the same question with different nouns:
-
-| Classroom | Project |
+| API | Role |
 | --- | --- |
-| Ward | Ticker |
-| SpO2 reading | Section token count |
-| SpO2 below 92% | Section below 500 tokens ("low detail") |
-| `vitals.csv` | `section_stats.csv` |
-| One million readings | 50 real SEC sections |
+| `textFile(..., minPartitions=8)` | read the CSV as lines across 8 partitions |
+| `first()` | read the header without scanning the file |
+| `cache()` + `count()` | materialise the lines once for reuse |
+| `filter` / `map` | drop the header, parse `line.split(",")` |
+| `reduceByKey` | shuffle and sum `(ticker, 1)` pairs |
+| `count` / `collect` / `take` | actions that trigger the jobs |
+| `toDebugString()` | expose the RDD lineage |
 
-## DataFrame commands: class example -> project
+## DataFrame path
 
-| Class example | Project adaptation | Where |
-| --- | --- | --- |
-| `spark.read.csv(..., header=True, schema=schema)` | same, with `SECTION_SCHEMA` | `teacher_demo.py` |
-| `df.printSchema()` | same | `teacher_demo.py` |
-| `df.count()`, `df.columns` | same | `teacher_demo.py` |
-| `df.describe().show()` | `describe("tokens", "sentences").show()` | `teacher_demo.py` |
-| `df.select(...)` | select ticker, section, tokens, entropy | `teacher_demo.py` |
-| `withColumnRenamed("tokens", "token_count")` | same | `teacher_demo.py` |
-| `withColumn(..., when(...).otherwise(...))` | `detail_level = detailed/brief` | `teacher_demo.py` |
-| `dropDuplicates()`, `dropna()`, `fillna()` | clean the section DataFrame | `teacher_demo.py` |
-| `df.cache()`, `df.count()` | materialise the cached sections | `teacher_demo.py` |
-| `df.rdd.getNumPartitions()` | input partition count | `teacher_demo.py` |
-| `df.repartition(4, "ticker")` | same shape as `repartition(4, "city")` | `teacher_demo.py` |
-| `filter -> groupBy -> agg -> orderBy` | low-detail sections per ticker | `teacher_demo.py` |
-| `explain(True)` | prints all four plans | `teacher_demo.py` |
-| `show()` | prints the result | `teacher_demo.py` |
-| `createOrReplaceTempView("section_stats")` | same | `teacher_demo.py` |
-| `spark.sql("""SELECT ... GROUP BY ...""")` | ticker summary in SQL | `teacher_demo.py` |
-| `df.select(...).rdd.map(...).toDF([...])` | DataFrame -> RDD -> DataFrame | `teacher_demo.py` |
-| `.write.mode("overwrite").parquet(...)` | `chunks.parquet` | `pipeline.py` |
+The stage uses the same fluent style as the reference exercise:
+
+```python
+section_df = spark.read.csv(                             # lazy: no data read yet
+    "section_stats.csv", header=True, schema=SECTION_SCHEMA
+)
+print(section_df.rdd.getNumPartitions())                 # no job runs
+
+low = (
+    section_df.filter(F.col("tokens") < 500)             # transformation
+    .groupBy("ticker")                                   # transformation (wide)
+    .agg(F.count("*").alias("low_detail_sections"))      # transformation
+    .orderBy(F.desc("low_detail_sections"))              # transformation
+)
+low.explain(True)   # four plans, query still lazy
+low.show()          # the action: the job runs now
+```
+
+| API | Role |
+| --- | --- |
+| `read.csv(header=True, schema=...)` | typed read with an explicit `StructType` |
+| `printSchema` / `count` / `columns` | inspect the DataFrame |
+| `describe(...).show()` | numeric summary of `tokens` / `sentences` |
+| `select` | narrow to ticker, section type, tokens, entropy |
+| `withColumnRenamed` | `tokens` -> `token_count` |
+| `withColumn(when/otherwise)` | `detail_level = detailed / brief` |
+| `dropDuplicates` / `dropna` / `fillna` | clean before aggregation |
+| `cache()` + `count()` | materialise the cached sections |
+| `rdd.getNumPartitions()` | input partitioning |
+| `repartition(4, "ticker")` | partitioned by the group key |
+| `filter` / `groupBy` / `agg` / `orderBy` | per-ticker low-detail counts |
+| `explain(True)` | parsed, analyzed, optimized and physical plans |
+| `show()` | the action |
+| `createOrReplaceTempView` + `spark.sql` | the same query in SQL |
+| `select(...).rdd.map(...).toDF(...)` | DataFrame -> RDD -> DataFrame round trip |
 
 ## Run it
 
-Full project pipeline from `services/ingestion-us`:
+Full pipeline from `services/ingestion-us` (no ticker filter; it always
+processes the whole raw snapshot):
 
 ```powershell
 $env:ANOMALY_DATA_DIR = "D:\Anomaly Engine\data"
 $env:SPARK_LOCAL_DIR  = "D:\Anomaly Engine\.spark-tmp"
-.\venv\Scripts\python.exe -u -m app.spark.runner --tickers AAPL MSFT
+$env:SPARK_MASTER     = "local[1]"
+.\venv\Scripts\python.exe -u -m app.spark.runner
 ```
 
-Only the classroom-command check, reusing the latest run:
+Only this stage, reusing the latest run:
 
 ```powershell
 cd services\ingestion-us
-.\venv\Scripts\python.exe -u -m app.spark.teacher_demo
+.\venv\Scripts\python.exe -u -m app.spark.section_analysis
 ```
 
 Through the API:
@@ -122,38 +138,33 @@ Through the API:
 ```powershell
 $body = @{ tickers = $null; wait = $true } | ConvertTo-Json
 Invoke-RestMethod -Method Post `
-  -Uri http://127.0.0.1:8000/api/v1/pipeline/run `
+  -Uri http://localhost:8000/api/v1/pipeline/run `
   -Body $body -ContentType 'application/json'
 ```
 
 ## Evidence produced
 
-The full run writes:
+A run writes:
 
-- `data/curated/latest/section_stats.csv` — the small CSV both APIs read.
-- `data/curated/latest/teacher_checks.json` — RDD result, DataFrame result,
-  partition counts, lineage, SQL rows, and `match: true`.
-- `data/curated/latest/run_summary.json` — stage 12 includes the operation
-  badges `textFile`, `first`, `filter`, `map`, `reduceByKey`, `count`,
-  `collect`, `take`, `toDebugString`, `read.csv`, `groupBy`, `agg`, `orderBy`,
-  `explain`, `show`, `sql`, and `toDF`.
+- `data/curated/latest/section_stats.csv` — the shared CSV input.
+- `data/curated/latest/section_analysis.json` — RDD result, DataFrame result,
+  partition counts, lineage, SQL rows, and `match`.
+- `data/curated/latest/run_summary.json` — stage 12 lists its operations and
+  `input_rows` / `output_rows`.
 
-The Spark ETL page at `http://localhost:3000/pipeline` renders stage 12 from
-`run_summary.json`, so the professor can see the taught commands in the live
-dashboard rather than only in a separate notebook.
-
-## Observed output (committed run)
-
-From `data/curated/latest/teacher_checks.json`:
+Observed output from run `20261102T012655Z`:
 
 | Check | RDD path | DataFrame path |
 | --- | --- | --- |
-| Input rows | 50 sections | 50 sections |
+| Input rows | 101 section rows | 101 section rows |
 | Partitions | 8 (`textFile(..., minPartitions=8)`) | 1 input, 4 after `repartition(4, "ticker")` |
-| Low-detail sections (`tokens < 500`) | 37 | 37 |
-| Low detail per ticker | `AAPL 18`, `MSFT 19` | `AAPL 18`, `MSFT 19` |
+| Low-detail sections (`tokens < 500`) | 69 | 69 |
+| Per ticker | `AAPL 18`, `AMZN 11`, `GOOGL 3`, `MSFT 24`, `NVDA 13` | same |
 | Agreement | `match: true` | `match: true` |
 
-The SQL half of the same artifact shows `MSFT` with 19 sections at 233.53
-average tokens and `AAPL` with 31 sections at 961.13 average tokens, and the
-DataFrame → RDD → DataFrame round trip returns all 50 rows.
+The SQL result reports MSFT with 25 sections at 240.08 average tokens, AAPL with
+31 at 961.13, NVDA with 20 at 1553.4, AMZN with 19 at 1591.37 and GOOGL with 6 at
+2124.5. The DataFrame -> RDD -> DataFrame round trip returns all 101 rows.
+
+The Spark ETL page at `http://localhost:3000/pipeline` renders stage 12 from
+`run_summary.json`, including the operation badges and the parity result.

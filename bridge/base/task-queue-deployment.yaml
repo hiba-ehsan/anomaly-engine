@@ -33,15 +33,15 @@ spec:
                     - name: FINBERT_MODEL
                       value: "ProsusAI/finbert"
                     - name: FINNHUB_API_KEY
-                      value: "***REMOVED***"
+                      value: "CHANGE_ME"
                     - name: MODEL_DEVICE
                       value: "cpu"
                     - name: REDIS_URL
-                      value: "***REMOVED***"
+                      value: "CHANGE_ME"
                     - name: SUPABASE_KEY
-                      value: "***REMOVED***"
+                      value: "CHANGE_ME"
                     - name: SUPABASE_SERVICE_KEY
-                      value: "***REMOVED***"
+                      value: "CHANGE_ME"
                     - name: SUPABASE_URL
                       value: "***REMOVED***"
                   volumeMounts:

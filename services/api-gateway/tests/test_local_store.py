@@ -21,7 +21,7 @@ def store() -> LocalStore:
 def test_summary_counts():
     summary = store().summary()
     assert summary["engine"] == "PySpark RDD"
-    assert summary["counts"]["filings"] == 5
+    assert summary["counts"]["filings"] >= 5
     assert summary["counts"]["chunks"] > 0
     assert summary["benchmark"]["match"] is True
     assert len(summary["stages"]) >= 10

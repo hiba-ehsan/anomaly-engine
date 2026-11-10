@@ -1,5 +1,55 @@
 [
   {
+    "ticker": "NVDA",
+    "filing_type": "10-Q",
+    "filing_date": "2026-08-26",
+    "accession_number": "0001045810-26-000075",
+    "sections": [
+      "item_1",
+      "item_1a",
+      "item_2",
+      "item_3",
+      "item_4",
+      "item_5",
+      "item_6"
+    ]
+  },
+  {
+    "ticker": "NVDA",
+    "filing_type": "10-K",
+    "filing_date": "2026-02-25",
+    "accession_number": "0001045810-26-000021",
+    "sections": [
+      "item_1",
+      "item_10",
+      "item_12",
+      "item_13",
+      "item_15",
+      "item_1a",
+      "item_1c",
+      "item_2",
+      "item_5",
+      "item_7",
+      "item_7a",
+      "item_9a",
+      "item_9b"
+    ]
+  },
+  {
+    "ticker": "MSFT",
+    "filing_type": "10-Q",
+    "filing_date": "2026-10-28",
+    "accession_number": "0001193125-26-436133",
+    "sections": [
+      "item_1",
+      "item_1a",
+      "item_2",
+      "item_3",
+      "item_4",
+      "item_6"
+    ]
+  },
+  {
     "ticker": "MSFT",
     "filing_type": "10-K",
     "filing_date": "2026-07-29",
@@ -33,6 +83,55 @@
       "item_4",
       "item_5",
       "item_6"
+    ]
+  },
+  {
+    "ticker": "GOOGL",
+    "filing_type": "10-Q",
+    "filing_date": "2026-10-29",
+    "accession_number": "0001652044-26-000084",
+    "sections": [
+      "item_1",
+      "item_1a",
+      "item_2",
+      "item_4",
+      "item_5",
+      "item_6"
+    ]
+  },
+  {
+    "ticker": "AMZN",
+    "filing_type": "10-Q",
+    "filing_date": "2026-10-30",
+    "accession_number": "0001018724-26-000040",
+    "sections": [
+      "item_1",
+      "item_1a",
+      "item_2",
+      "item_3",
+      "item_4",
+      "item_5",
+      "item_6"
+    ]
+  },
+  {
+    "ticker": "AMZN",
+    "filing_type": "10-K",
+    "filing_date": "2026-02-06",
+    "accession_number": "0001018724-26-000004",
+    "sections": [
+      "item_1",
+      "item_10",
+      "item_15",
+      "item_1a",
+      "item_1c",
+      "item_2",
+      "item_5",
+      "item_7",
+      "item_7a",
+      "item_8",
+      "item_9a",
+      "item_9b"
     ]
   },
   {

@@ -1,9 +1,16 @@
 import httpx
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception
 from typing import Optional, Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def _is_retryable_service_error(exc: BaseException) -> bool:
+    if isinstance(exc, httpx.HTTPStatusError):
+        status = exc.response.status_code
+        return status == 429 or status >= 500
+    return isinstance(exc, httpx.TransportError)
 
 
 class BaseServiceClient:
@@ -19,7 +26,7 @@ class BaseServiceClient:
     @retry(
         wait=wait_exponential(multiplier=1, min=1, max=4),
         stop=stop_after_attempt(3),
-        retry=retry_if_exception_type((httpx.TimeoutException, httpx.ConnectError, httpx.HTTPStatusError)),
+        retry=retry_if_exception(_is_retryable_service_error),
         reraise=True,
     )
     async def _request(

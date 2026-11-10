@@ -4,6 +4,7 @@ import os
 from contextlib import asynccontextmanager
 from typing import Optional
 
+import httpx
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -87,6 +88,7 @@ async def health():
         "status": "healthy",
         "service": "api-gateway",
         "data_source": supabase.source,
+        "supabase_mirror": supabase.mirror_enabled,
         "pipeline_run": (local.summary() or {}).get("run_id"),
         "dependencies": dependencies,
     }
@@ -111,33 +113,53 @@ async def get_company(ticker: str):
     return company
 
 
-@app.post("/api/v1/companies/{ticker}/ingest")
+@app.post("/api/v1/companies/{ticker}/ingest", status_code=202)
 async def ingest_company(ticker: str, request: IngestRequest):
-    """Legacy Supabase ingest.
+    """Fetch SEC filings through ingestion-us, independent of storage mode."""
+    try:
+        return await ingestion_us.ingest_company(
+            ticker=ticker.upper(),
+            filing_types=request.filing_types,
+            max_filings=request.max_filings,
+        )
+    except httpx.HTTPStatusError as exc:
+        status_code = (
+            exc.response.status_code
+            if 400 <= exc.response.status_code < 500
+            else 503
+        )
+        raise HTTPException(
+            status_code=status_code,
+            detail=f"ingestion-us rejected the request: {exc.response.text}",
+        ) from exc
+    except Exception as exc:
+        logger.exception("Could not start SEC ingestion for %s", ticker)
+        raise HTTPException(
+            status_code=503,
+            detail=f"ingestion-us is unavailable: {exc}",
+        ) from exc
 
-    When Supabase is not configured (the default for the local demo) this falls
-    back to the Spark pipeline over the local SEC snapshot.
-    """
-    if supabase.source == "local-artifacts":
-        try:
-            return await ingestion_us.start_spark_run(tickers=[ticker], wait=False)
-        except Exception as exc:
-            raise HTTPException(
-                status_code=503,
-                detail=f"Spark ingestion service unavailable: {exc}",
-            ) from exc
 
-    filing_job = await ingestion_us.ingest_company(
-        ticker=ticker,
-        filing_types=request.filing_types,
-        max_filings=request.max_filings,
-    )
-    price_job = await ingestion_market.ingest_prices(
-        ticker=ticker,
-        start_date=request.start_date,
-        end_date=request.end_date,
-    )
-    return {"ticker": ticker, "filing_job": filing_job, "price_job": price_job}
+@app.get("/api/v1/companies/ingest/status/{job_id}")
+async def company_ingest_status(job_id: str):
+    try:
+        return await ingestion_us.get_ingest_status(job_id)
+    except httpx.HTTPStatusError as exc:
+        status_code = (
+            exc.response.status_code
+            if 400 <= exc.response.status_code < 500
+            else 503
+        )
+        raise HTTPException(
+            status_code=status_code,
+            detail=f"ingestion-us rejected the status request: {exc.response.text}",
+        ) from exc
+    except Exception as exc:
+        logger.exception("Could not read SEC ingestion job %s", job_id)
+        raise HTTPException(
+            status_code=503,
+            detail=f"ingestion-us is unavailable: {exc}",
+        ) from exc
 
 
 # ---------------------------------------------------------------------------
@@ -242,9 +264,6 @@ async def get_filing_sentiment(filing_id: str):
     return {"scores": scores, "total": len(scores)}
 
 
-# ---------------------------------------------------------------------------
-# Anomalies
-# ---------------------------------------------------------------------------
 
 
 @app.get("/api/v1/anomalies")
@@ -306,11 +325,7 @@ async def analyze_company(ticker: str):
         "message": "Spark RDD analysis started - poll /api/v1/pipeline/status/{job_id}",
     }
 
-
-# ---------------------------------------------------------------------------
-# Search / backtest
-# ---------------------------------------------------------------------------
-
+#backtest
 
 @app.post("/api/v1/search/similar")
 async def search_similar(
@@ -372,9 +387,8 @@ async def run_backtest(ticker: str):
     return {"ticker": ticker, "job": result}
 
 
-# ---------------------------------------------------------------------------
-# Market data
-# ---------------------------------------------------------------------------
+
+#Market data
 
 
 @app.get("/api/v1/market/{ticker}/prices")

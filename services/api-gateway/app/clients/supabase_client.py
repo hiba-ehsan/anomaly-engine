@@ -8,11 +8,13 @@ logger = logging.getLogger(__name__)
 
 
 class SupabaseClient:
-    """Database access with a transparent local-artifact fallback.
+    """Read access that prefers the local artifacts, with Supabase as a fallback.
 
-    Supabase is used when configured and reachable.  If credentials are absent
-    or any query fails (offline demo / DNS outage), reads fall back to the JSON
-    artifacts written by the Spark pipeline instead of crashing the gateway.
+    The Spark pipeline writes ``data/curated/latest`` and that snapshot is the
+    canonical source for the demo: it is complete, offline-safe and consistent
+    with what the dashboard shows.  Supabase is used as an optional mirror, so a
+    partially populated project can never make the UI disagree with itself (for
+    example showing 5 companies but only 2 filings for one of them).
     """
 
     def __init__(self):
@@ -32,10 +34,19 @@ class SupabaseClient:
 
     @property
     def source(self) -> str:
+        if self.local.available:
+            return "local-artifacts"
         return "supabase" if self.client else "local-artifacts"
+
+    @property
+    def mirror_enabled(self) -> bool:
+        return self.client is not None
 
     # ------------------------------------------------------------------ company
     async def get_company_by_ticker(self, ticker: str) -> Optional[Dict]:
+        company = self.local.get_company_by_ticker(ticker)
+        if company:
+            return company
         if self.client:
             try:
                 result = (
@@ -48,10 +59,17 @@ class SupabaseClient:
                     return result.data[0]
             except Exception as exc:
                 logger.warning("Supabase company lookup failed: %s", exc)
-        return self.local.get_company_by_ticker(ticker)
+        return None
 
     async def list_companies(self, limit: int = 100, offset: int = 0) -> List[Dict]:
-        if self.client:
+        # Local first.  Supabase may contain issuers the snapshot does not have
+        # (or fewer of them), so it only fills gaps instead of replacing rows.
+        local_companies = self.local.list_companies(limit=limit + offset)
+        merged: Dict[str, Dict] = {
+            str(company.get("ticker") or company.get("id") or ""): company
+            for company in local_companies
+        }
+        if self.client and len(merged) < limit + offset:
             try:
                 result = (
                     self.client.table("companies")
@@ -59,14 +77,18 @@ class SupabaseClient:
                     .range(offset, offset + limit - 1)
                     .execute()
                 )
-                if result.data:
-                    return result.data
+                for company in result.data or []:
+                    key = str(company.get("ticker") or company.get("id") or "")
+                    merged.setdefault(key, company)
             except Exception as exc:
                 logger.warning("Supabase company list failed: %s", exc)
-        return self.local.list_companies(limit=limit, offset=offset)
+        return list(merged.values())[offset : offset + limit]
 
     # ------------------------------------------------------------------ filings
     async def get_filings_by_company(self, company_id: str, limit: int = 50) -> List[Dict]:
+        filings = self.local.get_filings_by_company(company_id, limit=limit)
+        if filings:
+            return filings
         if self.client:
             try:
                 result = (
@@ -81,9 +103,12 @@ class SupabaseClient:
                     return result.data
             except Exception as exc:
                 logger.warning("Supabase filing list failed: %s", exc)
-        return self.local.get_filings_by_company(company_id, limit=limit)
+        return []
 
     async def get_filing(self, filing_id: str) -> Optional[Dict]:
+        filing = self.local.get_filing(filing_id)
+        if filing:
+            return filing
         if self.client:
             try:
                 result = (
@@ -96,9 +121,12 @@ class SupabaseClient:
                     return result.data[0]
             except Exception as exc:
                 logger.warning("Supabase filing lookup failed: %s", exc)
-        return self.local.get_filing(filing_id)
+        return None
 
     async def get_filing_chunks(self, filing_id: str) -> List[Dict]:
+        chunks = self.local.get_filing_chunks(filing_id)
+        if chunks:
+            return chunks
         if self.client:
             try:
                 result = (
@@ -112,10 +140,13 @@ class SupabaseClient:
                     return result.data
             except Exception as exc:
                 logger.warning("Supabase chunk lookup failed: %s", exc)
-        return self.local.get_filing_chunks(filing_id)
+        return []
 
     # -------------------------------------------------------- sentiment / search
     async def get_sentiment_for_filing(self, filing_id: str) -> List[Dict]:
+        scores = self.local.get_sentiment_for_filing(filing_id)
+        if scores:
+            return scores
         if self.client:
             try:
                 result = (
@@ -127,10 +158,13 @@ class SupabaseClient:
                 return result.data
             except Exception as exc:
                 logger.warning("Supabase sentiment lookup failed: %s", exc)
-        return self.local.get_sentiment_for_filing(filing_id)
+        return []
 
     # ----------------------------------------------------------------- anomalies
     async def get_anomalies_for_company(self, company_id: str, limit: int = 50) -> List[Dict]:
+        signals = self.local.get_anomalies_for_company(company_id, limit=limit)
+        if signals:
+            return signals
         if self.client:
             try:
                 result = (
@@ -145,9 +179,12 @@ class SupabaseClient:
                     return result.data
             except Exception as exc:
                 logger.warning("Supabase anomaly lookup failed: %s", exc)
-        return self.local.get_anomalies_for_company(company_id, limit=limit)
+        return []
 
     async def get_anomaly(self, signal_id: str) -> Optional[Dict]:
+        signal = self.local.get_anomaly(signal_id)
+        if signal:
+            return signal
         if self.client:
             try:
                 result = (
@@ -160,10 +197,13 @@ class SupabaseClient:
                     return result.data[0]
             except Exception as exc:
                 logger.warning("Supabase anomaly detail failed: %s", exc)
-        return self.local.get_anomaly(signal_id)
+        return None
 
     # -------------------------------------------------------------------- market
     async def get_price_history(self, company_id: str, limit: int = 500) -> List[Dict]:
+        prices = self.local.get_price_history(company_id, limit=limit)
+        if prices:
+            return prices
         if self.client:
             try:
                 result = (
@@ -178,7 +218,7 @@ class SupabaseClient:
                     return result.data
             except Exception as exc:
                 logger.warning("Supabase price lookup failed: %s", exc)
-        return self.local.get_price_history(company_id, limit=limit)
+        return []
 
     # --------------------------------------------------------------- vector search
     async def match_embeddings(

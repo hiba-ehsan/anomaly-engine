@@ -1,252 +1,252 @@
 [
   {
     "term": "products",
-    "count": 396,
-    "share": 0.011568
+    "count": 936,
+    "share": 0.008521
   },
   {
     "term": "services",
-    "count": 362,
-    "share": 0.010575
-  },
-  {
-    "term": "notes",
-    "count": 350,
-    "share": 0.010224
-  },
-  {
-    "term": "september",
-    "count": 315,
-    "share": 0.009202
-  },
-  {
-    "term": "due",
-    "count": 295,
-    "share": 0.008618
-  },
-  {
-    "term": "sales",
-    "count": 264,
-    "share": 0.007712
-  },
-  {
-    "term": "business",
-    "count": 255,
-    "share": 0.007449
-  },
-  {
-    "term": "tax",
-    "count": 204,
-    "share": 0.005959
-  },
-  {
-    "term": "apple",
-    "count": 199,
-    "share": 0.005813
+    "count": 858,
+    "share": 0.007811
   },
   {
     "term": "income",
-    "count": 192,
-    "share": 0.005609
+    "count": 776,
+    "share": 0.007064
   },
   {
-    "term": "foreign",
-    "count": 157,
-    "share": 0.004586
+    "term": "tax",
+    "count": 749,
+    "share": 0.006819
   },
   {
-    "term": "inc",
-    "count": 151,
-    "share": 0.004411
+    "term": "business",
+    "count": 691,
+    "share": 0.006291
   },
   {
-    "term": "subject",
-    "count": 150,
-    "share": 0.004382
+    "term": "september",
+    "count": 685,
+    "share": 0.006236
   },
   {
-    "term": "significant",
-    "count": 146,
-    "share": 0.004265
-  },
-  {
-    "term": "information",
-    "count": 144,
-    "share": 0.004207
-  },
-  {
-    "term": "adversely",
-    "count": 142,
-    "share": 0.004148
+    "term": "sales",
+    "count": 684,
+    "share": 0.006227
   },
   {
     "term": "cash",
-    "count": 139,
-    "share": 0.004061
+    "count": 657,
+    "share": 0.005981
   },
   {
-    "term": "product",
-    "count": 136,
-    "share": 0.003973
-  },
-  {
-    "term": "rate",
-    "count": 134,
-    "share": 0.003914
-  },
-  {
-    "term": "components",
-    "count": 133,
-    "share": 0.003885
-  },
-  {
-    "term": "price",
-    "count": 123,
-    "share": 0.003593
-  },
-  {
-    "term": "changes",
-    "count": 120,
-    "share": 0.003505
-  },
-  {
-    "term": "june",
-    "count": 119,
-    "share": 0.003476
-  },
-  {
-    "term": "condition",
-    "count": 119,
-    "share": 0.003476
-  },
-  {
-    "term": "materially",
-    "count": 118,
-    "share": 0.003447
-  },
-  {
-    "term": "consolidated",
-    "count": 117,
-    "share": 0.003418
-  },
-  {
-    "term": "officer",
-    "count": 117,
-    "share": 0.003418
-  },
-  {
-    "term": "control",
-    "count": 117,
-    "share": 0.003418
+    "term": "notes",
+    "count": 626,
+    "share": 0.005699
   },
   {
     "term": "operating",
-    "count": 116,
-    "share": 0.003389
+    "count": 568,
+    "share": 0.005171
   },
   {
-    "term": "risk",
-    "count": 115,
-    "share": 0.003359
-  },
-  {
-    "term": "fair",
-    "count": 115,
-    "share": 0.003359
-  },
-  {
-    "term": "affect",
-    "count": 112,
-    "share": 0.003272
-  },
-  {
-    "term": "future",
-    "count": 111,
-    "share": 0.003243
-  },
-  {
-    "term": "impact",
-    "count": 110,
-    "share": 0.003213
-  },
-  {
-    "term": "security",
-    "count": 108,
-    "share": 0.003155
-  },
-  {
-    "term": "management",
-    "count": 107,
-    "share": 0.003126
-  },
-  {
-    "term": "plan",
-    "count": 105,
-    "share": 0.003067
-  },
-  {
-    "term": "risks",
-    "count": 104,
-    "share": 0.003038
-  },
-  {
-    "term": "reporting",
-    "count": 103,
-    "share": 0.003009
-  },
-  {
-    "term": "accounting",
-    "count": 101,
-    "share": 0.00295
-  },
-  {
-    "term": "gross",
-    "count": 101,
-    "share": 0.00295
-  },
-  {
-    "term": "effective",
-    "count": 100,
-    "share": 0.002921
-  },
-  {
-    "term": "market",
-    "count": 100,
-    "share": 0.002921
-  },
-  {
-    "term": "assets",
-    "count": 100,
-    "share": 0.002921
-  },
-  {
-    "term": "internal",
-    "count": 100,
-    "share": 0.002921
+    "term": "due",
+    "count": 563,
+    "share": 0.005125
   },
   {
     "term": "data",
-    "count": 97,
-    "share": 0.002834
+    "count": 534,
+    "share": 0.004861
   },
   {
-    "term": "based",
-    "count": 96,
-    "share": 0.002804
+    "term": "consolidated",
+    "count": 506,
+    "share": 0.004606
   },
   {
     "term": "customers",
-    "count": 95,
-    "share": 0.002775
+    "count": 502,
+    "share": 0.00457
   },
   {
-    "term": "global",
-    "count": 93,
-    "share": 0.002717
+    "term": "foreign",
+    "count": 455,
+    "share": 0.004142
   },
   {
-    "term": "performance",
-    "count": 93,
-    "share": 0.002717
+    "term": "costs",
+    "count": 450,
+    "share": 0.004097
+  },
+  {
+    "term": "changes",
+    "count": 447,
+    "share": 0.004069
+  },
+  {
+    "term": "assets",
+    "count": 441,
+    "share": 0.004015
+  },
+  {
+    "term": "subject",
+    "count": 430,
+    "share": 0.003915
+  },
+  {
+    "term": "information",
+    "count": 423,
+    "share": 0.003851
+  },
+  {
+    "term": "primarily",
+    "count": 416,
+    "share": 0.003787
+  },
+  {
+    "term": "future",
+    "count": 414,
+    "share": 0.003769
+  },
+  {
+    "term": "revenue",
+    "count": 411,
+    "share": 0.003742
+  },
+  {
+    "term": "months",
+    "count": 389,
+    "share": 0.003541
+  },
+  {
+    "term": "product",
+    "count": 375,
+    "share": 0.003414
+  },
+  {
+    "term": "significant",
+    "count": 373,
+    "share": 0.003396
+  },
+  {
+    "term": "impact",
+    "count": 373,
+    "share": 0.003396
+  },
+  {
+    "term": "fair",
+    "count": 370,
+    "share": 0.003368
+  },
+  {
+    "term": "equity",
+    "count": 362,
+    "share": 0.003295
+  },
+  {
+    "term": "market",
+    "count": 337,
+    "share": 0.003068
+  },
+  {
+    "term": "based",
+    "count": 321,
+    "share": 0.002922
+  },
+  {
+    "term": "interest",
+    "count": 301,
+    "share": 0.00274
+  },
+  {
+    "term": "additional",
+    "count": 298,
+    "share": 0.002713
+  },
+  {
+    "term": "note",
+    "count": 292,
+    "share": 0.002658
+  },
+  {
+    "term": "rate",
+    "count": 290,
+    "share": 0.00264
+  },
+  {
+    "term": "obligations",
+    "count": 287,
+    "share": 0.002613
+  },
+  {
+    "term": "december",
+    "count": 287,
+    "share": 0.002613
+  },
+  {
+    "term": "expenses",
+    "count": 278,
+    "share": 0.002531
+  },
+  {
+    "term": "debt",
+    "count": 273,
+    "share": 0.002485
+  },
+  {
+    "term": "expense",
+    "count": 267,
+    "share": 0.002431
+  },
+  {
+    "term": "liabilities",
+    "count": 267,
+    "share": 0.002431
+  },
+  {
+    "term": "risks",
+    "count": 265,
+    "share": 0.002412
+  },
+  {
+    "term": "security",
+    "count": 263,
+    "share": 0.002394
+  },
+  {
+    "term": "control",
+    "count": 263,
+    "share": 0.002394
+  },
+  {
+    "term": "investments",
+    "count": 262,
+    "share": 0.002385
+  },
+  {
+    "term": "result",
+    "count": 261,
+    "share": 0.002376
+  },
+  {
+    "term": "cost",
+    "count": 260,
+    "share": 0.002367
+  },
+  {
+    "term": "inc",
+    "count": 259,
+    "share": 0.002358
+  },
+  {
+    "term": "rates",
+    "count": 259,
+    "share": 0.002358
+  },
+  {
+    "term": "laws",
+    "count": 257,
+    "share": 0.00234
   }
 ]

@@ -17,9 +17,9 @@ export function AnomalyGrid({ anomalies, total }: { anomalies: AnomalyCardProps[
             <path strokeLinecap="round" strokeLinejoin="round" d={svg.path} />
           </svg>
         </span>
-        <p className="text-sm text-navy-400">No premium signals detected yet.</p>
+        <p className="text-sm text-navy-400">No change flags found yet.</p>
         {total != null && total > 0 && (
-          <p className="text-xs text-navy-500 font-mono">{total} raw signals below threshold</p>
+          <p className="text-xs text-navy-500 font-mono">{total} changes scored below the current minimum</p>
         )}
       </div>
     );
@@ -36,7 +36,7 @@ export function AnomalyGrid({ anomalies, total }: { anomalies: AnomalyCardProps[
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 gap-y-6">
       {sorted.map((anomaly, index) => (
-        <AnomalyCard key={anomaly.id ?? `${anomaly.signalType}-${index}`} {...anomaly} />
+        <AnomalyCard key={`${anomaly.id ?? anomaly.signalType}-${index}`} {...anomaly} />
       ))}
     </div>
   );

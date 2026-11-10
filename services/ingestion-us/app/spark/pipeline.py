@@ -1,22 +1,3 @@
-"""PySpark RDD pipeline for SEC filing anomaly features.
-
-The pipeline is intentionally written with explicit RDD transformations and
-actions (the requirement for the mid-term demo):
-
-    parallelize -> map -> filter -> flatMap -> mapPartitions -> reduceByKey
-    -> aggregateByKey -> combineByKey -> groupByKey -> join -> sortBy
-    -> takeOrdered -> count -> collect
-
-The final stage intentionally repeats the classroom RDD/DataFrame commands
-(``textFile``, ``first``, ``take``, ``toDebugString``, ``read.csv``,
-``explain``, ``createOrReplaceTempView``, ``spark.sql``) on the section output
-so the professor can see the taught methods inside the real project.
-
-It reads the local JSON snapshot produced by ``scripts/fetch_sec_filings.py``
-and writes curated JSON + Parquet artifacts consumed by the API gateway and
-the Next.js dashboard.
-"""
-
 from __future__ import annotations
 
 import hashlib
@@ -43,11 +24,11 @@ from pyspark.sql.types import (
 )
 
 from .session import build_session
-from .teacher_demo import run_teacher_checks
+from .section_analysis import run_section_analysis
 
 
 def _project_root() -> Path:
-    """Repo root locally, service root inside a container (/app)."""
+    # repo root locally, /app inside the container
     parents = Path(__file__).resolve().parents
     return parents[4] if len(parents) > 4 else parents[2]
 
@@ -136,7 +117,7 @@ def section_key(filing_key: str, section_type: str) -> str:
 
 
 def _fallback_sections(clean_text: str) -> dict[str, str]:
-    """Create pseudo-sections when a filing's item headings cannot be parsed."""
+    # some filings have no item headings, so I cut the text into big blocks instead
     text = (clean_text or "").strip()
     if not text:
         return {}
@@ -184,7 +165,7 @@ def normalise_filing(record: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def emit_sentences(record: dict[str, Any]) -> list[dict[str, Any]]:
-    """mapPartitions worker: split one section into sentence rows."""
+    # runs inside mapPartitions: one section in, many sentence rows out
     sentences = split_sentences(record["text"])[:MAX_SENTENCES_PER_SECTION]
     rows: list[dict[str, Any]] = []
     for index, sentence in enumerate(sentences):
@@ -208,7 +189,7 @@ def emit_sentences(record: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def build_chunks(record: dict[str, Any]) -> list[dict[str, Any]]:
-    """mapPartitions worker: pack sentences into overlapping chunks."""
+    # runs inside mapPartitions: packs sentences into overlapping chunks
     sentences = split_sentences(record["text"])[:MAX_SENTENCES_PER_SECTION]
     chunks: list[dict[str, Any]] = []
     current: list[str] = []
@@ -359,7 +340,7 @@ def run_pipeline(
     data_dir: Path | None = None,
     spark: SparkSession | None = None,
 ) -> dict[str, Any]:
-    """Execute the full RDD pipeline and persist curated artifacts."""
+    # runs the whole pipeline and saves the output files
     data_dir = Path(data_dir or os.getenv("ANOMALY_DATA_DIR", DEFAULT_DATA_DIR))
     raw_dir = Path(raw_dir or os.getenv("ANOMALY_RAW_DIR", data_dir / "raw" / "filings"))
     curated_dir = data_dir / "curated" / "latest"
@@ -367,7 +348,16 @@ def run_pipeline(
     curated_dir.mkdir(parents=True, exist_ok=True)
     runs_dir.mkdir(parents=True, exist_ok=True)
 
-    records = load_raw_filings(raw_dir, tickers)
+    # I always process every raw filing. Earlier, a single-ticker run overwrote
+    # curated/latest with only that company, so the others disappeared from the app.
+    if tickers:
+        LOGGER.info(
+            "Pipeline requested for %s; processing all %s raw filings so no "
+            "company disappears from the results",
+            ", ".join(sorted({ticker.upper() for ticker in tickers})),
+            len(list(raw_dir.glob("*/*.json"))),
+        )
+    records = load_raw_filings(raw_dir)
     if not records:
         raise RuntimeError(
             f"No raw SEC filings found in {raw_dir}. Run scripts/fetch_sec_filings.py first."
@@ -386,7 +376,7 @@ def run_pipeline(
     sentence_accumulator = sc.accumulator(0)
     stopwords = sc.broadcast(sorted(STOPWORDS))
 
-    # ---------------------------------------------------------------- ingest
+    # step 1: read all filings and drop the broken ones
     with recorder.record("load + normalise", ["parallelize", "map", "filter", "cache"], len(records)) as stage:
         raw_rdd = sc.parallelize(records, max(2, min(len(records), 8)))
         filings_rdd = (
@@ -414,7 +404,6 @@ def run_pipeline(
         for row in filings
     }
 
-    # -------------------------------------------------------------- sections
     with recorder.record("section extraction", ["flatMap", "filter"], filing_count) as stage:
         section_rdd = (
             filings_rdd.flatMap(
@@ -440,7 +429,7 @@ def run_pipeline(
         section_count = section_rdd.count()
         stage["output_rows"] = section_count
 
-    # ------------------------------------------------------------- sentences
+    # step 3: cut every section into sentences
     with recorder.record(
         "sentence tokenisation", ["mapPartitions", "filter", "count"], section_count
     ) as stage:
@@ -458,8 +447,7 @@ def run_pipeline(
         sentence_count = sentence_rdd.count()
         stage["output_rows"] = sentence_count
 
-    # Accumulators are updated inside a mapPartitions worker.  They are used as
-    # a demonstration of Spark shared counters and for the run summary.
+    # counters Spark adds up across workers, used for the run summary
     def count_tokens(partition: Iterable[dict[str, Any]]):
         for row in partition:
             sentence_accumulator.add(1)
@@ -469,7 +457,7 @@ def run_pipeline(
     sentence_rdd = sentence_rdd.mapPartitions(count_tokens).persist(StorageLevel.MEMORY_AND_DISK)
     sentence_rdd.count()
 
-    # ------------------------------------------------------------ term counts
+    # step 4: how often each word appears in the whole corpus
     with recorder.record(
         "global term frequency", ["flatMap", "map", "filter", "reduceByKey", "takeOrdered"], sentence_count
     ) as stage:
@@ -491,7 +479,7 @@ def run_pipeline(
         for term, count in top_term_pairs
     ]
 
-    # Document frequency with combineByKey (explicit create/merge/combine).
+    # step 5: how many sections each word appears in, using combineByKey
     with recorder.record(
         "token document frequency", ["combineByKey", "count"], sentence_count
     ) as stage:
@@ -511,7 +499,7 @@ def run_pipeline(
         vocabulary_size = term_document_frequency.count()
         stage["output_rows"] = vocabulary_size
 
-    # ----------------------------------------------------------- section stats
+    # step 6: size and word mix of every section
     with recorder.record(
         "section statistics",
         ["map", "reduceByKey", "aggregateByKey", "mapValues", "join", "collect"],
@@ -582,7 +570,7 @@ def run_pipeline(
         .persist(StorageLevel.MEMORY_AND_DISK)
     )
 
-    # -------------------------------------------------------- temporal shift
+    # step 7: compare the same section across two filings of one company
     with recorder.record(
         "temporal shift", ["groupByKey", "map", "sortBy", "flatMap", "filter"], section_count
     ) as stage:
@@ -605,7 +593,7 @@ def run_pipeline(
         temporal_count = temporal_features.count()
         stage["output_rows"] = temporal_count
 
-    # ------------------------------------------------------- cross-section
+    # step 8: compare sections inside the same filing
     with recorder.record(
         "cross-section divergence", ["groupByKey", "flatMap", "filter"], section_count
     ) as stage:
@@ -618,7 +606,7 @@ def run_pipeline(
         )
         stage["output_rows"] = cross_features.count()
 
-    # ------------------------------------------------------------ anomalies
+    # step 9: merge both kinds of change into one ranked list
     with recorder.record(
         "anomaly signals", ["union", "map", "filter", "takeOrdered"], None
     ) as stage:
@@ -636,13 +624,16 @@ def run_pipeline(
             signal["signal_type"],
             signal.get("ticker") or "",
             signal.get("section_a") or "",
+            signal.get("section_b") or "",
+            signal.get("filing_a_id") or "",
+            signal.get("filing_b_id") or "",
             signal.get("filing_b_date") or signal.get("filing_date") or "",
         )
         signal["detected_at"] = signal.get("filing_b_date") or signal.get("filing_date") or started_at
         signal["rank"] = index + 1
         anomalies_payload.append(signal)
 
-    # --------------------------------------------------------------- chunks
+    # step 10: pack sentences into chunks for the NLP model
     chunk_schema = StructType(
         [
             StructField("chunk_id", StringType(), False),
@@ -666,9 +657,8 @@ def run_pipeline(
                 chunk for section in partition for chunk in build_chunks(section)
             )
         )
-        # One action, then reuse the materialised rows for both the JSON and the
-        # Parquet artifact.  Calling count() + createDataFrame(rdd) + collect()
-        # recomputed this stage three times and doubled driver memory.
+        # one collect, then reuse the rows for both JSON and Parquet; calling
+        # count() and collect() as well reran this stage three times
         chunk_rows = chunk_rdd.collect()
         chunk_count = len(chunk_rows)
         stage["output_rows"] = chunk_count
@@ -677,7 +667,7 @@ def run_pipeline(
         parquet_path = curated_dir / "chunks.parquet"
         chunk_df.write.mode("overwrite").parquet(str(parquet_path))
 
-    # -------------------------------------------------------------- benchmark
+    # step 11: same word count with RDD and DataFrame, then compare speed
     with recorder.record(
         "RDD vs DataFrame benchmark",
         ["flatMap", "map", "reduceByKey", "count", "spark.read.parquet", "groupBy", "count"],
@@ -686,14 +676,10 @@ def run_pipeline(
         benchmark = _run_benchmark(spark, chunk_rdd, parquet_path)
         stage["output_rows"] = benchmark["dataframe_terms"]
 
-    # ------------------------------------------- teacher-style API checkpoints
-    # This is the section the professor can compare line-for-line with the
-    # class notes.  It runs the same commands on the project's real section
-    # data and records the RDD/DataFrame results for the dashboard.  It is the
-    # final Spark stage so the dashboard timeline reads like the classroom
-    # notebook: ingest, analyse, then the taught RDD/DataFrame checks.
+    # step 12: answer one question twice, once with RDD and once with DataFrame.
+    # A section under 500 tokens is "brief", like the low-SpO2 example from class.
     with recorder.record(
-        "teacher-style RDD + DataFrame checks",
+        "section detail analysis (RDD + DataFrame)",
         [
             "textFile",
             "first",
@@ -716,10 +702,10 @@ def run_pipeline(
         ],
         len(section_stats),
     ) as stage:
-        teacher_checks = run_teacher_checks(spark, section_stats, curated_dir)
-        stage["output_rows"] = teacher_checks["rdd"]["low_detail_sections"]
+        section_analysis = run_section_analysis(spark, section_stats, curated_dir)
+        stage["output_rows"] = section_analysis["rdd"]["low_detail_sections"]
 
-    # --------------------------------------------------------------- writers
+    # write the files the API reads
     companies = {}
     for row in filings:
         companies[row["ticker"]] = {
@@ -786,7 +772,7 @@ def run_pipeline(
     persist("anomalies.json", anomalies_payload)
     persist("top_terms.json", top_terms_payload)
     persist("section_stats.json", section_stats)
-    persist("teacher_checks.json", teacher_checks)
+    persist("section_analysis.json", section_analysis)
     persist(
         "features.json",
         {
@@ -838,11 +824,11 @@ def run_pipeline(
         "section_stats": section_stats,
         "anomalies": anomalies_payload,
         "benchmark": benchmark,
-        "teacher_checks": teacher_checks,
+        "section_analysis": section_analysis,
         "artifacts": artifacts,
     }
 
-    # `input.tokens` uses the accumulator; `counts.vocabulary` uses combineByKey.
+    # input.tokens comes from the accumulator, vocabulary from combineByKey
     write_json(curated_dir / "run_summary.json", summary)
     write_json(runs_dir / f"{run_id}.json", summary)
 
@@ -1006,10 +992,9 @@ def _to_signal(feature: dict[str, Any] | None) -> dict[str, Any] | None:
 
 
 def _run_benchmark(spark: SparkSession, chunk_rdd, parquet_path: Path) -> dict[str, Any]:
-    """Compare an RDD word-count with the equivalent DataFrame aggregation."""
-    # Use a plain local path.  Path.as_uri() percent-encodes spaces and Hadoop's
-    # RawLocalFileSystem on Windows then looks for a directory literally named
-    # "Anomaly%20Engine".
+    # same word count in two ways, so the timings are comparable
+    # plain path on purpose: as_uri() escapes the space in "Anomaly Engine",
+    # and then Hadoop looks for a folder called "Anomaly%20Engine"
     parquet_path_value = parquet_path.resolve().as_posix()
 
     def timed_rdd() -> tuple[int, float]:
@@ -1033,7 +1018,7 @@ def _run_benchmark(spark: SparkSession, chunk_rdd, parquet_path: Path) -> dict[s
         size = words.groupBy("word").count().count()
         return size, round((time.perf_counter() - started) * 1000, 1)
 
-    # Warm both paths so the comparison is not dominated by JIT / file open.
+    # run both once first, so the numbers are not just JVM warm-up time
     timed_rdd()
     timed_dataframe()
     rdd_terms, rdd_ms = timed_rdd()

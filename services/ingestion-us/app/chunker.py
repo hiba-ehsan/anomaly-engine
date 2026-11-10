@@ -1,10 +1,7 @@
 import re
 from typing import Any, Optional
 
-# spaCy and its 12 MB model used to be loaded at import time.  That added
-# ~250 MB of resident memory to the API process, which is enough to make
-# PySpark run out of commit charge on an 8 GB laptop.  Load it lazily, only
-# when the legacy chunker is actually used.
+
 _nlp: Optional[Any] = None
 _nlp_loaded = False
 

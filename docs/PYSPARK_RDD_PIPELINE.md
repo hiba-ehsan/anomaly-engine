@@ -1,8 +1,9 @@
 # PySpark RDD Pipeline
 
-The mid-term requirement is **real Apache Spark RDD usage** in the Python
-ingestion path. This document describes what actually runs, how to demo it, and
-how the output reaches the Next.js dashboard.
+The project uses real Apache Spark RDDs in the Python ingestion path. This
+document describes what actually runs, how to demo it, and how the output reaches
+the Next.js dashboard. Step-by-step explanations and viva answers are in
+`docs/defense.md`.
 
 ## Where it lives
 
@@ -10,27 +11,29 @@ how the output reaches the Next.js dashboard.
 | --- | --- |
 | `services/ingestion-us/app/spark/session.py` | Low-memory `SparkSession` factory (Java/winutils setup) |
 | `services/ingestion-us/app/spark/pipeline.py` | All RDD stages + artifact writers + benchmark |
+| `services/ingestion-us/app/spark/section_analysis.py` | Stage 12 RDD/DataFrame parity check |
 | `services/ingestion-us/app/spark/runner.py` | CLI entry point used by the API subprocess |
 | `services/ingestion-us/app/main.py` | `POST /spark/run`, `/spark/status/{id}`, `/spark/latest`, `/spark/raw` |
 | `services/api-gateway/app/main.py` | `POST /api/v1/pipeline/run` proxy + local fallback |
-| `services/frontend/src/app/pipeline/page.tsx` | "Spark ETL" dashboard |
+| `services/frontend/src/app/pipeline/page.tsx` | "Data pipeline" dashboard |
 | `scripts/fetch_sec_filings.py` | Downloads the raw SEC snapshot into `data/raw/filings` |
 
 The API runs Spark as a **subprocess** (`python -m app.spark.runner`). When the
 job exits, the JVM, Py4J and Python workers are fully released, so the FastAPI
-process stays small (measured: ~50 MB idle after lazy-loading spaCy).
+process stays small.
 
 ## Input
 
-Five real SEC filings are committed for a reproducible demo:
+The raw snapshot currently holds 17 real SEC filings across 5 companies. The
+last completed pipeline run used 11 of them.
 
-| Ticker | Form | Filed |
-| --- | --- | --- |
-| AAPL | 10-K | 2025-10-31 |
-| AAPL | 10-K | 2024-11-01 |
-| AAPL | 10-Q | 2026-07-31 |
-| MSFT | 10-K | 2026-07-29 |
-| MSFT | 10-Q | 2026-04-29 |
+| Ticker | Files in `data/raw/filings/<TICKER>/` |
+| --- | --- |
+| AAPL | 6 |
+| AMZN | 5 |
+| MSFT | 3 |
+| NVDA | 2 |
+| GOOGL | 1 |
 
 Refresh them with:
 
@@ -41,26 +44,25 @@ python scripts/fetch_sec_filings.py
 ## Stages and RDD operations
 
 Each stage is timed and recorded in `run_summary.json` (`stages[]`), which the
-dashboard renders. Measured on the committed snapshot:
+dashboard renders. Measured on run `20261102T012655Z` (580.73 s total):
 
 | # | Stage | RDD operations | In → Out |
 | --- | --- | --- | --- |
-| 1 | Load + normalise | `parallelize`, `map`, `filter`, `cache` | 5 → 5 |
-| 2 | Section extraction | `flatMap`, `filter` | 5 → 51 |
-| 3 | Sentence tokenisation | `mapPartitions`, `filter`, `count` | 51 → 2,252 |
-| 4 | Global term frequency | `flatMap`, `map`, `filter`, `reduceByKey`, `takeOrdered` | 2,252 → top 50 |
-| 5 | Token document frequency | `combineByKey`, `count` | 2,252 → 3,060 |
-| 6 | Section statistics | `map`, `reduceByKey`, `aggregateByKey`, `mapValues`, `join`, `collect` | 2,252 → 50 |
-| 7 | Temporal shift | `groupByKey`, `map`, `sortBy`, `flatMap`, `filter` | 51 → 20 |
-| 8 | Cross-section divergence | `groupByKey`, `flatMap`, `filter` | 51 → 20 |
+| 1 | Load + normalise | `parallelize`, `map`, `filter`, `persist` | 11 → 11 |
+| 2 | Section extraction | `flatMap`, `filter` | 11 → 102 |
+| 3 | Sentence tokenisation | `mapPartitions`, `filter`, `count` | 102 → 7,015 |
+| 4 | Global term frequency | `flatMap`, `map`, `filter`, `reduceByKey`, `takeOrdered` | 7,015 → top 50 |
+| 5 | Token document frequency | `combineByKey`, `count` | 7,015 → 5,838 |
+| 6 | Section statistics | `map`, `reduceByKey`, `aggregateByKey`, `mapValues`, `join`, `collect` | 7,015 → 101 |
+| 7 | Temporal shift | `groupByKey`, `map`, `sortBy`, `flatMap`, `filter` | 102 → 34 |
+| 8 | Cross-section divergence | `groupByKey`, `flatMap`, `filter` | 102 → 33 |
 | 9 | Anomaly signals | `union`, `map`, `filter`, `takeOrdered` | → 30 |
-| 10 | Chunk generation | `mapPartitions`, `collect`, `createDataFrame`, `write.parquet` | 51 → 1,159 |
-| 11 | RDD vs DataFrame benchmark | `flatMap`, `map`, `reduceByKey`, `count`, `read.parquet`, `groupBy` | 1,159 → 2,751 terms |
-| 12 | Teacher-style API checks | `textFile`, `first`, `filter`, `map`, `reduceByKey`, `count`, `collect`, `take`, `toDebugString`, `read.csv`, `groupBy`, `agg`, `orderBy`, `explain`, `show`, `sql`, `toDF` | 50 -> 37 low-detail sections |
+| 10 | Chunk generation | `mapPartitions`, `collect`, `createDataFrame`, `write.parquet` | 102 → 3,759 |
+| 11 | RDD vs DataFrame benchmark | `flatMap`, `map`, `reduceByKey`, `count`, `read.parquet`, `groupBy` | 3,759 → 4,914 words |
+| 12 | Section detail analysis (RDD + DataFrame) | `textFile`, `first`, `filter`, `map`, `reduceByKey`, `count`, `collect`, `take`, `toDebugString`, `read.csv`, `groupBy`, `agg`, `orderBy`, `explain`, `show`, `sql`, `toDF` | 101 → 69 low-detail sections |
 
-Also used: a **broadcast** stopword set, **accumulators** for malformed
-records, and the classroom `textFile` / `first` / `take` / `toDebugString`
-sequence in stage 12. `mapPartitions` is used where per-partition setup matters
+Also used: a **broadcast** stopword set and **accumulators** for sentence and
+token counts. `mapPartitions` is used where per-partition setup matters
 (sentence splitting, chunk packing) rather than a per-row `map`.
 
 ### Why each API appears
@@ -76,10 +78,11 @@ sequence in stage 12. `mapPartitions` is used where per-partition setup matters
   section metadata.
 - `groupByKey` — chronological grouping for temporal and cross-section
   comparisons (small, controlled cardinality).
-- `sortBy` — order a company's filings by date before diffing.
+- `sortBy` — order the section rows by company and date.
 - `union` — merge temporal and cross-section signals.
 - `count` / `collect` — actions that force execution.
-- `cache` — the normalised filing RDD is reused by several stages.
+- `persist` — the filing, section, sentence and feature RDDs are reused by
+  several stages.
 
 ## Output artifacts
 
@@ -88,15 +91,15 @@ Written atomically to `data/curated/latest/` (override root with
 
 | File | Rows | Consumer |
 | --- | --- | --- |
-| `companies.json` | 2 | company list/header |
-| `filings.json` | 5 | filings list + `FilingViewer` |
-| `chunks.json` / `chunks.parquet` | 1,159 | evidence snippets, Parquet benchmark |
-| `anomalies.json` | 30 | anomaly cards/table |
-| `features.json` | 40 | temporal + cross-section feature panels |
+| `companies.json` | 5 | company list/header |
+| `filings.json` | 11 | filings list + `FilingViewer` |
+| `chunks.json` / `chunks.parquet` | 3,759 | evidence snippets, Parquet benchmark |
+| `anomalies.json` | 30 | change-flag table |
+| `features.json` | 67 | temporal + cross-section feature panels |
 | `top_terms.json` | 50 | term frequency panel |
-| `section_stats.json` | 50 | section statistics panel |
-| `section_stats.csv` | 50 | classroom `sc.textFile` / `spark.read.csv` input |
-| `teacher_checks.json` | 1 | RDD/DataFrame parity, lineage, SQL result |
+| `section_stats.json` | 101 | section statistics panel |
+| `section_stats.csv` | 101 | `sc.textFile` / `spark.read.csv` input |
+| `section_analysis.json` | 1 | RDD/DataFrame parity, lineage, SQL result |
 | `run_summary.json` | 1 | stage timeline, counts, benchmark, artifact list |
 
 Each run is also archived as `data/curated/runs/<run_id>.json`.
@@ -117,18 +120,21 @@ The gateway falls back to committed `prices.json` for quotes and charts.
 cd services/ingestion-us
 $env:ANOMALY_DATA_DIR = "D:\Anomaly Engine\data"
 $env:SPARK_LOCAL_DIR  = "D:\Anomaly Engine\.spark-tmp"
-.\venv\Scripts\python.exe -u -m app.spark.runner --tickers AAPL MSFT
+.\venv\Scripts\python.exe -u -m app.spark.runner
 ```
 
-### Classroom-command check only
+There is no ticker filter: the pipeline always processes the whole raw snapshot
+so a per-ticker run cannot delete other companies from the curated output.
+
+### Section analysis stage only
 
 ```powershell
 cd services/ingestion-us
-.\venv\Scripts\python.exe -u -m app.spark.teacher_demo
+.\venv\Scripts\python.exe -u -m app.spark.section_analysis
 ```
 
 The full run also calls the same function as stage 12. See
-`docs/PYSPARK_TEACHING_ALIGNMENT.md` for the line-by-line command mapping.
+`docs/PYSPARK_API_REFERENCE.md` for the API-by-API reference.
 
 ### Through the API
 
@@ -139,12 +145,12 @@ Invoke-RestMethod -Method Post `
   -Body $body -ContentType 'application/json'
 ```
 
-A full 5-filing API-triggered run took **199 s** end-to-end on the development
-laptop (the JVM start dominates; the RDD work itself is seconds).
+The last full run took 580.73 s on the development laptop. The JVM start
+dominates the short stages; the text work is what takes the rest.
 
 ## Benchmark
 
-The stage 11 benchmark compares two implementations over the same 1,159 chunks:
+The stage 11 benchmark compares two implementations over the same 3,759 chunks:
 
 - RDD path: reuses the cached chunk RDD and runs
   `flatMap → filter → map → reduceByKey → count`.
@@ -152,8 +158,8 @@ The stage 11 benchmark compares two implementations over the same 1,159 chunks:
   groupBy("word").count()`.
 
 Both paths are warmed once before timing so JVM/JIT startup is excluded.
-Measured: **RDD 7,009.9 ms vs DataFrame 492.4 ms (14.2×)** for the same 2,751
-distinct terms. Both paths return the identical term set (`match: true`), which
+Measured: **RDD 23,955.3 ms vs DataFrame 3,088.7 ms (7.76×)** for the same 4,914
+distinct terms. Both paths return the identical term count (`match: true`), which
 is the correctness check shown on the dashboard. The DataFrame advantage is
 expected: Catalyst + whole-stage codegen + Parquet columnar reads. The RDD path
 is kept because the assignment requires explicit RDD transformations.
@@ -191,8 +197,8 @@ python -c "import json;d=json.load(open('data/curated/latest/run_summary.json'))
 # 2. Benchmark confirms both APIs agree
 python -c "import json;d=json.load(open('data/curated/latest/run_summary.json'));print(d['benchmark'])"
 
-# 3. Classroom RDD/DataFrame commands agree on the same sections
-python -c "import json;d=json.load(open('data/curated/latest/teacher_checks.json'));print(d['rdd']['low_detail_sections'],d['dataframe']['low_detail_sections'],d['match']);print(d['rdd']['lineage'])"
+# 3. RDD and DataFrame paths agree on the same sections
+python -c "import json;d=json.load(open('data/curated/latest/section_analysis.json'));print(d['rdd']['low_detail_sections'],d['dataframe']['low_detail_sections'],d['match']);print(d['rdd']['lineage'])"
 
 # 4. Optional live RDD test (starts a JVM)
 $env:RUN_SPARK_TESTS='1'

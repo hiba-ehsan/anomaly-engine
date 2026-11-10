@@ -27,7 +27,7 @@ export default function CompanyFilingsPage() {
             <div className="flex items-center gap-4">
               <Link href={'/companies/' + ticker} className="text-gray-400 hover:text-white">Back</Link>
               <h1 className="text-2xl font-bold text-white">
-                {company ? company.name : ticker} - Filings
+                {company ? company.name : ticker} · filings
               </h1>
             </div>
             <select
@@ -35,7 +35,7 @@ export default function CompanyFilingsPage() {
               onChange={(e) => setFilingType(e.target.value)}
               className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm"
             >
-              <option value="">All Types</option>
+              <option value="">All forms</option>
               <option value="10-K">10-K</option>
               <option value="10-Q">10-Q</option>
               <option value="8-K">8-K</option>
@@ -46,7 +46,7 @@ export default function CompanyFilingsPage() {
 
         <main className="p-6">
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-white mb-4">All Filings ({total})</h3>
+            <h3 className="text-lg font-bold text-white mb-4">Filings ({total})</h3>
 
             {isLoading ? (
               <div className="flex justify-center py-8">
@@ -57,11 +57,11 @@ export default function CompanyFilingsPage() {
                 <table className="w-full text-sm text-left">
                   <thead>
                     <tr className="border-b border-gray-800">
-                      <th className="px-4 py-3 font-medium text-gray-400">Type</th>
-                      <th className="px-4 py-3 font-medium text-gray-400">Filing Date</th>
+                      <th className="px-4 py-3 font-medium text-gray-400">Form</th>
+                      <th className="px-4 py-3 font-medium text-gray-400">Filed</th>
                       <th className="px-4 py-3 font-medium text-gray-400">Period</th>
-                      <th className="px-4 py-3 font-medium text-gray-400">Accession</th>
-                      <th className="px-4 py-3 font-medium text-gray-400">Actions</th>
+                      <th className="px-4 py-3 font-medium text-gray-400">SEC number</th>
+                      <th className="px-4 py-3 font-medium text-gray-400">Open</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -69,18 +69,20 @@ export default function CompanyFilingsPage() {
                       <tr key={filing.id} className="border-b border-gray-800 hover:bg-gray-800/30">
                         <td className="px-4 py-3">
                           <span className="px-2 py-1 text-xs bg-blue-900/30 text-blue-400 border border-blue-800 rounded-full">
-                            {filing.filing_type}
+                            {filing.filing_type || '—'}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-gray-300">{new Date(filing.filing_date).toLocaleDateString()}</td>
-                        <td className="px-4 py-3 text-gray-400">
-                          {filing.period_of_report ? new Date(filing.period_of_report).toLocaleDateString() : 'N/A'}
+                        <td className="px-4 py-3 text-gray-300">
+                          {filing.filing_date ? new Date(filing.filing_date).toLocaleDateString() : '—'}
                         </td>
-                        <td className="px-4 py-3 font-mono text-gray-400 text-sm">{filing.accession_number || 'N/A'}</td>
+                        <td className="px-4 py-3 text-gray-400">
+                          {filing.period_of_report ? new Date(filing.period_of_report).toLocaleDateString() : '—'}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-gray-400 text-sm">{filing.accession_number || '—'}</td>
                         <td className="px-4 py-3">
                           <Link href={'/companies/' + ticker + '/filings/' + filing.id}>
                             <button className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded-lg">
-                              View
+                              Open
                             </button>
                           </Link>
                         </td>
@@ -90,7 +92,7 @@ export default function CompanyFilingsPage() {
                 </table>
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-8">No filings found</p>
+              <p className="text-gray-500 text-center py-8">No filings found.</p>
             )}
           </div>
         </main>

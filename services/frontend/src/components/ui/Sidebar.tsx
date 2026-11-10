@@ -3,13 +3,15 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/lib/auth';
+import { useHealth } from '@/lib/hooks';
 
 const navigation = [
   {
-    name: 'Dashboard',
+    name: 'Overview',
     href: '/',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 13h4l2-5 4 9 2-4h6" />
       </svg>
     ),
@@ -18,35 +20,35 @@ const navigation = [
     name: 'Companies',
     href: '/companies',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 21V5a2 2 0 012-2h8a2 2 0 012 2v16m-12 0h18m-14-8h4m-4-4h4" />
       </svg>
     ),
   },
   {
-    name: 'Anomalies',
+    name: 'Change flags',
     href: '/anomalies',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 3l9 9-9 9-9-9 9-9z" />
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01" />
       </svg>
     ),
   },
   {
-    name: 'Spark ETL',
+    name: 'Data pipeline',
     href: '/pipeline',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
   },
   {
-    name: 'Backtest',
+    name: 'Results test',
     href: '/backtest',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M4 17l6-6 4 4 6-8" />
         <path strokeLinecap="round" strokeLinejoin="round" d="M14 15h6v-6" />
       </svg>
@@ -56,24 +58,33 @@ const navigation = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
+  const { data: health } = useHealth();
 
   return (
     <aside className="sidebar">
-      <div className="px-6 py-5 border-b border-navy-800">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-yellow-500 flex items-center justify-center">
-            <svg className="w-5 h-5 text-navy-950" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 3l9 9-9 9-9-9 9-9z" />
-            </svg>
+      {/* Brand Header */}
+      <div className="px-5 py-5 border-b border-line bg-ground-tint">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-8 h-8 bg-accent text-ground flex items-center justify-center font-bold font-mono text-sm group-hover:bg-accent-warm transition-colors">
+            AE
           </div>
           <div>
-            <span className="block font-bold text-white leading-tight">Anomaly Engine</span>
-            <span className="block text-[11px] text-navy-400 tracking-widest uppercase">SEC Contradiction AI</span>
+            <span className="block font-bold text-ink uppercase tracking-tight text-sm leading-tight">
+              Anomaly Engine
+            </span>
+            <span className="block text-[10px] font-mono text-ink-dim tracking-widest uppercase">
+              SEC filing change detector
+            </span>
           </div>
         </Link>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      {/* Navigation */}
+      <nav className="flex-1 px-2 py-4 space-y-1">
+        <div className="px-3 pb-2 text-[10px] font-mono text-ink-dim uppercase tracking-wider">
+          Navigation
+        </div>
         {navigation.map((item) => (
           <Link
             key={item.name}
@@ -89,18 +100,50 @@ export function Sidebar() {
         ))}
       </nav>
 
-      <div className="px-4 py-4 border-t border-navy-800">
-        <p className="text-[11px] font-semibold text-navy-400 tracking-widest uppercase mb-2">
-          System Status
-        </p>
-        <div className="flex items-center gap-2 text-sm text-green-400">
-          <span className="relative flex w-2 h-2">
-            <span className="absolute inline-flex w-full h-full rounded-full bg-green-400 opacity-60 animate-ping"></span>
-            <span className="relative inline-flex w-2 h-2 rounded-full bg-green-400"></span>
+      {/* User Session & Auth Section */}
+      <div className="p-3 border-t border-line bg-panel">
+        {user ? (
+          <div className="p-2.5 bg-ground border border-line text-xs font-mono">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] text-accent uppercase font-bold tracking-wider">
+                {user.role}
+              </span>
+              <button
+                onClick={logout}
+                title="Sign out"
+                className="text-[10px] text-ink-dim hover:text-red-400 font-mono underline"
+              >
+                Sign Out
+              </button>
+            </div>
+            <div className="text-white font-semibold truncate text-[11px]">{user.name}</div>
+            <div className="text-[10px] text-ink-dim truncate">{user.email}</div>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <div className="text-[10px] font-mono text-ink-dim uppercase">Not signed in</div>
+            <div className="grid grid-cols-2 gap-2">
+              <Link href="/login" className="btn-secondary !text-[11px] !py-1.5 !px-2 text-center block">
+                Sign in
+              </Link>
+              <Link href="/signup" className="btn-kinetic !text-[11px] !py-1.5 !px-2 text-center block">
+                Create account
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* System status footer */}
+      <div className="px-4 py-3 border-t border-line bg-ground">
+        <div className="flex items-center justify-between text-[10px] font-mono text-ink-dim mb-1">
+          <span className="tracking-widest uppercase">BACKEND:</span>
+          <span className={`${health ? 'text-green-400' : 'text-red-400'} flex items-center gap-1 font-bold`}>
+            <span className={`w-1.5 h-1.5 rounded-full inline-block ${health ? 'bg-green-400' : 'bg-red-400'}`} />
+            {health ? 'Connected' : 'Not connected'}
           </span>
-          <span className="font-medium">Operational</span>
         </div>
-        <p className="mt-3 text-[11px] text-navy-500">API Gateway v0.1 · 4 services</p>
+        <p className="text-[10px] font-mono text-ink-dim">Local API · port 8000</p>
       </div>
     </aside>
   );

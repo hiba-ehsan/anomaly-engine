@@ -59,6 +59,9 @@ data/ingestion/
 data/raw/filings/
 .vercel/
 
+# --- Generated launchers (start-dev.ps1 writes real .env values into them) ---
+scripts/run-*.cmd
+
 # --- Spark output metadata ---
 *.crc
 _SUCCESS
