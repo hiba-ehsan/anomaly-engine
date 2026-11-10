@@ -32,18 +32,11 @@ spec:
                       value: "AnomalyEngine/1.0 (research@anomalyengine.dev)"
                     - name: FINBERT_MODEL
                       value: "ProsusAI/finbert"
-                    - name: FINNHUB_API_KEY
-                      value: "CHANGE_ME"
                     - name: MODEL_DEVICE
                       value: "cpu"
-                    - name: REDIS_URL
-                      value: "CHANGE_ME"
-                    - name: SUPABASE_KEY
-                      value: "CHANGE_ME"
-                    - name: SUPABASE_SERVICE_KEY
-                      value: "CHANGE_ME"
-                    - name: SUPABASE_URL
-                      value: "***REMOVED***"
+                  envFrom:
+                    - secretRef:
+                        name: anomaly-secrets
                   ports:
                     - name: api-gatewa-8000
                       containerPort: 8000
