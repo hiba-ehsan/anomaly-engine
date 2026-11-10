@@ -2,8 +2,7 @@
 
 The project uses real Apache Spark RDDs in the Python ingestion path. This
 document describes what actually runs, how to demo it, and how the output reaches
-the Next.js dashboard. Step-by-step explanations and viva answers are in
-`docs/defense.md`.
+the Next.js dashboard.
 
 ## Where it lives
 

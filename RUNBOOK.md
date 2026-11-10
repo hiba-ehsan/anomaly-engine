@@ -121,7 +121,7 @@ table and run `Stop-Process -Id <pid> -Force`.
 | Symptom | Cause | Fix |
 |---|---|---|
 | `address already in use` | Orphan process still holding the port | Section 5, then restart |
-| Frontend shows `—` everywhere | Gateway not up yet, or pipeline never ran | Check :8000/health, then see `docs/defense.md` |
+| Frontend shows `—` everywhere | Gateway not up yet, or pipeline never ran | Check :8000/health, then see `docs/PYSPARK_RDD_PIPELINE.md` |
 | `ModuleNotFoundError: app` | Python service started from the wrong folder | `cd` into `services\<name>` first |
 | Mongo connection refused | `mongod` not running | Section 3, step 1 |
 | NLP engine slow on boot | FinBERT weights loading (uncached) | Wait ~60s; first run also downloads ~400 MB |
@@ -136,4 +136,4 @@ table and run `Stop-Process -Id <pid> -Force`.
   presenting.
 
 The curated results in `data/curated/latest/` are the ones the dashboard reads.
-See `docs/defense.md` for the numbers and the explanation of each pipeline stage.
+See `docs/PYSPARK_RDD_PIPELINE.md` for the numbers and the explanation of each pipeline stage.

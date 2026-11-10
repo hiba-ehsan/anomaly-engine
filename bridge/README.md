@@ -139,7 +139,7 @@ Docker is stopped. It currently succeeds on this repo.
 
 ## Honest limits
 
-- **This path is optional.** The viva demo runs natively with
+- **This path is optional.** The demo runs natively with
   `.\start-dev.ps1 -IncludeFrontend`, not on Kubernetes. Nothing in the demo
   depends on this folder.
 - **It has not been deployed end-to-end.** The cluster on this machine is not

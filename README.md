@@ -1,20 +1,34 @@
 # Anomaly Engine
 
 > **Mid-term demo (45%):** PySpark RDD pipeline → curated artifacts → FastAPI
-> gateway → Next.js dashboard. Start here:
-> [docs/COMPLETION_45.md](docs/COMPLETION_45.md) ·
-> [docs/PYSPARK_RDD_PIPELINE.md](docs/PYSPARK_RDD_PIPELINE.md) ·
-> [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) ·
-> [docs/PYSPARK_API_REFERENCE.md](docs/PYSPARK_API_REFERENCE.md)
+> gateway → Next.js dashboard. See
+> [docs/PYSPARK_RDD_PIPELINE.md](docs/PYSPARK_RDD_PIPELINE.md) for the pipeline,
+> [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) to run it, and
+> [docs/PYSPARK_API_REFERENCE.md](docs/PYSPARK_API_REFERENCE.md) for the Spark API list.
 
 A **MERN-integrated financial anomaly detection engine** that ingests real SEC
-EDGAR filings (10-K/10-Q) for AAPL and large-cap US issuers, runs FinBERT
-(NLP) + statistical anomaly scoring, and surfaces results through a modern
+EDGAR filings (10-K/10-Q) for AAPL and large-cap US issuers, computes
+statistical anomaly scores over the filing text, and surfaces results through a modern
 Next.js/React dashboard — with MongoDB as the raw-document store, Redis for
 queueing/caching, and a Python/FastAPI compute core behind an API gateway.
 
 > Native Windows development (blueprint/container stacks included via
 > Docker Compose + GitHub Actions CI for production-shaped deploys).
+
+## What it looks like
+
+Screenshots of the running app. The numbers come from the committed pipeline
+run `20261102T012655Z`, not from mock data.
+
+| Dashboard | Companies |
+|---|---|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Companies](docs/screenshots/companies.png) |
+
+| Company detail (NVDA) | Change flags |
+|---|---|
+| ![Company detail](docs/screenshots/company-nvda.png) | ![Change flags](docs/screenshots/anomalies.png) |
+
+![Pipeline run summary](docs/screenshots/pipeline.png)
 
 ## Brand / Positioning (one-liner)
 
@@ -25,7 +39,7 @@ queueing/caching, and a Python/FastAPI compute core behind an API gateway.
 | Layer | Tech | Role |
 |-------|------|------|
 | **M** | MongoDB 7.x (native service on :27017) | Raw filing docs, chunks, analysis manifest |
-| **E** | Express / Node 24 x | Mongo-backed secondary API (Express microservice) |
+| **E** | Express / Node 24 | Mongo-backed secondary API (Express microservice) |
 | **R** | React 18 + Next.js 16 (App Router) | Dashboard on :3000 |
 | **N** | Node.js 24 runtime + NestJS-ready core | Service orchestration + backtester |
 | Core | Python 3.11 / FastAPI / PyTorch | SEC EDGAR ingest, FinBERT NLP, anomaly + backtest |
@@ -67,7 +81,7 @@ Copy-Item .env.example .env   # fill Supabase/Redis/Finnhub/SEC keys + MONGODB_U
 #    - Redis:    Supabase-free REDIS_URL works for cache/queue
 #    - Supabase: project tables (filings, companies, anomalies, ...)
 
-# 3. Start all 6 services detached (WMI, CurrentDirectory-aware)
+# 3. Start all 8 processes detached, then wait for gateway health
 .\start-dev.ps1 -IncludeFrontend
 
 # 4. Check health + docs
@@ -81,7 +95,7 @@ python scripts\seed_mongodb.py
 # 6. Propagate filing → anomaly for AAPL (sync → analyze)
 Invoke-RestMethod -Method Post http://127.0.0.1:8000/api/v1/ingest/AAPL
 Invoke-RestMethod -Method Post http://127.0.0.1:8000/api/v1/anomalies/analyze/AAPL
-Get-Anomalies = Invoke-RestMethod http://127.0.0.1:8000/api/v1/anomalies?ticker=AAPL
+$anomalies = Invoke-RestMethod http://127.0.0.1:8000/api/v1/anomalies?ticker=AAPL
 ```
 
 ## Shared SEC Company Ingestion
@@ -147,8 +161,9 @@ FinBERT, SEC EDGAR, **MONGODB_URI**, NEXT_PUBLIC_API_URL). Never commit `.env`.
 ## CI / Build
 
 - GitHub Actions: `.github/workflows/ci.yml` (lint, typecheck, pytest, build)
-- Containers: `docker-compose.yml` + `docker-compose.dev.yml`
-  (MongoDB, Redis, all Python services, Next.js frontend)
+- Containers: `docker-compose.yml` + `docker-compose.dev.yml` build the seven
+  app services (gateway, four Python services, Celery worker, frontend).
+  MongoDB and Redis run outside Compose.
 
 ## Git Flow
 
@@ -170,7 +185,7 @@ services/
   api-gateway/      # FastAPI gateway (:8000)
   ingestion-us/     # SEC EDGAR 10-K/10-Q ingest (:8001)
   ingestion-market/ # market data ingest (:8002)
-  nlp-engine/       # FinBERT anomaly scoring (:8003)
+  nlp-engine/       # FinBERT model service (:8003)
   backtester/       # strategy backtests (:8004)
   frontend/         # Next.js 16 / React 18 dashboard (:3000)
   mongo-api/        # Express microservice (MongoDB secondary API)   [MERN]
@@ -182,8 +197,11 @@ docs/               # architecture + MERN_STACK write-up
 
 ## Docs
 
-- `docs/ARCHITECTURE.md` — full service topology
-- `docs/MERN_STACK.md` — resume-ready MERN/MERN+core write-up
+- `docs/PYSPARK_RDD_PIPELINE.md` — the 12-stage RDD pipeline
+- `docs/PYSPARK_API_REFERENCE.md` — Spark API reference with real run numbers
+- `docs/DEPLOYMENT.md` — local and container deployment
+- `docs/INGESTION_MAP.md` — where each data file comes from
+- `docs/FRONTEND_SPEC.md` — screens and routes
 
 ## License
 
